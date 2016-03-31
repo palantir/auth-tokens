@@ -1,0 +1,20 @@
+machine:
+  java:
+    version: oraclejdk8
+  environment:
+    TERM: dumb
+
+general:
+  artifacts:
+    - auth-tokens/build/libs
+
+test:
+  override:
+    - ./gradlew build
+
+deployment:
+  releases:
+    tag: /[0-9]+(\.[0-9]+)+/
+    commands:
+      - ./gradlew -i bintrayUpload
+
