@@ -1,0 +1,16 @@
+apply from: "${rootDir}/gradle/publish-libs.gradle"
+
+dependencies {
+    compile "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion"
+    compile "com.google.guava:guava:${guavaVersion}"
+    compile "org.slf4j:jcl-over-slf4j:${slf4jVersion}"
+    compile "org.slf4j:slf4j-api:${slf4jVersion}"
+
+    processor "org.immutables:value:${immutablesVersion}"
+
+    testCompile "com.google.code.findbugs:annotations:$findbugsVersion"
+    testCompile "junit:junit:$junitVersion"
+    testCompile "org.mockito:mockito-core:$mockitoVersion"
+    testCompile "org.hamcrest:hamcrest-all:$hamcrestVersion"
+}
+

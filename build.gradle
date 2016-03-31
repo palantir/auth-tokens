@@ -1,0 +1,43 @@
+buildscript {
+    repositories {
+        jcenter()
+        maven {
+            url 'https://plugins.gradle.org/m2/'
+        }
+    }
+
+    dependencies {
+        classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:$bintrayVersion"
+        classpath "com.netflix.nebula:gradle-info-plugin:$nebulaInfoVersion"
+        classpath "com.netflix.nebula:nebula-publishing-plugin:$nebulaPublishingVersion"
+        classpath 'com.netflix.nebula:nebula-bintray-plugin:3.3.4'
+        classpath "com.palantir:gradle-baseline-java:$baselineVersion"
+        classpath "gradle.plugin.com.palantir.gradle.gitversion:gradle-git-version:$gitVersionVersion"
+        classpath "gradle.plugin.org.inferred:gradle-processors:$processorVersion"
+    }
+}
+
+apply plugin: 'com.palantir.baseline-config'
+apply plugin: 'com.palantir.baseline-idea'
+apply plugin: 'com.palantir.git-version'
+
+allprojects {
+    group 'com.palantir.tokens'
+
+    repositories {
+        jcenter()
+    }
+
+    version gitVersion()
+}
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'com.palantir.baseline-checkstyle'
+    apply plugin: 'com.palantir.baseline-eclipse'
+    apply plugin: 'com.palantir.baseline-findbugs'
+    apply plugin: 'com.palantir.baseline-idea'
+    apply plugin: 'org.inferred.processors'
+
+    sourceCompatibility = 1.7
+}
