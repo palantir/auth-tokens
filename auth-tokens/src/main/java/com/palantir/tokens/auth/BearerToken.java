@@ -46,7 +46,7 @@ public abstract class BearerToken {
     }
 
     @Override
-    public String toString() {
+    public final String toString() {
         return getToken();
     }
 }
