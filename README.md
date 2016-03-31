@@ -1,6 +1,10 @@
+[![Circle CI](https://circleci.com/gh/palantir/auth-tokens.svg?style=svg&circle-token=b1d954561ca65d92f9b52274718e8c956191e062)](https://circleci.com/gh/palantir/auth-tokens)
+[ ![Download](https://api.bintray.com/packages/palantir/releases/auth-tokens/images/download.svg) ](https://bintray.com/palantir/releases/auth-tokens/_latestVersion)
+
+
 # Auth Tokens
 
-Simple wrappers for tokens passed between services that rely on OAuth 2.0 for user authentication and authorization.
+Simple wrappers for tokens passed between services that rely on [OAuth 2.0](https://tools.ietf.org/html/rfc6749) for user authentication and authorization.
 
 ## BearerToken
 
