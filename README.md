@@ -1,4 +1,4 @@
-auth-tokens
+Auth Tokens
 ===========
 Simple wrappers for tokens passed between services that rely on OAuth 2.0 for user authentication and authorization.
 
