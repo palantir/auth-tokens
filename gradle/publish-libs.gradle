@@ -10,6 +10,7 @@ publishing {
             from components.java
             artifact(sourceJar)
             artifact(javadocJar)
+            version project.version.replaceAll(/-.*/, '-SNAPSHOT')
         }
     }
 }
@@ -19,7 +20,7 @@ bintray {
     key = System.env.BINTRAY_KEY
     pkg {
         repo = 'releases'
-        name = 'resource-tokens'
+        name = 'auth-tokens'
         userOrg = 'palantir'
         licenses = ['Apache-2.0']
         vcsUrl = 'https://github.com/palantir/auth-tokens.git'
