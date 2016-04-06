@@ -16,8 +16,6 @@
 
 package com.palantir.tokens.auth;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.immutables.value.Value;
 
 /**
@@ -25,8 +23,8 @@ import org.immutables.value.Value;
  */
 @Value.Immutable
 @Value.Style(visibility = Value.Style.ImplementationVisibility.PACKAGE, jdkOnly = true)
-@JsonSerialize(as = ImmutableAuthHeader.class)
-@JsonDeserialize(as = ImmutableAuthHeader.class)
+// NOTE: no @JsonSerialize/@JsonDeserialize because auth headers are for use in @HeaderParam
+// see: https://jersey.java.net/apidocs/latest/jersey/javax/ws/rs/HeaderParam.html
 public abstract class AuthHeader {
 
     @Value.Parameter
