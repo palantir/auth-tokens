@@ -32,6 +32,31 @@ public final class AuthHeaderTest {
         assertThat(AuthHeader.valueOf(authHeader.toString()), is(authHeader));
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void testMissingToken() {
+        AuthHeader.valueOf("Bearer");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testMissingBearer() {
+        AuthHeader.valueOf("someToken");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testMultipleTokens() {
+        AuthHeader.valueOf("Bearer tokenOne tokenTwo");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testNotUsingBearer() {
+        AuthHeader.valueOf("Basic username:password");
+    }
+
+    @Test
+    public void testToApiToken_caseInsensitiveBearer() {
+        assertThat(AuthHeader.valueOf("bEaReR apiToken"), is(AuthHeader.of(BearerToken.valueOf("apiToken"))));
+    }
+
     @Test
     public void testToApiToken() {
         assertThat(AuthHeader.valueOf("Bearer apiToken"), is(AuthHeader.of(BearerToken.valueOf("apiToken"))));
@@ -41,5 +66,4 @@ public final class AuthHeaderTest {
     public void testToApiToken_removeFirstBearer() {
         assertThat(AuthHeader.valueOf("Bearer Bearer"), is(AuthHeader.of(BearerToken.valueOf("Bearer"))));
     }
-
 }
