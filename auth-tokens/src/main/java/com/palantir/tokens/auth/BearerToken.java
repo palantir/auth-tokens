@@ -18,7 +18,15 @@ package com.palantir.tokens.auth;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
+import com.google.common.io.BaseEncoding;
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
+import java.util.UUID;
 import java.util.regex.Pattern;
 import org.immutables.value.Value;
 
@@ -31,6 +39,47 @@ public abstract class BearerToken {
 
     private static final String VALIDATION_PATTERN_STRING = "^[A-Za-z0-9\\-\\._~\\+/]+=*$";
     private static final Pattern VALIDATION_PATTERN = Pattern.compile(VALIDATION_PATTERN_STRING);
+
+    private static final String SUBJECT_FIELD = "sub";
+    private static final ObjectMapper objectMapper = new ObjectMapper();
+
+    /**
+     * If the token contains a 'sub' field, as a base64 encoded UUID, return it as a String.
+     * @return the 'sub' field of the JWT, if it exists
+     */
+    public final Optional<String> getUserIdInsecure() {
+        try {
+            String[] segments = getToken().split("\\.");
+
+            if (segments.length != 3) {
+                return Optional.absent();
+            }
+
+            String b64EncodedJson = segments[1];
+
+            String json = new String(BaseEncoding.base64().decode(b64EncodedJson), StandardCharsets.UTF_8);
+
+            JsonNode node = objectMapper.readTree(json);
+
+            if (!node.has(SUBJECT_FIELD)) {
+                return Optional.absent();
+            }
+
+            return Optional.of(uuidFromBytes(
+                    BaseEncoding.base64().decode(node.get(SUBJECT_FIELD).asText())).toString());
+        } catch (RuntimeException | IOException e) {
+            return Optional.absent();
+        }
+    }
+
+    private static UUID uuidFromBytes(byte[] bytes) {
+        ByteBuffer byteBuffer = ByteBuffer.wrap(bytes);
+
+        long high = byteBuffer.getLong();
+        long low = byteBuffer.getLong();
+
+        return new UUID(high, low);
+    }
 
     @Value.Parameter
     @JsonValue
