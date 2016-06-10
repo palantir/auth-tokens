@@ -1,0 +1,15 @@
+apply from: "${rootDir}/gradle/publish.gradle"
+
+dependencies {
+    compile project(':auth-tokens')
+    compile "javax.servlet:javax.servlet-api:${servletApi}"
+    compile "org.eclipse.jetty:jetty-security:${jettyVersion}"
+    compile "org.eclipse.jetty:jetty-server:${jettyVersion}"
+    compile "org.slf4j:slf4j-api:${slf4jVersion}"
+
+    testCompile "io.dropwizard:dropwizard-testing:${dropwizardVersion}"
+    testCompile "junit:junit:$junitVersion"
+    testCompile "org.mockito:mockito-core:$mockitoVersion"
+    testCompile "org.hamcrest:hamcrest-all:$hamcrestVersion"
+}
+

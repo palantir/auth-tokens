@@ -1,0 +1,14 @@
+server:
+  applicationConnectors:
+    - type: http
+      port: 0
+  adminConnectors:
+    - type: http
+      port: 0
+  requestLog:
+    appenders:
+      - type: console
+      - type: mock
+
+logging:
+  level: INFO

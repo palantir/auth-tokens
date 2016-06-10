@@ -1,2 +1,3 @@
 include 'auth-tokens'
+include 'auth-tokens-filter'
 

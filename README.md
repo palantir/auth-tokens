@@ -18,12 +18,21 @@ A value class used to represent the HTTP Authorization header expected to contai
 
 Provides utilities for handling the Bearer Tokens, such as reading tokens from files.
 
+## UnverifiedJsonWebToken
+
+Parses and provides insight into a Json Web Token payload.
+
+# Auth Token Filter
+
+Provides a filter to inject user identifier information into slf4j and Jetty logging contexts.
+
 # Usage
 
 Gradle:
 ```
 dependencies {
     compile "com.palantir.tokens:auth-tokens:<version>"
+    compile "com.palantir.tokens:auth-tokens-filter:<version>"
 }
 ```
 
