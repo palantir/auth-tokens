@@ -35,7 +35,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 
 /**
- * A {@link Filter} that TODO(asharp).
+ * A {@link Filter} that replaces basic auth with a bearer token.
  */
 public class BasicAuthToBearerTokenFilter implements Filter {
     private static final String BASIC_AUTH_STR = "Basic";
