@@ -19,9 +19,6 @@ package com.palantir.tokens.auth.http;
 import com.google.common.io.BaseEncoding;
 import com.google.common.net.HttpHeaders;
 import com.palantir.tokens.auth.AuthHeader;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
@@ -33,6 +30,8 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A {@link Filter} that replaces basic auth with a bearer token.
@@ -43,10 +42,11 @@ public class BasicAuthToBearerTokenFilter implements Filter {
     private static final BaseEncoding BASE_64_ENCODING = BaseEncoding.base64Url();
 
     @Override
-    public void init(FilterConfig filterConfig) throws ServletException {}
+    public void init(FilterConfig filterConfig) throws ServletException {
+    }
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+    public final void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
         ServletRequest updatedRequest;
         try {
@@ -61,7 +61,8 @@ public class BasicAuthToBearerTokenFilter implements Filter {
     }
 
     @Override
-    public void destroy() {}
+    public void destroy() {
+    }
 
     private ServletRequest getRequestWithToken(ServletRequest request)
             throws AuthHeaderNotBasicAuthException, NullRawAuthHeaderException {
@@ -90,7 +91,7 @@ public class BasicAuthToBearerTokenFilter implements Filter {
         return new HttpServletRequestWrapper(request) {
             @Override
             public String getHeader(String name) {
-                if(Objects.equals(name, HttpHeaders.AUTHORIZATION)) {
+                if (Objects.equals(name, HttpHeaders.AUTHORIZATION)) {
                     return authHeader.toString();
                 } else {
                     return super.getHeader(name);
@@ -119,14 +120,14 @@ public class BasicAuthToBearerTokenFilter implements Filter {
         return rawAuthHeader.contains(BASIC_AUTH_STR);
     }
 
-    class NullRawAuthHeaderException extends Exception {
-        public NullRawAuthHeaderException(String message) {
+    static class NullRawAuthHeaderException extends Exception {
+        NullRawAuthHeaderException(String message) {
             super(message);
         }
     }
 
-    class AuthHeaderNotBasicAuthException extends Exception {
-        public AuthHeaderNotBasicAuthException(String message) {
+    static class AuthHeaderNotBasicAuthException extends Exception {
+        AuthHeaderNotBasicAuthException(String message) {
             super(message);
         }
     }

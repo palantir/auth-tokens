@@ -1,7 +1,34 @@
+/*
+ * Copyright 2016 Palantir Technologies, Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.palantir.tokens.auth.http;
+
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import com.google.common.io.BaseEncoding;
 import com.google.common.net.HttpHeaders;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.core.Is;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -9,18 +36,6 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 public class BasicAuthToBearerTokenFilterTest {
 
@@ -36,13 +51,13 @@ public class BasicAuthToBearerTokenFilterTest {
     private BasicAuthToBearerTokenFilter tokenFilter;
 
     @Before
-    public void setUp() throws Exception {
+    public final void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         tokenFilter = new BasicAuthToBearerTokenFilter();
     }
 
     @Test
-    public void testSimple() throws Exception {
+    public final void testSimple() throws Exception {
         final String password = "password";
         setPassword(password);
         doFilter();
@@ -62,7 +77,7 @@ public class BasicAuthToBearerTokenFilterTest {
         verify(chain).doFilter(requestArgumentCaptor.capture(), Mockito.<ServletResponse>any());
         final HttpServletRequest value = requestArgumentCaptor.getValue();
         final String actualAuthHeader = value.getHeader(HttpHeaders.AUTHORIZATION);
-        assertThat(actualAuthHeader, is(expectedAuthHeader));
+        MatcherAssert.assertThat(actualAuthHeader, Is.is(expectedAuthHeader));
     }
 
     private String base64Encode(String str) {
