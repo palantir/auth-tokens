@@ -36,6 +36,7 @@ public class BasicAuthToBearerTokenFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
         // TODO(asharp): swap out basic auth with an auth token
+        // perhaps should do chain.doFilter(request, response);
     }
 
     @Override
