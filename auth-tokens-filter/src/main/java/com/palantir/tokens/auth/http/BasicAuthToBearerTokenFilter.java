@@ -34,7 +34,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A {@link Filter} that replaces basic auth with a bearer token.
+ * A {@link Filter} that replaces basic auth with a bearer token. It assumes the bearer token is in the password field
+ * of the basic auth header.
  */
 public class BasicAuthToBearerTokenFilter implements Filter {
     private static final String BASIC_AUTH_STR = "Basic";
