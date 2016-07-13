@@ -51,8 +51,10 @@ public class BasicAuthToBearerTokenFilter implements Filter {
         ServletRequest updatedRequest;
         try {
             updatedRequest = getRequestWithToken(request);
-        } catch (IllegalArgumentException e) {
-            log.warn(e.getMessage());
+        } catch (NullRawAuthHeaderException e) {
+            updatedRequest = request;
+        } catch (AuthHeaderNotBasicAuthException e) {
+            log.warn("AuthHeaderNotBasicAuthException", e);
             updatedRequest = request;
         }
         chain.doFilter(updatedRequest, response);
@@ -61,22 +63,26 @@ public class BasicAuthToBearerTokenFilter implements Filter {
     @Override
     public void destroy() {}
 
-    private ServletRequest getRequestWithToken(ServletRequest request) {
+    private ServletRequest getRequestWithToken(ServletRequest request)
+            throws AuthHeaderNotBasicAuthException, NullRawAuthHeaderException {
         if (request instanceof HttpServletRequest) {
             final HttpServletRequest httpRequest = (HttpServletRequest) request;
             final String rawAuthHeader = httpRequest.getHeader(HttpHeaders.AUTHORIZATION);
             return getRequestWithTokenFromRawAuthHeader(rawAuthHeader, httpRequest);
         } else {
-            throw new IllegalArgumentException("Request is not an HttpServletRequest.");
+            throw new AuthHeaderNotBasicAuthException("Request is not an HttpServletRequest.");
         }
     }
 
-    private ServletRequest getRequestWithTokenFromRawAuthHeader(String rawAuthHeader, HttpServletRequest request) {
-        if (rawAuthHeader != null && isBasicAuth(rawAuthHeader)) {
+    private ServletRequest getRequestWithTokenFromRawAuthHeader(String rawAuthHeader, HttpServletRequest request)
+            throws AuthHeaderNotBasicAuthException, NullRawAuthHeaderException {
+        if (rawAuthHeader == null) {
+            throw new NullRawAuthHeaderException("Raw auth header is null.");
+        } else if (isBasicAuth(rawAuthHeader)) {
             final AuthHeader authHeader = getAuthHeader(rawAuthHeader);
             return getRequestWithTokenFromAuthHeader(authHeader, request);
         } else {
-            throw new IllegalArgumentException("Auth header is not basic auth.");
+            throw new AuthHeaderNotBasicAuthException("Auth header is not basic auth.");
         }
     }
 
@@ -113,4 +119,15 @@ public class BasicAuthToBearerTokenFilter implements Filter {
         return rawAuthHeader.contains(BASIC_AUTH_STR);
     }
 
+    class NullRawAuthHeaderException extends Exception {
+        public NullRawAuthHeaderException(String message) {
+            super(message);
+        }
+    }
+
+    class AuthHeaderNotBasicAuthException extends Exception {
+        public AuthHeaderNotBasicAuthException(String message) {
+            super(message);
+        }
+    }
 }
