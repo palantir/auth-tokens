@@ -10,8 +10,10 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
@@ -20,9 +22,6 @@ import static org.hamcrest.core.Is.is;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-/**
- * Created by asharp on 7/13/16.
- */
 public class BasicAuthToBearerTokenFilterTest {
 
     private static final BaseEncoding BASE_64_ENCODING = BaseEncoding.base64Url();
@@ -44,16 +43,26 @@ public class BasicAuthToBearerTokenFilterTest {
 
     @Test
     public void testSimple() throws Exception {
-        setAuthHeader("Basic " + base64Encode("foo:authToken"));
-        tokenFilter.doFilter(request, null, chain);
-        verify(chain).doFilter(requestArgumentCaptor.capture(), Mockito.<ServletResponse>any());
-        HttpServletRequest value = requestArgumentCaptor.getValue();
-        String authHeader = value.getHeader(HttpHeaders.AUTHORIZATION);
-        assertThat(authHeader, is("authToken"));
+        final String password = "password";
+        setPassword(password);
+        doFilter();
+        assertRequestHasAuthHeader("Bearer " + password);
     }
 
-    private void setAuthHeader(String authHeader) {
+    private void setPassword(String password) {
+        final String authHeader = "Basic " + base64Encode("foo:" + password);
         when(request.getHeader(HttpHeaders.AUTHORIZATION)).thenReturn(authHeader);
+    }
+
+    private void doFilter() throws IOException, ServletException {
+        tokenFilter.doFilter(request, null, chain);
+    }
+
+    private void assertRequestHasAuthHeader(String expectedAuthHeader) throws IOException, ServletException {
+        verify(chain).doFilter(requestArgumentCaptor.capture(), Mockito.<ServletResponse>any());
+        final HttpServletRequest value = requestArgumentCaptor.getValue();
+        final String actualAuthHeader = value.getHeader(HttpHeaders.AUTHORIZATION);
+        assertThat(actualAuthHeader, is(expectedAuthHeader));
     }
 
     private String base64Encode(String str) {

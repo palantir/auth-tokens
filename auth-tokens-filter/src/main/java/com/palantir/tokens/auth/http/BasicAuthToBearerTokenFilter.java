@@ -48,35 +48,54 @@ public class BasicAuthToBearerTokenFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
-        if (request instanceof HttpServletRequest) {
-            HttpServletRequest httpRequest = (HttpServletRequest) request;
-            String rawAuthHeader = httpRequest.getHeader(HttpHeaders.AUTHORIZATION);
-            if (rawAuthHeader != null && rawAuthHeader.contains(BASIC_AUTH_STR)) {
-                String password = getPassword(rawAuthHeader);
-                final AuthHeader authHeader;
-                try {
-                    authHeader = AuthHeader.valueOf(password);
-                } catch (IllegalArgumentException e) {
-                    throw new IllegalArgumentException(
-                            "Could not deserialize bearer token from password field: " + e.getMessage(), e);
-                }
-                HttpServletRequestWrapper wrapper = new HttpServletRequestWrapper(httpRequest) {
-                    @Override
-                    public String getHeader(String name) {
-                        if(Objects.equals(name, HttpHeaders.AUTHORIZATION)) {
-                            return authHeader.toString();
-                        } else {
-                            return super.getHeader(name);
-                        }
-                    }
-                };
-
-                chain.doFilter(wrapper, response);
-            } else {
-                log.warn("Authorization header does not contain basic auth sentinel string.");
-            }
+        ServletRequest updatedRequest;
+        try {
+            updatedRequest = getRequestWithToken(request);
+        } catch (IllegalArgumentException e) {
+            log.warn(e.getMessage());
+            updatedRequest = request;
         }
-        chain.doFilter(request, response);
+        chain.doFilter(updatedRequest, response);
+    }
+
+    @Override
+    public void destroy() {}
+
+    private ServletRequest getRequestWithToken(ServletRequest request) {
+        if (request instanceof HttpServletRequest) {
+            final HttpServletRequest httpRequest = (HttpServletRequest) request;
+            final String rawAuthHeader = httpRequest.getHeader(HttpHeaders.AUTHORIZATION);
+            return getRequestWithTokenFromRawAuthHeader(rawAuthHeader, httpRequest);
+        } else {
+            throw new IllegalArgumentException("Request is not an HttpServletRequest.");
+        }
+    }
+
+    private ServletRequest getRequestWithTokenFromRawAuthHeader(String rawAuthHeader, HttpServletRequest request) {
+        if (rawAuthHeader != null && isBasicAuth(rawAuthHeader)) {
+            final AuthHeader authHeader = getAuthHeader(rawAuthHeader);
+            return getRequestWithTokenFromAuthHeader(authHeader, request);
+        } else {
+            throw new IllegalArgumentException("Auth header is not basic auth.");
+        }
+    }
+
+    private ServletRequest getRequestWithTokenFromAuthHeader(final AuthHeader authHeader, HttpServletRequest request) {
+        return new HttpServletRequestWrapper(request) {
+            @Override
+            public String getHeader(String name) {
+                if(Objects.equals(name, HttpHeaders.AUTHORIZATION)) {
+                    return authHeader.toString();
+                } else {
+                    return super.getHeader(name);
+                }
+            }
+        };
+    }
+
+    private AuthHeader getAuthHeader(String rawAuthHeader) {
+        final String password = getPassword(rawAuthHeader);
+        return AuthHeader.valueOf(password);
     }
 
     private String getPassword(String rawAuthHeader) {
@@ -90,7 +109,8 @@ public class BasicAuthToBearerTokenFilter implements Filter {
         return credentials.split(":", 2)[1];
     }
 
-    @Override
-    public void destroy() {}
+    private boolean isBasicAuth(String rawAuthHeader) {
+        return rawAuthHeader.contains(BASIC_AUTH_STR);
+    }
 
 }
