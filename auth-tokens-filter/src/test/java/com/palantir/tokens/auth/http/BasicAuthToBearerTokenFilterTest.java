@@ -65,7 +65,9 @@ public class BasicAuthToBearerTokenFilterTest {
     }
 
     private void setPassword(String password) {
-        String authHeader = "Basic " + base64Encode("foo:" + password);
+        String creds = "foo:" + password;
+        String encodedCreds = BASE_64_ENCODING.encode(creds.getBytes(StandardCharsets.UTF_8));
+        String authHeader = "Basic " + encodedCreds;
         when(request.getHeader(HttpHeaders.AUTHORIZATION)).thenReturn(authHeader);
     }
 
@@ -76,7 +78,4 @@ public class BasicAuthToBearerTokenFilterTest {
         MatcherAssert.assertThat(actualAuthHeader, Is.is(expectedAuthHeader));
     }
 
-    private String base64Encode(String str) {
-        return BASE_64_ENCODING.encode(str.getBytes(StandardCharsets.UTF_8));
-    }
 }
