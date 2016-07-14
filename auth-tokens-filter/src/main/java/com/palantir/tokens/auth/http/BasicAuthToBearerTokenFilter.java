@@ -16,6 +16,7 @@
 
 package com.palantir.tokens.auth.http;
 
+import com.google.common.base.Preconditions;
 import com.google.common.io.BaseEncoding;
 import com.google.common.net.HttpHeaders;
 import com.palantir.tokens.auth.AuthHeader;
@@ -51,13 +52,11 @@ public class BasicAuthToBearerTokenFilter implements Filter {
     @Override
     public final void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
-        ServletRequest updatedRequest = request;
+        ServletRequest updatedRequest;
         try {
             updatedRequest = getRequestWithToken(request);
-        } catch (NullRawAuthHeaderException e) {
-            // do nothing
-        } catch (AuthHeaderNotBasicAuthException e) {
-            log.warn("AuthHeaderNotBasicAuthException", e);
+        } catch (IllegalArgumentException e) {
+            updatedRequest = request;
         }
         chain.doFilter(updatedRequest, response);
     }
@@ -66,26 +65,27 @@ public class BasicAuthToBearerTokenFilter implements Filter {
     public void destroy() {
     }
 
-    private ServletRequest getRequestWithToken(ServletRequest request)
-            throws AuthHeaderNotBasicAuthException, NullRawAuthHeaderException {
+    private ServletRequest getRequestWithToken(ServletRequest request) {
         if (request instanceof HttpServletRequest) {
             HttpServletRequest httpRequest = (HttpServletRequest) request;
             String rawAuthHeader = httpRequest.getHeader(HttpHeaders.AUTHORIZATION);
             return getRequestWithTokenFromRawAuthHeader(rawAuthHeader, httpRequest);
         } else {
-            throw new AuthHeaderNotBasicAuthException("Request is not an HttpServletRequest.");
+            String message = "Request is not an HttpServletRequest.";
+            log.warn(message);
+            throw new IllegalArgumentException(message);
         }
     }
 
-    private ServletRequest getRequestWithTokenFromRawAuthHeader(String rawAuthHeader, HttpServletRequest request)
-            throws AuthHeaderNotBasicAuthException, NullRawAuthHeaderException {
-        if (rawAuthHeader == null) {
-            throw new NullRawAuthHeaderException("Raw auth header is null.");
-        } else if (isBasicAuth(rawAuthHeader)) {
+    private ServletRequest getRequestWithTokenFromRawAuthHeader(String rawAuthHeader, HttpServletRequest request) {
+        Preconditions.checkNotNull(rawAuthHeader);
+        if (isBasicAuth(rawAuthHeader)) {
             AuthHeader authHeader = base64DecodePassword(rawAuthHeader);
             return getRequestWithTokenFromAuthHeader(authHeader, request);
         } else {
-            throw new AuthHeaderNotBasicAuthException("Auth header is not basic auth.");
+            String message = "Auth header is not basic auth.";
+            log.warn(message);
+            throw new IllegalArgumentException(message);
         }
     }
 
@@ -118,15 +118,4 @@ public class BasicAuthToBearerTokenFilter implements Filter {
         return rawAuthHeader.contains(BASIC_AUTH_STR);
     }
 
-    static class NullRawAuthHeaderException extends Exception {
-        NullRawAuthHeaderException(String message) {
-            super(message);
-        }
-    }
-
-    static class AuthHeaderNotBasicAuthException extends Exception {
-        AuthHeaderNotBasicAuthException(String message) {
-            super(message);
-        }
-    }
 }
