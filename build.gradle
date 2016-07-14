@@ -29,6 +29,25 @@ allprojects {
     }
 
     version gitVersion()
+
+    if (System.env.CIRCLE_ARTIFACTS) {
+        task copyCiArtifactsToCircle {
+            outputs.upToDateWhen { false }
+            doLast {
+                [
+                        file("${projectDir}/contiperf-report"), // contiperf benchmark results
+                        file("${buildDir}/reports"), // jacoco, checkstyle, findbugs
+                        file("${buildDir}/docs/javadoc/"),
+                        file("${projectDir}/var/log") // docker container logs
+                ].each { src ->
+                    copy {
+                        from src
+                        into "${System.env.CIRCLE_ARTIFACTS}/${project.name}/${src.name}"
+                    }
+                }
+            }
+        }
+    }
 }
 
 subprojects {
