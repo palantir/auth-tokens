@@ -58,14 +58,14 @@ public class BasicAuthToBearerTokenFilterTest {
 
     @Test
     public final void testSimple() throws Exception {
-        final String password = "password";
+        String password = "password";
         setPassword(password);
         doFilter();
         assertRequestHasAuthHeader("Bearer " + password);
     }
 
     private void setPassword(String password) {
-        final String authHeader = "Basic " + base64Encode("foo:" + password);
+        String authHeader = "Basic " + base64Encode("foo:" + password);
         when(request.getHeader(HttpHeaders.AUTHORIZATION)).thenReturn(authHeader);
     }
 
@@ -75,8 +75,8 @@ public class BasicAuthToBearerTokenFilterTest {
 
     private void assertRequestHasAuthHeader(String expectedAuthHeader) throws IOException, ServletException {
         verify(chain).doFilter(requestArgumentCaptor.capture(), Mockito.<ServletResponse>any());
-        final HttpServletRequest value = requestArgumentCaptor.getValue();
-        final String actualAuthHeader = value.getHeader(HttpHeaders.AUTHORIZATION);
+        HttpServletRequest value = requestArgumentCaptor.getValue();
+        String actualAuthHeader = value.getHeader(HttpHeaders.AUTHORIZATION);
         MatcherAssert.assertThat(actualAuthHeader, Is.is(expectedAuthHeader));
     }
 

@@ -70,8 +70,8 @@ public class BasicAuthToBearerTokenFilter implements Filter {
     private ServletRequest getRequestWithToken(ServletRequest request)
             throws AuthHeaderNotBasicAuthException, NullRawAuthHeaderException {
         if (request instanceof HttpServletRequest) {
-            final HttpServletRequest httpRequest = (HttpServletRequest) request;
-            final String rawAuthHeader = httpRequest.getHeader(HttpHeaders.AUTHORIZATION);
+            HttpServletRequest httpRequest = (HttpServletRequest) request;
+            String rawAuthHeader = httpRequest.getHeader(HttpHeaders.AUTHORIZATION);
             return getRequestWithTokenFromRawAuthHeader(rawAuthHeader, httpRequest);
         } else {
             throw new AuthHeaderNotBasicAuthException("Request is not an HttpServletRequest.");
@@ -83,7 +83,7 @@ public class BasicAuthToBearerTokenFilter implements Filter {
         if (rawAuthHeader == null) {
             throw new NullRawAuthHeaderException("Raw auth header is null.");
         } else if (isBasicAuth(rawAuthHeader)) {
-            final AuthHeader authHeader = getAuthHeader(rawAuthHeader);
+            AuthHeader authHeader = getAuthHeader(rawAuthHeader);
             return getRequestWithTokenFromAuthHeader(authHeader, request);
         } else {
             throw new AuthHeaderNotBasicAuthException("Auth header is not basic auth.");
@@ -104,7 +104,7 @@ public class BasicAuthToBearerTokenFilter implements Filter {
     }
 
     private AuthHeader getAuthHeader(String rawAuthHeader) {
-        final String password = getPassword(rawAuthHeader);
+        String password = getPassword(rawAuthHeader);
         return AuthHeader.valueOf(password);
     }
 
