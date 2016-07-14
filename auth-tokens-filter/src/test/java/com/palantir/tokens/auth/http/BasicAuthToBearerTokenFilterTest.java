@@ -60,17 +60,13 @@ public class BasicAuthToBearerTokenFilterTest {
     public final void testSimple() throws Exception {
         String password = "password";
         setPassword(password);
-        doFilter();
+        tokenFilter.doFilter(request, null, chain);
         assertRequestHasAuthHeader("Bearer " + password);
     }
 
     private void setPassword(String password) {
         String authHeader = "Basic " + base64Encode("foo:" + password);
         when(request.getHeader(HttpHeaders.AUTHORIZATION)).thenReturn(authHeader);
-    }
-
-    private void doFilter() throws IOException, ServletException {
-        tokenFilter.doFilter(request, null, chain);
     }
 
     private void assertRequestHasAuthHeader(String expectedAuthHeader) throws IOException, ServletException {

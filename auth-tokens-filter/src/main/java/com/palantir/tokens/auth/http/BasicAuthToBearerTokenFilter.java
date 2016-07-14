@@ -51,14 +51,13 @@ public class BasicAuthToBearerTokenFilter implements Filter {
     @Override
     public final void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
-        ServletRequest updatedRequest;
+        ServletRequest updatedRequest = request;
         try {
             updatedRequest = getRequestWithToken(request);
         } catch (NullRawAuthHeaderException e) {
-            updatedRequest = request;
+            // do nothing
         } catch (AuthHeaderNotBasicAuthException e) {
             log.warn("AuthHeaderNotBasicAuthException", e);
-            updatedRequest = request;
         }
         chain.doFilter(updatedRequest, response);
     }
@@ -83,7 +82,7 @@ public class BasicAuthToBearerTokenFilter implements Filter {
         if (rawAuthHeader == null) {
             throw new NullRawAuthHeaderException("Raw auth header is null.");
         } else if (isBasicAuth(rawAuthHeader)) {
-            AuthHeader authHeader = getAuthHeader(rawAuthHeader);
+            AuthHeader authHeader = base64DecodePassword(rawAuthHeader);
             return getRequestWithTokenFromAuthHeader(authHeader, request);
         } else {
             throw new AuthHeaderNotBasicAuthException("Auth header is not basic auth.");
@@ -103,12 +102,7 @@ public class BasicAuthToBearerTokenFilter implements Filter {
         };
     }
 
-    private AuthHeader getAuthHeader(String rawAuthHeader) {
-        String password = getPassword(rawAuthHeader);
-        return AuthHeader.valueOf(password);
-    }
-
-    private String getPassword(String rawAuthHeader) {
+    private AuthHeader base64DecodePassword(String rawAuthHeader) {
         String base64Credentials = rawAuthHeader.substring(BASIC_AUTH_STR.length()).trim();
         String credentials;
         try {
@@ -116,7 +110,8 @@ public class BasicAuthToBearerTokenFilter implements Filter {
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("Could not decode credentials from auth header: " + e.getMessage());
         }
-        return credentials.split(":", 2)[1];
+        String password = credentials.split(":", 2)[1];
+        return AuthHeader.valueOf(password);
     }
 
     private boolean isBasicAuth(String rawAuthHeader) {
