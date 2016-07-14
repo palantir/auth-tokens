@@ -110,7 +110,14 @@ public class BasicAuthToBearerTokenFilter implements Filter {
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("Could not decode credentials from auth header: " + e.getMessage());
         }
-        String password = credentials.split(":", 2)[1];
+        String password;
+        try {
+            password = credentials.split(":", 2)[1];
+        } catch (IndexOutOfBoundsException e) {
+            String message = "Credentials lack colon character (:).";
+            log.warn(message);
+            throw new IllegalArgumentException(message);
+        }
         return AuthHeader.valueOf(password);
     }
 
