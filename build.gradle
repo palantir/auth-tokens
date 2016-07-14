@@ -35,10 +35,8 @@ allprojects {
             outputs.upToDateWhen { false }
             doLast {
                 [
-                        file("${projectDir}/contiperf-report"), // contiperf benchmark results
-                        file("${buildDir}/reports"), // jacoco, checkstyle, findbugs
-                        file("${buildDir}/docs/javadoc/"),
-                        file("${projectDir}/var/log") // docker container logs
+                        file("auth-tokens/build/reports"),
+                        file("auth-tokens-filter/build/reports")
                 ].each { src ->
                     copy {
                         from src
