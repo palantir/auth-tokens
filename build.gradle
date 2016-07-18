@@ -35,8 +35,7 @@ allprojects {
             outputs.upToDateWhen { false }
             doLast {
                 [
-                        file("auth-tokens/build/reports"),
-                        file("auth-tokens-filter/build/reports")
+                        file("${buildDir}")
                 ].each { src ->
                     copy {
                         from src
