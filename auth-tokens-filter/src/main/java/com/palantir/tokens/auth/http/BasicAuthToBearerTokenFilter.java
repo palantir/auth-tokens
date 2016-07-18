@@ -41,8 +41,9 @@ import org.slf4j.LoggerFactory;
  * base-64 encoded.
  */
 public class BasicAuthToBearerTokenFilter implements Filter {
-    private static final String BASIC_AUTH_STR = "Basic";
     private static final Logger log = LoggerFactory.getLogger(BasicAuthToBearerTokenFilter.class);
+
+    private static final String BASIC_AUTH_STR = "Basic";
     private static final BaseEncoding BASE_64_ENCODING = BaseEncoding.base64Url();
 
     @Override
