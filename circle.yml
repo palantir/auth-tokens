@@ -11,6 +11,9 @@ general:
 test:
   override:
     - ./gradlew build
+  post:
+    - ./gradlew --stacktrace --parallel copyCiArtifactsToCircle:
+        parallel: true
 
 deployment:
   releases:
