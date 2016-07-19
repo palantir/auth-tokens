@@ -71,14 +71,37 @@ public class BasicAuthToBearerTokenFilterTest {
         // servletRequestWrapper is not instanceof HttpServletRequest
         ServletRequestWrapper servletRequestWrapper = new ServletRequestWrapper(httpServletRequest);
         filter(servletRequestWrapper);
-        assertChainRequestIs(servletRequestWrapper);  // filtered request is unchanged
+        assertFilteredRequestIs(servletRequestWrapper);  // filtered request is unchanged
     }
 
     @Test
     public final void testNullAuthHeader() throws Exception {
-        when(httpServletRequest.getHeader(HttpHeaders.AUTHORIZATION)).thenReturn(null);
+        setAuthHeader(null);
         filter();
-        assertChainRequestIs(httpServletRequest);  // filtered request is unchanged
+        assertRequestUnchanged();
+    }
+
+    @Test
+    public final void testAuthHeaderNotBasicAuth() throws IOException, ServletException {
+        setAuthHeader("something unexpected");
+        filter();
+        assertRequestUnchanged();
+    }
+
+    @Test
+    public final void testCannotDecode() throws IOException, ServletException {
+        String encodedCreds = "not base-64 encoded";
+        setBasicAuthHeader(encodedCreds);
+        filter();
+        assertRequestUnchanged();
+    }
+
+    @Test
+    public final void testLacksColon() throws IOException, ServletException {
+        String credentials = "lacks-colon";
+        setCredentials(credentials);
+        filter();
+        assertRequestUnchanged();
     }
 
     private void filter() throws IOException, ServletException {
@@ -90,9 +113,21 @@ public class BasicAuthToBearerTokenFilterTest {
     }
 
     private void setPassword(String password) {
-        String creds = "foo:" + password;
-        String encodedCreds = BASE_64_ENCODING.encode(creds.getBytes(StandardCharsets.UTF_8));
+        String credentials = "foo:" + password;
+        setCredentials(credentials);
+    }
+
+    private void setCredentials(String credentials) {
+        String encodedCreds = BASE_64_ENCODING.encode(credentials.getBytes(StandardCharsets.UTF_8));
+        setBasicAuthHeader(encodedCreds);
+    }
+
+    private void setBasicAuthHeader(String encodedCreds) {
         String authHeader = "Basic " + encodedCreds;
+        setAuthHeader(authHeader);
+    }
+
+    private void setAuthHeader(String authHeader) {
         when(httpServletRequest.getHeader(HttpHeaders.AUTHORIZATION)).thenReturn(authHeader);
     }
 
@@ -102,7 +137,11 @@ public class BasicAuthToBearerTokenFilterTest {
         MatcherAssert.assertThat(actualAuthHeader, Is.is(expectedAuthHeader));
     }
 
-    private void assertChainRequestIs(ServletRequest request) throws IOException, ServletException {
+    private void assertRequestUnchanged() throws IOException, ServletException {
+        assertFilteredRequestIs(httpServletRequest);
+    }
+
+    private void assertFilteredRequestIs(ServletRequest request) throws IOException, ServletException {
         ServletRequest chainRequest = getChainRequest();
         MatcherAssert.assertThat(chainRequest, Is.is(request));
     }
