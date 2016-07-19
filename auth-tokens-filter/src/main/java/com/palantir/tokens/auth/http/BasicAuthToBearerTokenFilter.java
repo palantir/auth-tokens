@@ -16,6 +16,8 @@
 
 package com.palantir.tokens.auth.http;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 import com.google.common.base.Preconditions;
 import com.google.common.io.BaseEncoding;
 import com.google.common.net.HttpHeaders;
@@ -36,8 +38,8 @@ import org.slf4j.LoggerFactory;
 
 /**
  * A {@link Filter} that replaces basic auth with a bearer token.
- *
- * <p>It assumes that the bearer token is held in the password field of the basic auth credentials. It assumes that the
+ * <p>
+ * It assumes that the bearer token is held in the password field of the basic auth credentials. It assumes that the
  * bearer token is base-64 encoded.
  */
 public class BasicAuthToBearerTokenFilter implements Filter {
@@ -111,14 +113,8 @@ public class BasicAuthToBearerTokenFilter implements Filter {
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("Could not decode credentials from auth header: " + e.getMessage());
         }
-        String password;
-        try {
-            password = credentials.split(":", 2)[1];
-        } catch (IndexOutOfBoundsException e) {
-            String message = "Credentials lack colon character (:).";
-            log.warn(message);
-            throw new IllegalArgumentException(message);
-        }
+        checkArgument(credentials.contains(":"), "Credentials lack colon character (:).");
+        String password = credentials.split(":", 2)[1];
         return AuthHeader.valueOf(password);
     }
 

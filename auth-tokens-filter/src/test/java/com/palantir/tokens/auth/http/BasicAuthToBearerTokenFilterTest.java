@@ -25,6 +25,8 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletRequestWrapper;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import org.hamcrest.MatcherAssert;
@@ -42,7 +44,7 @@ public class BasicAuthToBearerTokenFilterTest {
     private static final BaseEncoding BASE_64_ENCODING = BaseEncoding.base64Url();
 
     @Mock
-    private HttpServletRequest request;
+    private HttpServletRequest httpServletRequest;
     @Mock
     private FilterChain chain;
     @Captor
@@ -57,25 +59,50 @@ public class BasicAuthToBearerTokenFilterTest {
     }
 
     @Test
-    public final void testSimple() throws Exception {
+    public final void testExpectedHeader() throws Exception {
         String password = "password";
         setPassword(password);
+        filter();
+        assertChainRequestHasAuthHeader("Bearer " + password);
+    }
+
+    @Test
+    public final void testNotInstanceOfHttpServletRequest() throws Exception {
+        // servletRequestWrapper is not instanceof HttpServletRequest
+        ServletRequestWrapper servletRequestWrapper = new ServletRequestWrapper(httpServletRequest);
+        filter(servletRequestWrapper);
+        assertChainRequestIs(servletRequestWrapper);  // filtered request is unchanged
+    }
+
+    private void filter() throws IOException, ServletException {
+        filter(httpServletRequest);
+    }
+
+    private void filter(ServletRequest request) throws IOException, ServletException {
         tokenFilter.doFilter(request, null, chain);
-        assertRequestHasAuthHeader("Bearer " + password);
     }
 
     private void setPassword(String password) {
         String creds = "foo:" + password;
         String encodedCreds = BASE_64_ENCODING.encode(creds.getBytes(StandardCharsets.UTF_8));
         String authHeader = "Basic " + encodedCreds;
-        when(request.getHeader(HttpHeaders.AUTHORIZATION)).thenReturn(authHeader);
+        when(httpServletRequest.getHeader(HttpHeaders.AUTHORIZATION)).thenReturn(authHeader);
     }
 
-    private void assertRequestHasAuthHeader(String expectedAuthHeader) throws IOException, ServletException {
-        verify(chain).doFilter(requestArgumentCaptor.capture(), Mockito.<ServletResponse>any());
-        HttpServletRequest value = requestArgumentCaptor.getValue();
+    private void assertChainRequestHasAuthHeader(String expectedAuthHeader) throws IOException, ServletException {
+        HttpServletRequest value = (HttpServletRequest) getChainRequest();
         String actualAuthHeader = value.getHeader(HttpHeaders.AUTHORIZATION);
         MatcherAssert.assertThat(actualAuthHeader, Is.is(expectedAuthHeader));
+    }
+
+    private void assertChainRequestIs(ServletRequest request) throws IOException, ServletException {
+        ServletRequest chainRequest = getChainRequest();
+        MatcherAssert.assertThat(chainRequest, Is.is(request));
+    }
+
+    private ServletRequest getChainRequest() throws IOException, ServletException {
+        verify(chain).doFilter(requestArgumentCaptor.capture(), Mockito.<ServletResponse>any());
+        return requestArgumentCaptor.getValue();
     }
 
 }
