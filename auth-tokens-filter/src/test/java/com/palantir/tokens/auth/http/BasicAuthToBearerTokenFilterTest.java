@@ -74,6 +74,13 @@ public class BasicAuthToBearerTokenFilterTest {
         assertChainRequestIs(servletRequestWrapper);  // filtered request is unchanged
     }
 
+    @Test
+    public final void testNullAuthHeader() throws Exception {
+        when(httpServletRequest.getHeader(HttpHeaders.AUTHORIZATION)).thenReturn(null);
+        filter();
+        assertChainRequestIs(httpServletRequest);  // filtered request is unchanged
+    }
+
     private void filter() throws IOException, ServletException {
         filter(httpServletRequest);
     }

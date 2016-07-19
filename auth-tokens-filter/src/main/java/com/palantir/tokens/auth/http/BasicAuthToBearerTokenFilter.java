@@ -81,7 +81,11 @@ public class BasicAuthToBearerTokenFilter implements Filter {
     }
 
     private ServletRequest getRequestWithTokenFromRawAuthHeader(String rawAuthHeader, HttpServletRequest request) {
-        Preconditions.checkNotNull(rawAuthHeader, "null rawAuthHeader");
+        try {
+            Preconditions.checkNotNull(rawAuthHeader, "null rawAuthHeader");
+        } catch (NullPointerException e) {
+            throw new IllegalArgumentException(e);
+        }
         if (isBasicAuth(rawAuthHeader)) {
             AuthHeader authHeader = base64DecodePassword(rawAuthHeader);
             return getRequestWithTokenFromAuthHeader(authHeader, request);
