@@ -79,17 +79,17 @@ public class BasicAuthToBearerTokenFilter implements Filter {
             try {
                 authHeader = base64DecodePassword(rawAuthHeader);
             } catch (IllegalArgumentException e) {
-                log.warn("IllegalArgumentException: " + e.getMessage());
+                log.warn("Could not decode password in basic auth header", e);
                 return request;
             }
-            return addBearerTokenIfBasicAuth(request, authHeader);
+            return addBearerToken(request, authHeader);
         } else {
             log.warn("Auth header is not basic auth.");
             return request;
         }
     }
 
-    private ServletRequest addBearerTokenIfBasicAuth(HttpServletRequest request, final AuthHeader authHeader) {
+    private ServletRequest addBearerToken(HttpServletRequest request, final AuthHeader authHeader) {
         return new HttpServletRequestWrapper(request) {
             @Override
             public String getHeader(String name) {
