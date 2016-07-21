@@ -29,6 +29,22 @@ allprojects {
     }
 
     version gitVersion()
+
+    if (System.env.CIRCLE_ARTIFACTS) {
+        task copyCiArtifactsToCircle {
+            outputs.upToDateWhen { false }
+            doLast {
+                [
+                        file("${buildDir}")
+                ].each { src ->
+                    copy {
+                        from src
+                        into "${System.env.CIRCLE_ARTIFACTS}/${project.name}/${src.name}"
+                    }
+                }
+            }
+        }
+    }
 }
 
 subprojects {
