@@ -40,4 +40,8 @@ subprojects {
     apply plugin: 'org.inferred.processors'
 
     sourceCompatibility = 1.7
+
+    if (System.env.CIRCLE_TEST_REPORTS) {
+        test.reports.junitXml.destination = new File(System.env.CIRCLE_TEST_REPORTS, it.getName())
+    }
 }
