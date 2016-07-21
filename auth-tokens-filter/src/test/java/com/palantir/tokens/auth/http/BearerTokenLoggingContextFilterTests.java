@@ -19,7 +19,9 @@ package com.palantir.tokens.auth.http;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
@@ -42,10 +44,9 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.glassfish.jersey.client.JerseyClientBuilder;
 import org.junit.Before;
-import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -72,28 +73,41 @@ public final class BearerTokenLoggingContextFilterTests {
         resourceLog.addAppender(mockResourceAppender);
     }
 
-    @ClassRule
-    public static final DropwizardAppRule<TestConfiguration> APP = new DropwizardAppRule<>(TestApp.class,
+    @Rule
+    public final DropwizardAppRule<TestConfiguration> app = new DropwizardAppRule<>(TestApp.class,
             "src/test/resources/test-service.yml");
 
     @Test
-    public void testBearerTokenLogging() {
+    public void testBearerTokenLogging_userIdAppearsInMetaDataContext() {
         ArgumentCaptor<ILoggingEvent> resourceEvent = ArgumentCaptor.forClass(ILoggingEvent.class);
-        ArgumentCaptor<ILoggingEvent> requestEvent = ArgumentCaptor.forClass(ILoggingEvent.class);
 
         Client client = JerseyClientBuilder.newClient();
 
-        Response resp = client.target("http://localhost:" + APP.getLocalPort())
+        Response resp = client.target("http://localhost:" + app.getLocalPort())
                 .path("ping")
                 .request()
                 .header(HttpHeaders.AUTHORIZATION, AUTH_HEADER)
                 .get();
         assertThat(resp.getStatus(), is(200));
 
-        Mockito.verify(mockResourceAppender).doAppend(resourceEvent.capture());
+        verify(mockResourceAppender).doAppend(resourceEvent.capture());
         assertThat(resourceEvent.getValue().getMDCPropertyMap().get("userId"), is(USER_ID));
+    }
 
-        Mockito.verify(MockAppenderFactory.MOCK_REQUEST_APPENDER).doAppend(requestEvent.capture());
+    @Test
+    public void testBearerTokenLogging_userIdAppearsInrequestLog() {
+        ArgumentCaptor<ILoggingEvent> requestEvent = ArgumentCaptor.forClass(ILoggingEvent.class);
+
+        Client client = JerseyClientBuilder.newClient();
+
+        Response resp = client.target("http://localhost:" + app.getLocalPort())
+                .path("ping")
+                .request()
+                .header(HttpHeaders.AUTHORIZATION, AUTH_HEADER)
+                .get();
+        assertThat(resp.getStatus(), is(200));
+
+        verify(MockAppenderFactory.MOCK_REQUEST_APPENDER, atLeastOnce()).doAppend(requestEvent.capture());
         assertThat(requestEvent.getValue().getFormattedMessage(), containsString(USER_ID));
         assertThat(requestEvent.getValue().getMDCPropertyMap().get("userId"), is(USER_ID));
     }
