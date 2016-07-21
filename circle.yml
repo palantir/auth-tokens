@@ -7,10 +7,15 @@ machine:
 general:
   artifacts:
     - auth-tokens/build/libs
+    - auth-tokens-filter/build/libs
+
+dependencies:
+  override:
+    - ./gradlew --parallel resolveConfigurations
 
 test:
   override:
-    - ./gradlew build
+    - ./gradlew --parallel build
 
 deployment:
   releases:
