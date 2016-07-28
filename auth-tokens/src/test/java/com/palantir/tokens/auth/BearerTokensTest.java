@@ -74,8 +74,7 @@ public final class BearerTokensTest {
         String token = "Bearer apiToken";
         File file = writeTokenToFile(token);
 
-        expectedException.expectMessage("BearerToken must match pattern "
-                + "^[A-Za-z0-9\\-\\._~\\+/]+=*$: Bearer apiToken");
+        expectedException.expectMessage("BearerToken must match pattern ^[A-Za-z0-9\\-\\._~\\+/]+=*$");
         expectedException.expect(IllegalArgumentException.class);
         BearerTokens.fromPath(file.toPath());
     }

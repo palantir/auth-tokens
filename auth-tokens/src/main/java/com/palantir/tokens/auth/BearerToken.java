@@ -21,6 +21,8 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import com.google.common.base.Preconditions;
 import java.util.regex.Pattern;
 import org.immutables.value.Value;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Value class representing an authentication bearer token.
@@ -28,6 +30,8 @@ import org.immutables.value.Value;
 @Value.Immutable
 @Value.Style(visibility = Value.Style.ImplementationVisibility.PACKAGE, jdkOnly = true)
 public abstract class BearerToken {
+
+    private static final Logger log = LoggerFactory.getLogger(BearerToken.class);
 
     private static final String VALIDATION_PATTERN_STRING = "^[A-Za-z0-9\\-\\._~\\+/]+=*$";
     private static final Pattern VALIDATION_PATTERN = Pattern.compile(VALIDATION_PATTERN_STRING);
@@ -40,8 +44,10 @@ public abstract class BearerToken {
     public static BearerToken valueOf(String token) {
         Preconditions.checkArgument(token != null, "BearerToken cannot be null");
         Preconditions.checkArgument(!token.isEmpty(), "BearerToken cannot be empty");
-        Preconditions.checkArgument(VALIDATION_PATTERN.matcher(token).matches(),
-                "BearerToken must match pattern " + VALIDATION_PATTERN_STRING + ": " + token);
+        if (!VALIDATION_PATTERN.matcher(token).matches()) {
+            log.trace("Error parsing BearerToken, must match pattern {}: {}", VALIDATION_PATTERN_STRING, token);
+            throw new IllegalArgumentException("BearerToken must match pattern " + VALIDATION_PATTERN_STRING);
+        }
         return ImmutableBearerToken.of(token);
     }
 

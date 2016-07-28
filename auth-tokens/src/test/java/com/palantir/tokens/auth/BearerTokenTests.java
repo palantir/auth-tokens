@@ -65,8 +65,7 @@ public final class BearerTokenTests {
                 BearerToken.valueOf(invalidToken);
                 fail();
             } catch (IllegalArgumentException e) {
-                assertThat(e.getMessage(), is("BearerToken must match pattern "
-                        + "^[A-Za-z0-9\\-\\._~\\+/]+=*$: " + invalidToken));
+                assertThat(e.getMessage(), is("BearerToken must match pattern ^[A-Za-z0-9\\-\\._~\\+/]+=*$"));
             }
         }
     }
