@@ -84,7 +84,7 @@ public class BasicAuthToBearerTokenFilter implements Filter {
             }
             return addBearerToken(request, authHeader);
         } else {
-            log.warn("Auth header is not basic auth.");
+            log.debug("Auth header is not basic auth.");
             return request;
         }
     }
