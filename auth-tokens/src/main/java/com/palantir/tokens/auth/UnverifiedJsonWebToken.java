@@ -20,6 +20,8 @@ import static com.google.common.base.Preconditions.checkArgument;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.guava.GuavaModule;
+import com.google.common.base.Function;
+import com.google.common.base.Optional;
 import com.google.common.io.BaseEncoding;
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -43,11 +45,25 @@ public abstract class UnverifiedJsonWebToken {
     private static final ObjectMapper MAPPER = new ObjectMapper()
             .registerModule(new GuavaModule());
 
+    private static final Function<byte[], String> DECODE_UUID_BYTES = new Function<byte[], String>() {
+        @Override
+        public String apply(byte[] input) {
+            return decodeUuidBytes(input);
+        }
+    };
+
     /**
      * Returns the unverified user id, i.e., the "sub" (subject) field of the JWT.
      */
     @Value.Parameter
     public abstract String getUnverifiedUserId();
+
+    /**
+     * Returns the unverified session id for this token, i.e. the "sid" field of the JWT
+     * or absent if this token does not contain session information.
+     */
+    @Value.Parameter
+    public abstract Optional<String> getUnverifiedSessionId();
 
     /**
      * Attempts to create an {@link UnverifiedJsonWebToken} from provided {@link BearerToken}.
@@ -64,7 +80,9 @@ public abstract class UnverifiedJsonWebToken {
 
         JsonWebTokenPayload payload = extractPayload(segments[1]);
 
-        return ImmutableUnverifiedJsonWebToken.of(decodeUuidBytes(payload.getSub()));
+        return ImmutableUnverifiedJsonWebToken.of(
+                decodeUuidBytes(payload.getSub()),
+                payload.getSid().transform(DECODE_UUID_BYTES));
     }
 
     private static JsonWebTokenPayload extractPayload(String payload) {

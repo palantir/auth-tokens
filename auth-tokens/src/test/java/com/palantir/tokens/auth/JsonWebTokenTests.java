@@ -19,6 +19,7 @@ package com.palantir.tokens.auth;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+import com.google.common.base.Optional;
 import org.junit.Test;
 
 public final class JsonWebTokenTests {
@@ -39,15 +40,20 @@ public final class JsonWebTokenTests {
             + "hBUerwGsc4FFPIujHJ-7ncGe3-zZQcdPOuRZ8B84nzPNYjlyPmB8VLizsvR23CK3KQUEAlQ2AN_9a5p5_WgPAQ");
 
     private static final String USERID = "c393f659-0301-434e-a9c9-72304a507ffc";
+    private static final String SESSION_ID = "3fc663d4-3e48-4ded-ba4e-d78af98b8363";
 
     @Test
     public void testAsJwt_validJwtFromSessionToken() {
-        assertEquals(USERID, UnverifiedJsonWebToken.of(SESSION_TOKEN).getUnverifiedUserId());
+        UnverifiedJsonWebToken token = UnverifiedJsonWebToken.of(SESSION_TOKEN);
+        assertEquals(USERID, token.getUnverifiedUserId());
+        assertEquals(Optional.of(SESSION_ID), token.getUnverifiedSessionId());
     }
 
     @Test
     public void testAsJwt_validJwtFromApiToken() {
-        assertEquals(USERID, UnverifiedJsonWebToken.of(API_TOKEN).getUnverifiedUserId());
+        UnverifiedJsonWebToken token = UnverifiedJsonWebToken.of(API_TOKEN);
+        assertEquals(USERID, token.getUnverifiedUserId());
+        assertEquals(Optional.absent(), token.getUnverifiedSessionId());
     }
 
     @Test
