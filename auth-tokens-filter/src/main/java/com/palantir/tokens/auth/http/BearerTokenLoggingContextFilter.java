@@ -21,7 +21,6 @@ import com.palantir.tokens.auth.AuthHeader;
 import com.palantir.tokens.auth.UnverifiedJsonWebToken;
 import java.io.IOException;
 import java.security.Principal;
-import java.util.Enumeration;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -53,14 +52,9 @@ public final class BearerTokenLoggingContextFilter implements Filter {
         if (request instanceof HttpServletRequest) {
             HttpServletRequest httpRequest = (HttpServletRequest) request;
 
-            String rawAuthHeader = null;
-            Enumeration<String> headerKeys = httpRequest.getHeaderNames();
-            while (headerKeys.hasMoreElements()) {
-                String headerKey = headerKeys.nextElement();
-                if (headerKey.equalsIgnoreCase(HttpHeaders.AUTHORIZATION)) {
-                    rawAuthHeader = httpRequest.getHeader(headerKey);
-                    break;
-                }
+            String rawAuthHeader = httpRequest.getHeader(HttpHeaders.AUTHORIZATION);
+            if (rawAuthHeader == null) {
+                rawAuthHeader = httpRequest.getHeader(HttpHeaders.AUTHORIZATION.toLowerCase());
             }
 
             if (rawAuthHeader != null) {
