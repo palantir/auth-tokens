@@ -112,6 +112,23 @@ public final class BearerTokenLoggingContextFilterTests {
         assertThat(requestEvent.getValue().getMDCPropertyMap().get("userId"), is(USER_ID));
     }
 
+    @Test
+    public void testBearerTokenLogging_caseInsensitiveHeaderKeys() {
+        ArgumentCaptor<ILoggingEvent> requestEvent = ArgumentCaptor.forClass(ILoggingEvent.class);
+
+        Client client = JerseyClientBuilder.newClient();
+
+        Response resp = client.target("http://localhost:" + app.getLocalPort())
+                .path("ping")
+                .request()
+                .header(HttpHeaders.AUTHORIZATION.toLowerCase(), AUTH_HEADER)
+                .get();
+        assertThat(resp.getStatus(), is(200));
+
+        verify(MockAppenderFactory.MOCK_REQUEST_APPENDER, atLeastOnce()).doAppend(requestEvent.capture());
+        assertThat(requestEvent.getValue().getFormattedMessage(), containsString(USER_ID));
+        assertThat(requestEvent.getValue().getMDCPropertyMap().get("userId"), is(USER_ID));
+    }
 
     public static final class TestApp extends Application<TestConfiguration> {
         @Override
