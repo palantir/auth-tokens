@@ -59,6 +59,7 @@ public final class BearerTokenLoggingContextFilter implements Filter {
                 String headerKey = headerKeys.nextElement();
                 if (headerKey.equalsIgnoreCase(HttpHeaders.AUTHORIZATION)) {
                     rawAuthHeader = httpRequest.getHeader(headerKey);
+                    break;
                 }
             }
 
