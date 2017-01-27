@@ -51,7 +51,12 @@ public final class BearerTokenLoggingContextFilter implements Filter {
             throws IOException, ServletException {
         if (request instanceof HttpServletRequest) {
             HttpServletRequest httpRequest = (HttpServletRequest) request;
+
             String rawAuthHeader = httpRequest.getHeader(HttpHeaders.AUTHORIZATION);
+            if (rawAuthHeader == null) {
+                rawAuthHeader = httpRequest.getHeader(HttpHeaders.AUTHORIZATION.toLowerCase());
+            }
+
             if (rawAuthHeader != null) {
                 try {
                     UnverifiedJsonWebToken jwt = UnverifiedJsonWebToken.of(
