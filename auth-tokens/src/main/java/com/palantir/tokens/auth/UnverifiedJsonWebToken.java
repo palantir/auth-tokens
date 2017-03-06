@@ -66,6 +66,13 @@ public abstract class UnverifiedJsonWebToken {
     public abstract Optional<String> getUnverifiedSessionId();
 
     /**
+     * Returns the unverified token id for this token, i.e. the "jti" field of the JWT
+     * or absent if this token does not use the "jti" field as a unique identifier.
+     */
+    @Value.Parameter
+    public abstract Optional<String> getUnverifiedTokenId();
+
+    /**
      * Attempts to create an {@link UnverifiedJsonWebToken} from provided {@link BearerToken}.
      * <p>
      * The information provided by this class should not be used for any security-sensitive
@@ -82,7 +89,8 @@ public abstract class UnverifiedJsonWebToken {
 
         return ImmutableUnverifiedJsonWebToken.of(
                 decodeUuidBytes(payload.getSub()),
-                payload.getSid().transform(DECODE_UUID_BYTES));
+                payload.getSid().transform(DECODE_UUID_BYTES),
+                payload.getJti().transform(DECODE_UUID_BYTES));
     }
 
     private static JsonWebTokenPayload extractPayload(String payload) {
@@ -105,5 +113,4 @@ public abstract class UnverifiedJsonWebToken {
         long low = byteBuffer.getLong();
         return new UUID(high, low).toString();
     }
-
 }

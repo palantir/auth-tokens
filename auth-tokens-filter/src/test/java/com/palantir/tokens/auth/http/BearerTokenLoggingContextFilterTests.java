@@ -53,11 +53,20 @@ import org.slf4j.LoggerFactory;
 public final class BearerTokenLoggingContextFilterTests {
 
     private static final String USER_ID = "c393f659-0301-434e-a9c9-72304a507ffc";
+    private static final String TOKEN_ID = "a459b4a1-5089-4fe0-8655-d5dfd9b2b7fd";
 
-    private static final String AUTH_HEADER = "Bearer "
+    private static final String AUTH_HEADER_WITH_API_TOKEN = "Bearer "
             + "unused."
             + BaseEncoding.base64Url().omitPadding().encode(
-                    "{\"sub\": \"w5P2WQMBQ06pyXIwSlB//A==\"}".getBytes(StandardCharsets.UTF_8))
+                    "{\"sub\": \"w5P2WQMBQ06pyXIwSlB//A==\", \"jti\": \"pFm0oVCJT+CGVdXf2bK3/Q==\" }"
+                            .getBytes(StandardCharsets.UTF_8))
+            + ".unused";
+
+    private static final String AUTH_HEADER_WITH_SESSION_TOKEN = "Bearer "
+            + "unused."
+            + BaseEncoding.base64Url().omitPadding().encode(
+                    "{\"sub\": \"w5P2WQMBQ06pyXIwSlB//A==\", \"sid\": \"pFm0oVCJT+CGVdXf2bK3/Q==\"}"
+                            .getBytes(StandardCharsets.UTF_8))
             + ".unused";
 
     private Appender<ILoggingEvent> mockResourceAppender;
@@ -86,7 +95,7 @@ public final class BearerTokenLoggingContextFilterTests {
         Response resp = client.target("http://localhost:" + app.getLocalPort())
                 .path("ping")
                 .request()
-                .header(HttpHeaders.AUTHORIZATION, AUTH_HEADER)
+                .header(HttpHeaders.AUTHORIZATION, AUTH_HEADER_WITH_SESSION_TOKEN)
                 .get();
         assertThat(resp.getStatus(), is(200));
 
@@ -95,7 +104,7 @@ public final class BearerTokenLoggingContextFilterTests {
     }
 
     @Test
-    public void testBearerTokenLogging_userIdAppearsInrequestLog() {
+    public void testBearerTokenLogging_sessionIdAppearsInMetaDataContext() {
         ArgumentCaptor<ILoggingEvent> requestEvent = ArgumentCaptor.forClass(ILoggingEvent.class);
 
         Client client = JerseyClientBuilder.newClient();
@@ -103,7 +112,41 @@ public final class BearerTokenLoggingContextFilterTests {
         Response resp = client.target("http://localhost:" + app.getLocalPort())
                 .path("ping")
                 .request()
-                .header(HttpHeaders.AUTHORIZATION, AUTH_HEADER)
+                .header(HttpHeaders.AUTHORIZATION, AUTH_HEADER_WITH_SESSION_TOKEN)
+                .get();
+        assertThat(resp.getStatus(), is(200));
+
+        verify(MockAppenderFactory.MOCK_REQUEST_APPENDER, atLeastOnce()).doAppend(requestEvent.capture());
+        assertThat(requestEvent.getValue().getMDCPropertyMap().get("sessionId"), is(TOKEN_ID));
+    }
+
+    @Test
+    public void testBearerTokenLogging_tokenIdAppearsInMetadataContext() {
+        ArgumentCaptor<ILoggingEvent> requestEvent = ArgumentCaptor.forClass(ILoggingEvent.class);
+
+        Client client = JerseyClientBuilder.newClient();
+
+        Response resp = client.target("http://localhost:" + app.getLocalPort())
+                .path("ping")
+                .request()
+                .header(HttpHeaders.AUTHORIZATION, AUTH_HEADER_WITH_API_TOKEN)
+                .get();
+        assertThat(resp.getStatus(), is(200));
+
+        verify(MockAppenderFactory.MOCK_REQUEST_APPENDER, atLeastOnce()).doAppend(requestEvent.capture());
+        assertThat(requestEvent.getValue().getMDCPropertyMap().get("tokenId"), is(TOKEN_ID));
+    }
+
+    @Test
+    public void testBearerTokenLogging_userIdAppearsInRequestLog() {
+        ArgumentCaptor<ILoggingEvent> requestEvent = ArgumentCaptor.forClass(ILoggingEvent.class);
+
+        Client client = JerseyClientBuilder.newClient();
+
+        Response resp = client.target("http://localhost:" + app.getLocalPort())
+                .path("ping")
+                .request()
+                .header(HttpHeaders.AUTHORIZATION, AUTH_HEADER_WITH_SESSION_TOKEN)
                 .get();
         assertThat(resp.getStatus(), is(200));
 
@@ -121,7 +164,7 @@ public final class BearerTokenLoggingContextFilterTests {
         Response resp = client.target("http://localhost:" + app.getLocalPort())
                 .path("ping")
                 .request()
-                .header(HttpHeaders.AUTHORIZATION.toLowerCase(), AUTH_HEADER)
+                .header(HttpHeaders.AUTHORIZATION.toLowerCase(), AUTH_HEADER_WITH_SESSION_TOKEN)
                 .get();
         assertThat(resp.getStatus(), is(200));
 

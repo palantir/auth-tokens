@@ -65,9 +65,18 @@ public final class BearerTokenLoggingContextFilter implements Filter {
                     // slf4j
                     MDC.put("userId", jwt.getUnverifiedUserId());
 
+                    if (jwt.getUnverifiedSessionId().isPresent()) {
+                        MDC.put("sessionId", jwt.getUnverifiedSessionId().get());
+                    }
+
+                    if (jwt.getUnverifiedTokenId().isPresent()) {
+                        MDC.put("tokenId", jwt.getUnverifiedTokenId().get());
+                    }
+
                     // Jetty
                     if (request instanceof org.eclipse.jetty.server.Request) {
                         Request jettyRequest = (org.eclipse.jetty.server.Request) request;
+
 
                         UserIdentity userIdentity = new DefaultUserIdentity(null,
                                 new UsernamePrincipal(jwt.getUnverifiedUserId()), new String[0]);
@@ -98,5 +107,4 @@ public final class BearerTokenLoggingContextFilter implements Filter {
             return userId;
         }
     }
-
 }
