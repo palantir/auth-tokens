@@ -66,17 +66,16 @@ public final class BearerTokenLoggingContextFilter implements Filter {
                     MDC.put("userId", jwt.getUnverifiedUserId());
 
                     if (jwt.getUnverifiedSessionId().isPresent()) {
-                        MDC.put("sessionId", jwt.getUnverifiedSessionId().get());
+                        MDC.put("unverifiedSessionId", jwt.getUnverifiedSessionId().get());
                     }
 
                     if (jwt.getUnverifiedTokenId().isPresent()) {
-                        MDC.put("tokenId", jwt.getUnverifiedTokenId().get());
+                        MDC.put("unverifiedTokenId", jwt.getUnverifiedTokenId().get());
                     }
 
                     // Jetty
                     if (request instanceof org.eclipse.jetty.server.Request) {
                         Request jettyRequest = (org.eclipse.jetty.server.Request) request;
-
 
                         UserIdentity userIdentity = new DefaultUserIdentity(null,
                                 new UsernamePrincipal(jwt.getUnverifiedUserId()), new String[0]);

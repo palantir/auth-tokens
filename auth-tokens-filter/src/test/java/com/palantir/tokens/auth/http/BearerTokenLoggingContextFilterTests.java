@@ -117,7 +117,7 @@ public final class BearerTokenLoggingContextFilterTests {
         assertThat(resp.getStatus(), is(200));
 
         verify(MockAppenderFactory.MOCK_REQUEST_APPENDER, atLeastOnce()).doAppend(requestEvent.capture());
-        assertThat(requestEvent.getValue().getMDCPropertyMap().get("sessionId"), is(TOKEN_ID));
+        assertThat(requestEvent.getValue().getMDCPropertyMap().get("unverifiedSessionId"), is(TOKEN_ID));
     }
 
     @Test
@@ -134,7 +134,7 @@ public final class BearerTokenLoggingContextFilterTests {
         assertThat(resp.getStatus(), is(200));
 
         verify(MockAppenderFactory.MOCK_REQUEST_APPENDER, atLeastOnce()).doAppend(requestEvent.capture());
-        assertThat(requestEvent.getValue().getMDCPropertyMap().get("tokenId"), is(TOKEN_ID));
+        assertThat(requestEvent.getValue().getMDCPropertyMap().get("unverifiedTokenId"), is(TOKEN_ID));
     }
 
     @Test
