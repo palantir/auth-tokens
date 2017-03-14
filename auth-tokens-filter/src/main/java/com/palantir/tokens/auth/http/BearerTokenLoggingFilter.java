@@ -40,7 +40,7 @@ public class BearerTokenLoggingFilter implements ContainerRequestFilter {
     public final void filter(ContainerRequestContext requestContext) {
         clearContext(requestContext);
 
-        String rawAuthHeader = getRawAuthHeader(requestContext);
+        String rawAuthHeader = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
         if (rawAuthHeader == null) {
             log.debug("No AuthHeader present on request.");
             return;
@@ -66,13 +66,6 @@ public class BearerTokenLoggingFilter implements ContainerRequestFilter {
         }
     }
 
-    private String getRawAuthHeader(ContainerRequestContext requestContext) {
-        String rawAuthHeader = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
-        return rawAuthHeader != null
-                ? rawAuthHeader
-                : requestContext.getHeaderString(HttpHeaders.AUTHORIZATION.toLowerCase());
-    }
-
     private void clearContext(ContainerRequestContext requestContext) {
         clearContext(requestContext, USER_ID_KEY);
         clearContext(requestContext, SESSION_ID_KEY);
@@ -86,12 +79,8 @@ public class BearerTokenLoggingFilter implements ContainerRequestFilter {
 
     private void setUnverifiedContext(ContainerRequestContext requestContext, String key, String value) {
         // * indicates unverified
-        setContext(requestContext, key, value + "*");
-    }
-
-    private void setContext(ContainerRequestContext requestContext, String key, String value) {
-        MDC.put(key, value);
-        requestContext.setProperty(getRequestPropertyKey(key), value);
+        MDC.put(key, value + "*");
+        requestContext.setProperty(getRequestPropertyKey(key), value + "*");
     }
 
     public static String getRequestPropertyKey(String key) {
