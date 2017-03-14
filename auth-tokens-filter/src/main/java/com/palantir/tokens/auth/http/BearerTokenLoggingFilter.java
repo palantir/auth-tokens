@@ -20,7 +20,6 @@ import com.google.common.base.Optional;
 import com.google.common.net.HttpHeaders;
 import com.palantir.tokens.auth.AuthHeader;
 import com.palantir.tokens.auth.UnverifiedJsonWebToken;
-import java.io.IOException;
 import javax.annotation.Priority;
 import javax.ws.rs.Priorities;
 import javax.ws.rs.container.ContainerRequestContext;
@@ -32,12 +31,13 @@ import org.slf4j.MDC;
 @Priority(Priorities.AUTHORIZATION)
 public class BearerTokenLoggingFilter implements ContainerRequestFilter {
     private static final Logger log = LoggerFactory.getLogger(BearerTokenLoggingFilter.class);
-    private static final String USER_ID_KEY = "userId";
-    private static final String SESSION_ID_KEY = "sessionId";
-    private static final String TOKEN_ID_KEY = "tokenId";
+
+    public static final String USER_ID_KEY = "userId";
+    public static final String SESSION_ID_KEY = "sessionId";
+    public static final String TOKEN_ID_KEY = "tokenId";
 
     @Override
-    public void filter(ContainerRequestContext requestContext) throws IOException {
+    public final void filter(ContainerRequestContext requestContext) {
         clearContext(requestContext);
 
         String rawAuthHeader = getRawAuthHeader(requestContext);
@@ -55,6 +55,11 @@ public class BearerTokenLoggingFilter implements ContainerRequestFilter {
             Optional<String> maybeUnverifiedSessionId = jwt.getUnverifiedSessionId();
             if (maybeUnverifiedSessionId.isPresent()) {
                 setUnverifiedContext(requestContext, SESSION_ID_KEY, maybeUnverifiedSessionId.get());
+            }
+
+            Optional<String> maybeUnverifiedTokenId = jwt.getUnverifiedTokenId();
+            if (maybeUnverifiedTokenId.isPresent()) {
+                setUnverifiedContext(requestContext, TOKEN_ID_KEY, maybeUnverifiedTokenId.get());
             }
         } catch (Throwable t) {
             log.debug("Unable to process auth header.", t);
@@ -89,7 +94,7 @@ public class BearerTokenLoggingFilter implements ContainerRequestFilter {
         requestContext.setProperty(getRequestPropertyKey(key), value);
     }
 
-    private String getRequestPropertyKey(String key) {
+    public static String getRequestPropertyKey(String key) {
         return "com.palantir.tokens.auth." + key;
     }
 }
