@@ -97,14 +97,14 @@ public class BearerTokenLoggingFilterTest {
     }
 
     @Test
-    public final void contextClearedIfNoAuthHeaderProvided() {
-        assertThatContextIsCleared();
+    public final void mdcClearedIfNoAuthHeaderProvided() {
+        assertThatMdcIsCleared();
     }
 
     @Test
-    public final void contextClearedIfInvalidAuthHeaderProvided() {
+    public final void mdcClearedIfInvalidAuthHeaderProvided() {
         when(requestContext.getHeaderString(HttpHeaders.AUTHORIZATION)).thenReturn("BOGUS");
-        assertThatContextIsCleared();
+        assertThatMdcIsCleared();
     }
 
     @Test
@@ -137,22 +137,16 @@ public class BearerTokenLoggingFilterTest {
                 .isEqualTo(TOKEN_ID + "*");
     }
 
-    private void assertThatContextIsCleared() {
+    private void assertThatMdcIsCleared() {
         MDC.put(USER_ID_KEY, "uid");
         MDC.put(SESSION_ID_KEY, "sid");
         MDC.put(TOKEN_ID_KEY, "tid");
-        requestProperties.put(BearerTokenLoggingFilter.getRequestPropertyKey(USER_ID_KEY), "uid");
-        requestProperties.put(BearerTokenLoggingFilter.getRequestPropertyKey(SESSION_ID_KEY), "sid");
-        requestProperties.put(BearerTokenLoggingFilter.getRequestPropertyKey(TOKEN_ID_KEY), "tid");
 
         filter.filter(requestContext);
 
         assertThat(MDC.get(USER_ID_KEY)).isNull();
         assertThat(MDC.get(SESSION_ID_KEY)).isNull();
         assertThat(MDC.get(TOKEN_ID_KEY)).isNull();
-        assertThat(requestContext.getProperty(BearerTokenLoggingFilter.getRequestPropertyKey(USER_ID_KEY))).isNull();
-        assertThat(requestContext.getProperty(BearerTokenLoggingFilter.getRequestPropertyKey(SESSION_ID_KEY))).isNull();
-        assertThat(requestContext.getProperty(BearerTokenLoggingFilter.getRequestPropertyKey(TOKEN_ID_KEY))).isNull();
     }
 
     private static String encodeUuid(String uuidString) {

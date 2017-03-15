@@ -38,7 +38,7 @@ public class BearerTokenLoggingFilter implements ContainerRequestFilter {
 
     @Override
     public final void filter(ContainerRequestContext requestContext) {
-        clearContext(requestContext);
+        clearMdc();
 
         String rawAuthHeader = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
         if (rawAuthHeader == null) {
@@ -66,15 +66,10 @@ public class BearerTokenLoggingFilter implements ContainerRequestFilter {
         }
     }
 
-    private void clearContext(ContainerRequestContext requestContext) {
-        clearContext(requestContext, USER_ID_KEY);
-        clearContext(requestContext, SESSION_ID_KEY);
-        clearContext(requestContext, TOKEN_ID_KEY);
-    }
-
-    private void clearContext(ContainerRequestContext requestContext, String key) {
-        MDC.remove(key);
-        requestContext.removeProperty(getRequestPropertyKey(key));
+    private void clearMdc() {
+        MDC.remove(USER_ID_KEY);
+        MDC.remove(SESSION_ID_KEY);
+        MDC.remove(TOKEN_ID_KEY);
     }
 
     private void setUnverifiedContext(ContainerRequestContext requestContext, String key, String value) {
