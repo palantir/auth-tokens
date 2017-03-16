@@ -38,7 +38,10 @@ import org.slf4j.MDC;
 
 /**
  * A {@link Filter} that inserts user information into slf4j logging context and standard HTTP request logging context.
+ *
+ * @deprecated Consider using {@link BearerTokenLoggingFilter} instead
  */
+@Deprecated
 public final class BearerTokenLoggingContextFilter implements Filter {
 
     private static final Logger log = LoggerFactory.getLogger(BearerTokenLoggingContextFilter.class);
