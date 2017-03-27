@@ -2,8 +2,8 @@ apply from: "${rootDir}/gradle/publish.gradle"
 
 dependencies {
     api "javax.servlet:javax.servlet-api:${servletApi}"
+    api project(':auth-tokens')
 
-    implementation project(':auth-tokens')
     implementation "javax.annotation:javax.annotation-api:${javaxAnnotationApi}"
     implementation "javax.ws.rs:javax.ws.rs-api:${jaxrsApi}"
     implementation "org.eclipse.jetty:jetty-security:${jettyVersion}"
