@@ -22,7 +22,7 @@ import org.immutables.value.Value;
  * Represents a HTTP authentication header. This class wraps a string in the form of "Bearer [token]".
  */
 @Value.Immutable
-@Value.Style(visibility = Value.Style.ImplementationVisibility.PACKAGE, jdkOnly = true)
+@ImmutablesStyle
 // NOTE: no @JsonSerialize/@JsonDeserialize because auth headers are for use in @HeaderParam
 // see: https://jersey.java.net/apidocs/latest/jersey/javax/ws/rs/HeaderParam.html
 public abstract class AuthHeader {

@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
  * Value class representing an authentication bearer token.
  */
 @Value.Immutable
-@Value.Style(visibility = Value.Style.ImplementationVisibility.PACKAGE, jdkOnly = true)
+@ImmutablesStyle
 public abstract class BearerToken {
 
     private static final Logger log = LoggerFactory.getLogger(BearerToken.class);
