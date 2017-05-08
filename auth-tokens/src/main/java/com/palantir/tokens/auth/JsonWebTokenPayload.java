@@ -26,7 +26,7 @@ import org.immutables.value.Value;
 @JsonDeserialize(as = ImmutableJsonWebTokenPayload.class)
 @JsonSerialize(as = ImmutableJsonWebTokenPayload.class)
 @Value.Immutable
-@Value.Style(visibility = Value.Style.ImplementationVisibility.PACKAGE, jdkOnly = true)
+@ImmutablesStyle
 public abstract class JsonWebTokenPayload {
 
     public abstract byte[] getSub();

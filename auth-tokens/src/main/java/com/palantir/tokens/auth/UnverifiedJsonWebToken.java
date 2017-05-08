@@ -39,7 +39,7 @@ import org.immutables.value.Value;
  * logging.
  */
 @Value.Immutable
-@Value.Style(visibility = Value.Style.ImplementationVisibility.PACKAGE, jdkOnly = true)
+@ImmutablesStyle
 public abstract class UnverifiedJsonWebToken {
 
     private static final ObjectMapper MAPPER = new ObjectMapper()
