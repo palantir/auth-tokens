@@ -16,6 +16,9 @@
 
 package com.palantir.tokens.auth;
 
+import com.google.common.base.Preconditions;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.immutables.value.Value;
 
 /**
@@ -27,14 +30,24 @@ import org.immutables.value.Value;
 // see: https://jersey.java.net/apidocs/latest/jersey/javax/ws/rs/HeaderParam.html
 public abstract class AuthHeader {
 
+    // https://tools.ietf.org/html/rfc2617#section-1.2 for case insensitive auth-scheme
+    private static final String VALIDATION_PATTERN_STRING = "^bearer\\s+(.*)$";
+    private static final Pattern VALIDATION_PATTERN =
+            Pattern.compile(VALIDATION_PATTERN_STRING, Pattern.CASE_INSENSITIVE);
+
     @Value.Parameter
     public abstract BearerToken getBearerToken();
 
     /**
-     * Takes the string form: "Bearer [token]" and creates a new {@link AuthHeader}.
+     * Takes the string form: "Bearer [token]" and creates a new {@link AuthHeader}. "Bearer" is necessary but is
+     * case-insensitive.
      */
     public static AuthHeader valueOf(String authHeader) {
-        BearerToken bearerToken = BearerToken.valueOf(authHeader.replaceFirst("^Bearer ", ""));
+        Matcher matcher = VALIDATION_PATTERN.matcher(authHeader);
+        Preconditions.checkArgument(matcher.find(),
+                "Authorization Header must (case-insensitive) match pattern " + VALIDATION_PATTERN_STRING + ": "
+                        + authHeader);
+        BearerToken bearerToken = BearerToken.valueOf(matcher.group(1));
         return ImmutableAuthHeader.of(bearerToken);
     }
 
