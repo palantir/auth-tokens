@@ -41,11 +41,13 @@ public final class JsonWebTokenTests {
 
     private static final String USERID = "c393f659-0301-434e-a9c9-72304a507ffc";
     private static final String SESSION_ID = "3fc663d4-3e48-4ded-ba4e-d78af98b8363";
+    private static final String TOKEN_ID = "a459b4a1-5089-4fe0-8655-d5dfd9b2b7fd";
 
     @Test
     public void testAsJwt_validJwtFromSessionToken() {
         UnverifiedJsonWebToken token = UnverifiedJsonWebToken.of(SESSION_TOKEN);
         assertEquals(USERID, token.getUnverifiedUserId());
+        assertEquals(Optional.absent(), token.getUnverifiedTokenId());
         assertEquals(Optional.of(SESSION_ID), token.getUnverifiedSessionId());
     }
 
@@ -54,6 +56,7 @@ public final class JsonWebTokenTests {
         UnverifiedJsonWebToken token = UnverifiedJsonWebToken.of(API_TOKEN);
         assertEquals(USERID, token.getUnverifiedUserId());
         assertEquals(Optional.absent(), token.getUnverifiedSessionId());
+        assertEquals(Optional.of(TOKEN_ID), token.getUnverifiedTokenId());
     }
 
     @Test
