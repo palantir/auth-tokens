@@ -16,9 +16,7 @@
 
 package com.palantir.tokens.auth.http;
 
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -88,10 +86,10 @@ public final class BearerTokenLoggingContextFilterTests {
                 .request()
                 .header(HttpHeaders.AUTHORIZATION, AUTH_HEADER)
                 .get();
-        assertThat(resp.getStatus(), is(200));
+        assertThat(resp.getStatus()).isEqualTo(200);
 
         verify(mockResourceAppender).doAppend(resourceEvent.capture());
-        assertThat(resourceEvent.getValue().getMDCPropertyMap().get("userId"), is(USER_ID));
+        assertThat(resourceEvent.getValue().getMDCPropertyMap().get("userId")).isEqualTo(USER_ID);
     }
 
     @Test
@@ -105,11 +103,11 @@ public final class BearerTokenLoggingContextFilterTests {
                 .request()
                 .header(HttpHeaders.AUTHORIZATION, AUTH_HEADER)
                 .get();
-        assertThat(resp.getStatus(), is(200));
+        assertThat(resp.getStatus()).isEqualTo(200);
 
         verify(MockAppenderFactory.MOCK_REQUEST_APPENDER, atLeastOnce()).doAppend(requestEvent.capture());
-        assertThat(requestEvent.getValue().getFormattedMessage(), containsString(USER_ID));
-        assertThat(requestEvent.getValue().getMDCPropertyMap().get("userId"), is(USER_ID));
+        assertThat(requestEvent.getValue().getFormattedMessage()).contains(USER_ID);
+        assertThat(requestEvent.getValue().getMDCPropertyMap().get("userId")).isEqualTo(USER_ID);
     }
 
     @Test
@@ -123,11 +121,11 @@ public final class BearerTokenLoggingContextFilterTests {
                 .request()
                 .header(HttpHeaders.AUTHORIZATION.toLowerCase(), AUTH_HEADER)
                 .get();
-        assertThat(resp.getStatus(), is(200));
+        assertThat(resp.getStatus()).isEqualTo(200);
 
         verify(MockAppenderFactory.MOCK_REQUEST_APPENDER, atLeastOnce()).doAppend(requestEvent.capture());
-        assertThat(requestEvent.getValue().getFormattedMessage(), containsString(USER_ID));
-        assertThat(requestEvent.getValue().getMDCPropertyMap().get("userId"), is(USER_ID));
+        assertThat(requestEvent.getValue().getFormattedMessage()).contains(USER_ID);
+        assertThat(requestEvent.getValue().getMDCPropertyMap().get("userId")).isEqualTo(USER_ID);
     }
 
     public static final class TestApp extends Application<TestConfiguration> {
