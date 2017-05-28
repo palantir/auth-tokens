@@ -19,7 +19,7 @@ package com.palantir.tokens.auth;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.google.common.base.Optional;
+import java.util.Optional;
 import org.immutables.value.Value;
 
 @JsonIgnoreProperties(ignoreUnknown = true)

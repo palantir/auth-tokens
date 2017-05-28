@@ -16,14 +16,14 @@
 
 package com.palantir.tokens.auth.http;
 
-import com.google.common.base.Optional;
-import com.google.common.net.HttpHeaders;
 import com.palantir.tokens.auth.AuthHeader;
 import com.palantir.tokens.auth.UnverifiedJsonWebToken;
+import java.util.Optional;
 import javax.annotation.Priority;
 import javax.ws.rs.Priorities;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
+import javax.ws.rs.core.HttpHeaders;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;

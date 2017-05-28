@@ -2,13 +2,13 @@ apply from: "${rootDir}/gradle/publish.gradle"
 
 dependencies {
     compile "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion"
-    compile "com.fasterxml.jackson.datatype:jackson-datatype-guava:${jacksonVersion}"
-    compile "com.google.guava:guava:${guavaVersion}"
+    compile "com.fasterxml.jackson.datatype:jackson-datatype-jdk8:$jacksonVersion"
     compile "org.slf4j:slf4j-api:${slf4jVersion}"
 
     processor "org.immutables:value:${immutablesVersion}"
 
     testCompile "com.google.code.findbugs:annotations:$findbugsVersion"
+    testCompile "com.google.guava:guava:${guavaVersion}"
     testCompile "junit:junit:$junitVersion"
     testCompile "org.mockito:mockito-core:$mockitoVersion"
     testCompile "org.hamcrest:hamcrest-all:$hamcrestVersion"

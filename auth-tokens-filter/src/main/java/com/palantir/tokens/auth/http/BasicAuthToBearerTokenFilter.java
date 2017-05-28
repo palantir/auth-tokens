@@ -16,13 +16,11 @@
 
 package com.palantir.tokens.auth.http;
 
-import static com.google.common.base.Preconditions.checkArgument;
-
-import com.google.common.io.BaseEncoding;
-import com.google.common.net.HttpHeaders;
 import com.palantir.tokens.auth.AuthHeader;
+import com.palantir.tokens.auth.Preconditions;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.Objects;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -32,6 +30,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
+import javax.ws.rs.core.HttpHeaders;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,7 +44,7 @@ public class BasicAuthToBearerTokenFilter implements Filter {
     private static final Logger log = LoggerFactory.getLogger(BasicAuthToBearerTokenFilter.class);
 
     private static final String BASIC_AUTH_STR = "Basic";
-    private static final BaseEncoding BASE_64_ENCODING = BaseEncoding.base64Url();
+    private static final Base64.Decoder BASE_64_ENCODING = Base64.getUrlDecoder();
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -110,7 +109,7 @@ public class BasicAuthToBearerTokenFilter implements Filter {
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("Could not decode credentials from auth header: " + e.getMessage());
         }
-        checkArgument(credentials.contains(":"), "Credentials lack colon character (:).");
+        Preconditions.checkArgument(credentials.contains(":"), "Credentials lack colon character (:).");
         String password = credentials.split(":", 2)[1];
         return AuthHeader.valueOf(password);
     }

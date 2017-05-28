@@ -16,7 +16,6 @@
 
 package com.palantir.tokens.auth.http;
 
-import com.google.common.net.HttpHeaders;
 import com.palantir.tokens.auth.AuthHeader;
 import com.palantir.tokens.auth.UnverifiedJsonWebToken;
 import java.io.IOException;
@@ -28,6 +27,7 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.core.HttpHeaders;
 import org.eclipse.jetty.security.DefaultUserIdentity;
 import org.eclipse.jetty.security.UserAuthentication;
 import org.eclipse.jetty.server.Request;

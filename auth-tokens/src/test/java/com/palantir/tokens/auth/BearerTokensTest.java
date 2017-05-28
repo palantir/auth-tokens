@@ -19,7 +19,6 @@ package com.palantir.tokens.auth;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
-import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import com.google.common.io.Files;
 import java.io.File;
@@ -28,6 +27,7 @@ import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Optional;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
@@ -109,7 +109,7 @@ public final class BearerTokensTest {
     @Test
     public void testfromPaths_noValidPaths() {
         List<Path> paths = ImmutableList.of(Paths.get("foo"), Paths.get("bar"));
-        assertThat(BearerTokens.fromPaths(paths), is(Optional.<BearerToken>absent()));
+        assertThat(BearerTokens.fromPaths(paths), is(Optional.<BearerToken>empty()));
     }
 
     @Test
