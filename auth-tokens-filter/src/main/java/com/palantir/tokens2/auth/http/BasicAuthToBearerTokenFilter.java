@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package com.palantir.tokens.auth.http;
+package com.palantir.tokens2.auth.http;
 
-import com.palantir.tokens.auth.AuthHeader;
-import com.palantir.tokens.auth.Preconditions;
+import com.palantir.tokens2.auth.AuthHeader;
+import com.palantir.tokens2.auth.Preconditions;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;

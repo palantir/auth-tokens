@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.palantir.tokens.auth;
+package com.palantir.tokens2.auth;
 
 public final class Preconditions {
     private Preconditions() {}
