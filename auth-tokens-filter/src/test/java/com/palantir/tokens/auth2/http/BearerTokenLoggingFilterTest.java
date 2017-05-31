@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.palantir.tokens2.auth.http;
+package com.palantir.tokens.auth2.http;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.anyObject;

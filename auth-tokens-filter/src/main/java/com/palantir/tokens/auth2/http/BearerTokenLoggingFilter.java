@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package com.palantir.tokens2.auth.http;
+package com.palantir.tokens.auth2.http;
 
-import com.palantir.tokens2.auth.AuthHeader;
-import com.palantir.tokens2.auth.UnverifiedJsonWebToken;
+import com.palantir.tokens.auth2.AuthHeader;
+import com.palantir.tokens.auth2.UnverifiedJsonWebToken;
 import java.util.Optional;
 import javax.annotation.Priority;
 import javax.ws.rs.Priorities;
@@ -79,6 +79,6 @@ public class BearerTokenLoggingFilter implements ContainerRequestFilter {
     }
 
     public static String getRequestPropertyKey(String key) {
-        return "com.palantir.tokens2.auth." + key;
+        return "com.palantir.tokens.auth2." + key;
     }
 }

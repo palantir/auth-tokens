@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package com.palantir.tokens2.auth.http;
+package com.palantir.tokens.auth2.http;
 
-import com.palantir.tokens2.auth.AuthHeader;
-import com.palantir.tokens2.auth.UnverifiedJsonWebToken;
+import com.palantir.tokens.auth2.AuthHeader;
+import com.palantir.tokens.auth2.UnverifiedJsonWebToken;
 import java.io.IOException;
 import java.security.Principal;
 import javax.servlet.Filter;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.palantir.tokens2.auth;
+package com.palantir.tokens.auth2;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
