@@ -16,6 +16,7 @@ dependencies:
 test:
   override:
     - ./gradlew --parallel build
+    - ./gradlew --stacktrace generateLock verifyDependencyLocksAreCurrent
 
 deployment:
   releases:
