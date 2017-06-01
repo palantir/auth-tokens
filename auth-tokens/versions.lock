@@ -1,7 +1,7 @@
 {
     "compileClasspath": {
         "com.fasterxml.jackson.core:jackson-annotations": {
-            "locked": "2.6.0",
+            "locked": "2.6.3",
             "transitive": [
                 "com.fasterxml.jackson.core:jackson-databind"
             ]
@@ -15,23 +15,20 @@
         },
         "com.fasterxml.jackson.core:jackson-databind": {
             "locked": "2.6.3",
-            "requested": "2.6.3",
             "transitive": [
                 "com.fasterxml.jackson.datatype:jackson-datatype-jdk8"
             ]
         },
         "com.fasterxml.jackson.datatype:jackson-datatype-jdk8": {
-            "locked": "2.6.3",
-            "requested": "2.6.3"
+            "locked": "2.6.3"
         },
         "org.slf4j:slf4j-api": {
-            "locked": "1.7.12",
-            "requested": "1.7.12"
+            "locked": "1.7.12"
         }
     },
     "runtime": {
         "com.fasterxml.jackson.core:jackson-annotations": {
-            "locked": "2.6.0",
+            "locked": "2.6.3",
             "transitive": [
                 "com.fasterxml.jackson.core:jackson-databind"
             ]
@@ -45,18 +42,15 @@
         },
         "com.fasterxml.jackson.core:jackson-databind": {
             "locked": "2.6.3",
-            "requested": "2.6.3",
             "transitive": [
                 "com.fasterxml.jackson.datatype:jackson-datatype-jdk8"
             ]
         },
         "com.fasterxml.jackson.datatype:jackson-datatype-jdk8": {
-            "locked": "2.6.3",
-            "requested": "2.6.3"
+            "locked": "2.6.3"
         },
         "org.slf4j:slf4j-api": {
-            "locked": "1.7.12",
-            "requested": "1.7.12"
+            "locked": "1.7.12"
         }
     }
 }
