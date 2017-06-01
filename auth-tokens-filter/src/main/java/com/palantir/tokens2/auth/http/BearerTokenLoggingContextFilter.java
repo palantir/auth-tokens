@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-package com.palantir.tokens.auth.http;
+package com.palantir.tokens2.auth.http;
 
-import com.google.common.net.HttpHeaders;
-import com.palantir.tokens.auth.AuthHeader;
-import com.palantir.tokens.auth.UnverifiedJsonWebToken;
+import com.palantir.tokens2.auth.AuthHeader;
+import com.palantir.tokens2.auth.UnverifiedJsonWebToken;
 import java.io.IOException;
 import java.security.Principal;
 import javax.servlet.Filter;
@@ -28,6 +27,7 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.core.HttpHeaders;
 import org.eclipse.jetty.security.DefaultUserIdentity;
 import org.eclipse.jetty.security.UserAuthentication;
 import org.eclipse.jetty.server.Request;

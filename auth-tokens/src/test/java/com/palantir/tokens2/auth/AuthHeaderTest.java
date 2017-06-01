@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-package com.palantir.tokens.auth;
+package com.palantir.tokens2.auth;
 
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
 
@@ -27,19 +26,19 @@ public final class AuthHeaderTest {
     public void testSimple() {
         BearerToken fromToken = BearerToken.valueOf("tokenTest");
         AuthHeader authHeader = AuthHeader.of(fromToken);
-        assertThat(authHeader.getBearerToken(), is(fromToken));
-        assertThat(authHeader.toString(), is("Bearer tokenTest"));
-        assertThat(AuthHeader.valueOf(authHeader.toString()), is(authHeader));
+        assertThat(authHeader.getBearerToken()).isEqualTo(fromToken);
+        assertThat(authHeader.toString()).isEqualTo("Bearer tokenTest");
+        assertThat(AuthHeader.valueOf(authHeader.toString())).isEqualTo(authHeader);
     }
 
     @Test
     public void testToApiToken() {
-        assertThat(AuthHeader.valueOf("Bearer apiToken"), is(AuthHeader.of(BearerToken.valueOf("apiToken"))));
+        assertThat(AuthHeader.valueOf("Bearer apiToken")).isEqualTo(AuthHeader.of(BearerToken.valueOf("apiToken")));
     }
 
     @Test
     public void testToApiToken_removeFirstBearer() {
-        assertThat(AuthHeader.valueOf("Bearer Bearer"), is(AuthHeader.of(BearerToken.valueOf("Bearer"))));
+        assertThat(AuthHeader.valueOf("Bearer Bearer")).isEqualTo(AuthHeader.of(BearerToken.valueOf("Bearer")));
     }
 
 }

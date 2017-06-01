@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-package com.palantir.tokens.auth;
+package com.palantir.tokens2.auth;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
-import com.google.common.base.Preconditions;
 import java.util.regex.Pattern;
 import org.immutables.value.Value;
 import org.slf4j.Logger;

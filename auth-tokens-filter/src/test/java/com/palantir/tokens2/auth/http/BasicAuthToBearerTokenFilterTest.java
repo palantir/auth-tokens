@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package com.palantir.tokens.auth.http;
+package com.palantir.tokens2.auth.http;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -29,8 +30,6 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletRequestWrapper;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.core.Is;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -134,7 +133,7 @@ public class BasicAuthToBearerTokenFilterTest {
     private void assertChainRequestHasAuthHeader(String expectedAuthHeader) throws IOException, ServletException {
         HttpServletRequest value = (HttpServletRequest) getChainRequest();
         String actualAuthHeader = value.getHeader(HttpHeaders.AUTHORIZATION);
-        MatcherAssert.assertThat(actualAuthHeader, Is.is(expectedAuthHeader));
+        assertThat(actualAuthHeader).isEqualTo(expectedAuthHeader);
     }
 
     private void assertRequestUnchanged() throws IOException, ServletException {
@@ -143,7 +142,7 @@ public class BasicAuthToBearerTokenFilterTest {
 
     private void assertFilteredRequestIs(ServletRequest request) throws IOException, ServletException {
         ServletRequest chainRequest = getChainRequest();
-        MatcherAssert.assertThat(chainRequest, Is.is(request));
+        assertThat(chainRequest).isEqualTo(request);
     }
 
     private ServletRequest getChainRequest() throws IOException, ServletException {

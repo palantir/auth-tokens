@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package com.palantir.tokens.auth;
+package com.palantir.tokens2.auth;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-import com.google.common.base.Optional;
+import java.util.Optional;
 import org.junit.Test;
 
 public final class JsonWebTokenTests {
@@ -53,7 +53,7 @@ public final class JsonWebTokenTests {
     public void testAsJwt_validJwtFromApiToken() {
         UnverifiedJsonWebToken token = UnverifiedJsonWebToken.of(API_TOKEN);
         assertEquals(USERID, token.getUnverifiedUserId());
-        assertEquals(Optional.absent(), token.getUnverifiedSessionId());
+        assertEquals(Optional.empty(), token.getUnverifiedSessionId());
     }
 
     @Test

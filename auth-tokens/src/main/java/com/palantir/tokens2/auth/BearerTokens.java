@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package com.palantir.tokens.auth;
+package com.palantir.tokens2.auth;
 
-import com.google.common.base.Optional;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -24,6 +23,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -78,7 +78,7 @@ public final class BearerTokens {
         }
 
         LOGGER.warn("No token file found in any of the configured paths: {}.", paths);
-        return Optional.absent();
+        return Optional.empty();
     }
 
     /**

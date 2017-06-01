@@ -14,17 +14,15 @@
  * limitations under the License.
  */
 
-package com.palantir.tokens.auth;
+package com.palantir.tokens2.auth;
 
-import static com.google.common.base.Preconditions.checkArgument;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.guava.GuavaModule;
-import com.google.common.base.Function;
-import com.google.common.base.Optional;
-import com.google.common.io.BaseEncoding;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.Base64;
+import java.util.Optional;
 import java.util.UUID;
 import org.immutables.value.Value;
 
@@ -43,14 +41,7 @@ import org.immutables.value.Value;
 public abstract class UnverifiedJsonWebToken {
 
     private static final ObjectMapper MAPPER = new ObjectMapper()
-            .registerModule(new GuavaModule());
-
-    private static final Function<byte[], String> DECODE_UUID_BYTES = new Function<byte[], String>() {
-        @Override
-        public String apply(byte[] input) {
-            return decodeUuidBytes(input);
-        }
-    };
+            .registerModule(new Jdk8Module());
 
     /**
      * Returns the unverified user id, i.e., the "sub" (subject) field of the JWT.
@@ -83,19 +74,22 @@ public abstract class UnverifiedJsonWebToken {
      */
     public static UnverifiedJsonWebToken of(BearerToken token) {
         String[] segments = token.getToken().split("\\.");
-        checkArgument(segments.length == 3, "Invalid JWT: expected 3 segments, found %s", segments.length);
+        Preconditions.checkArgument(
+                segments.length == 3,
+                "Invalid JWT: expected 3 segments, found %s",
+                segments.length);
 
         JsonWebTokenPayload payload = extractPayload(segments[1]);
 
         return ImmutableUnverifiedJsonWebToken.of(
                 decodeUuidBytes(payload.getSub()),
-                payload.getSid().transform(DECODE_UUID_BYTES),
-                payload.getJti().transform(DECODE_UUID_BYTES));
+                payload.getSid().map(UnverifiedJsonWebToken::decodeUuidBytes),
+                payload.getJti().map(UnverifiedJsonWebToken::decodeUuidBytes));
     }
 
     private static JsonWebTokenPayload extractPayload(String payload) {
         try {
-            return MAPPER.readValue(BaseEncoding.base64().decode(payload), JsonWebTokenPayload.class);
+            return MAPPER.readValue(Base64.getDecoder().decode(payload), JsonWebTokenPayload.class);
         } catch (IOException e) {
             throw new IllegalArgumentException("Invalid JWT: cannot parse payload", e);
         }
@@ -107,7 +101,10 @@ public abstract class UnverifiedJsonWebToken {
      * Palantir stores UUIDs in this format to optimize on shorter JWTs.
      */
     private static String decodeUuidBytes(byte[] bytes) {
-        checkArgument(bytes.length == 16, "Invalid JWT: cannot decode UUID, require 16 bytes, found %s", bytes.length);
+        Preconditions.checkArgument(
+                bytes.length == 16,
+                "Invalid JWT: cannot decode UUID, require 16 bytes, found %s",
+                bytes.length);
         ByteBuffer byteBuffer = ByteBuffer.wrap(bytes);
         long high = byteBuffer.getLong();
         long low = byteBuffer.getLong();
