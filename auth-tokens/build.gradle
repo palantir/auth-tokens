@@ -1,14 +1,14 @@
 apply from: "${rootDir}/gradle/publish.gradle"
 
 dependencies {
-    compile "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion"
-    compile "com.fasterxml.jackson.datatype:jackson-datatype-jdk8:$jacksonVersion"
-    compile "org.slf4j:slf4j-api:${slf4jVersion}"
+    compile "com.fasterxml.jackson.core:jackson-databind"
+    compile "com.fasterxml.jackson.datatype:jackson-datatype-jdk8"
+    compile "org.slf4j:slf4j-api"
 
-    processor "org.immutables:value:${immutablesVersion}"
+    processor "org.immutables:value"
 
-    testCompile "com.google.code.findbugs:annotations:$findbugsVersion"
-    testCompile "junit:junit:$junitVersion"
-    testCompile "org.assertj:assertj-core:$assertjVersion"
+    testCompile "com.google.code.findbugs:annotations"
+    testCompile "junit:junit"
+    testCompile "org.assertj:assertj-core"
 }
 
