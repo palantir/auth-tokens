@@ -1,7 +1,7 @@
 {
     "compileClasspath": {
         "com.fasterxml.jackson.core:jackson-annotations": {
-            "locked": "2.6.0",
+            "locked": "2.6.3",
             "transitive": [
                 "com.fasterxml.jackson.core:jackson-databind"
             ]
@@ -30,19 +30,16 @@
             "project": true
         },
         "javax.annotation:javax.annotation-api": {
-            "locked": "1.2",
-            "requested": "1.2"
+            "locked": "1.2"
         },
         "javax.servlet:javax.servlet-api": {
             "locked": "3.1.0",
-            "requested": "3.1.0",
             "transitive": [
                 "org.eclipse.jetty:jetty-server"
             ]
         },
         "javax.ws.rs:javax.ws.rs-api": {
-            "locked": "2.0.1",
-            "requested": "2.0.1"
+            "locked": "2.0.1"
         },
         "org.eclipse.jetty:jetty-http": {
             "locked": "9.2.13.v20150730",
@@ -57,12 +54,10 @@
             ]
         },
         "org.eclipse.jetty:jetty-security": {
-            "locked": "9.2.13.v20150730",
-            "requested": "9.2.13.v20150730"
+            "locked": "9.2.13.v20150730"
         },
         "org.eclipse.jetty:jetty-server": {
             "locked": "9.2.13.v20150730",
-            "requested": "9.2.13.v20150730",
             "transitive": [
                 "org.eclipse.jetty:jetty-security"
             ]
@@ -76,7 +71,6 @@
         },
         "org.slf4j:slf4j-api": {
             "locked": "1.7.12",
-            "requested": "1.7.12",
             "transitive": [
                 "com.palantir.tokens2:auth-tokens"
             ]
@@ -84,7 +78,7 @@
     },
     "runtime": {
         "com.fasterxml.jackson.core:jackson-annotations": {
-            "locked": "2.6.0",
+            "locked": "2.6.3",
             "transitive": [
                 "com.fasterxml.jackson.core:jackson-databind"
             ]
@@ -113,19 +107,16 @@
             "project": true
         },
         "javax.annotation:javax.annotation-api": {
-            "locked": "1.2",
-            "requested": "1.2"
+            "locked": "1.2"
         },
         "javax.servlet:javax.servlet-api": {
             "locked": "3.1.0",
-            "requested": "3.1.0",
             "transitive": [
                 "org.eclipse.jetty:jetty-server"
             ]
         },
         "javax.ws.rs:javax.ws.rs-api": {
-            "locked": "2.0.1",
-            "requested": "2.0.1"
+            "locked": "2.0.1"
         },
         "org.eclipse.jetty:jetty-http": {
             "locked": "9.2.13.v20150730",
@@ -140,12 +131,10 @@
             ]
         },
         "org.eclipse.jetty:jetty-security": {
-            "locked": "9.2.13.v20150730",
-            "requested": "9.2.13.v20150730"
+            "locked": "9.2.13.v20150730"
         },
         "org.eclipse.jetty:jetty-server": {
             "locked": "9.2.13.v20150730",
-            "requested": "9.2.13.v20150730",
             "transitive": [
                 "org.eclipse.jetty:jetty-security"
             ]
@@ -159,7 +148,6 @@
         },
         "org.slf4j:slf4j-api": {
             "locked": "1.7.12",
-            "requested": "1.7.12",
             "transitive": [
                 "com.palantir.tokens2:auth-tokens"
             ]
