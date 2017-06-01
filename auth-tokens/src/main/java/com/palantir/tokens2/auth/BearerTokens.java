@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.palantir.tokens.auth2;
+package com.palantir.tokens2.auth;
 
 import java.io.IOException;
 import java.nio.charset.Charset;

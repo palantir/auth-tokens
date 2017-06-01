@@ -25,7 +25,7 @@ apply plugin: 'com.palantir.git-version'
 allprojects {
     apply plugin: 'com.palantir.configuration-resolver'
 
-    group 'com.palantir.tokens'
+    group 'com.palantir.tokens2'
 
     repositories {
         jcenter()

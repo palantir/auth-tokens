@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.palantir.tokens.auth2;
+package com.palantir.tokens2.auth;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -28,7 +28,6 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import org.assertj.core.api.Assertions;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
@@ -93,26 +92,26 @@ public final class BearerTokensTest {
         File file1 = writeTokenToFile("apiToken1");
         File file2 = writeTokenToFile("apiToken2");
         List<Path> paths = Arrays.asList(file1.toPath(), file2.toPath());
-        Assertions.assertThat(BearerTokens.fromPaths(paths)).contains(BearerToken.valueOf("apiToken1"));
+        assertThat(BearerTokens.fromPaths(paths)).contains(BearerToken.valueOf("apiToken1"));
     }
 
     @Test
     public void testfromPaths_nonExistingPath() throws IOException {
         File file1 = writeTokenToFile("apiToken1");
         List<Path> paths = Arrays.asList(Paths.get("bogus"), file1.toPath());
-        Assertions.assertThat(BearerTokens.fromPaths(paths)).contains(BearerToken.valueOf("apiToken1"));
+        assertThat(BearerTokens.fromPaths(paths)).contains(BearerToken.valueOf("apiToken1"));
     }
 
     @Test
     public void testfromPaths_noValidPaths() {
         List<Path> paths = Arrays.asList(Paths.get("foo"), Paths.get("bar"));
-        Assertions.assertThat(BearerTokens.fromPaths(paths)).isEmpty();
+        assertThat(BearerTokens.fromPaths(paths)).isEmpty();
     }
 
     @Test
     public void testFromPathsWithDefaults_checkUserHomeLast() {
         List<Path> paths = Collections.singletonList(Paths.get("doesnt_exist"));
-        Assertions.assertThat(BearerTokens.fromPathsWithDefaults(paths)).contains(USER_HOME_TOKEN);
+        assertThat(BearerTokens.fromPathsWithDefaults(paths)).contains(USER_HOME_TOKEN);
     }
 
     private static File writeTokenToFile(String token) throws IOException {

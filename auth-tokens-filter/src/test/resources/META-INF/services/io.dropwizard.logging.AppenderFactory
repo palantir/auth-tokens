@@ -1,1 +1,1 @@
-com.palantir.tokens.auth2.http.MockAppenderFactory
+com.palantir.tokens2.auth.http.MockAppenderFactory
