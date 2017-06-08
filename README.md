@@ -1,4 +1,4 @@
-[![Circle CI](https://circleci.com/gh/palantir/auth-tokens.svg?style=svg&circle-token=b1d954561ca65d92f9b52274718e8c956191e062)](https://circleci.com/gh/palantir/auth-tokens)
+[![Circle CI](https://circleci.com/gh/palantir/auth-tokens.svg?style=shield)](https://circleci.com/gh/palantir/auth-tokens)
 [ ![Download](https://api.bintray.com/packages/palantir/releases/auth-tokens/images/download.svg) ](https://bintray.com/palantir/releases/auth-tokens/_latestVersion)
 
 
