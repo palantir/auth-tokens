@@ -58,14 +58,14 @@ public final class BearerTokensTest {
     }
 
     @Test
-    public void testfromPath_validFile() throws IOException {
+    public void testFromPath_validFile() throws IOException {
         String token = "apiToken";
         File file = writeTokenToFile(token);
         assertThat(BearerTokens.fromPath(file.toPath())).isEqualTo(BearerToken.valueOf(token));
     }
 
     @Test
-    public void testfromPath_invalidFile() throws IOException {
+    public void testFromPath_invalidFile() throws IOException {
         String token = "Bearer apiToken";
         File file = writeTokenToFile(token);
 
@@ -75,7 +75,7 @@ public final class BearerTokensTest {
     }
 
     @Test
-    public void testfromPath_invalidFileTwoLines() throws IOException {
+    public void testFromPath_invalidFileTwoLines() throws IOException {
         String token = "token1\ntoken2";
         File file = writeTokenToFile(token);
 
@@ -88,7 +88,7 @@ public final class BearerTokensTest {
     }
 
     @Test
-    public void testfromPaths_checkfilesInOrder() throws IOException {
+    public void testFromPaths_checkfilesInOrder() throws IOException {
         File file1 = writeTokenToFile("apiToken1");
         File file2 = writeTokenToFile("apiToken2");
         List<Path> paths = Arrays.asList(file1.toPath(), file2.toPath());
@@ -96,14 +96,14 @@ public final class BearerTokensTest {
     }
 
     @Test
-    public void testfromPaths_nonExistingPath() throws IOException {
+    public void testFromPaths_nonExistingPath() throws IOException {
         File file1 = writeTokenToFile("apiToken1");
         List<Path> paths = Arrays.asList(Paths.get("bogus"), file1.toPath());
         assertThat(BearerTokens.fromPaths(paths)).contains(BearerToken.valueOf("apiToken1"));
     }
 
     @Test
-    public void testfromPaths_noValidPaths() {
+    public void testFromPaths_noValidPaths() {
         List<Path> paths = Arrays.asList(Paths.get("foo"), Paths.get("bar"));
         assertThat(BearerTokens.fromPaths(paths)).isEmpty();
     }

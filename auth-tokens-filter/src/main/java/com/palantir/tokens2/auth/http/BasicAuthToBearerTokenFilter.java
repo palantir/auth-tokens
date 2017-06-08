@@ -117,5 +117,4 @@ public class BasicAuthToBearerTokenFilter implements Filter {
     private boolean isBasicAuth(String rawAuthHeader) {
         return rawAuthHeader != null && rawAuthHeader.contains(BASIC_AUTH_STR);
     }
-
 }

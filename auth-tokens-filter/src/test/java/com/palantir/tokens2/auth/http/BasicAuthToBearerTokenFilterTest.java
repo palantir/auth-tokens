@@ -149,5 +149,4 @@ public class BasicAuthToBearerTokenFilterTest {
         verify(chain).doFilter(requestArgumentCaptor.capture(), Mockito.<ServletResponse>any());
         return requestArgumentCaptor.getValue();
     }
-
 }

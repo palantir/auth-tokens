@@ -18,7 +18,6 @@ package com.palantir.tokens2.auth.http;
 
 import com.palantir.tokens2.auth.AuthHeader;
 import com.palantir.tokens2.auth.UnverifiedJsonWebToken;
-import java.util.Optional;
 import javax.annotation.Priority;
 import javax.ws.rs.Priorities;
 import javax.ws.rs.container.ContainerRequestContext;
@@ -51,16 +50,8 @@ public class BearerTokenLoggingFilter implements ContainerRequestFilter {
                     AuthHeader.valueOf(rawAuthHeader).getBearerToken());
 
             setUnverifiedContext(requestContext, USER_ID_KEY, jwt.getUnverifiedUserId());
-
-            Optional<String> maybeUnverifiedSessionId = jwt.getUnverifiedSessionId();
-            if (maybeUnverifiedSessionId.isPresent()) {
-                setUnverifiedContext(requestContext, SESSION_ID_KEY, maybeUnverifiedSessionId.get());
-            }
-
-            Optional<String> maybeUnverifiedTokenId = jwt.getUnverifiedTokenId();
-            if (maybeUnverifiedTokenId.isPresent()) {
-                setUnverifiedContext(requestContext, TOKEN_ID_KEY, maybeUnverifiedTokenId.get());
-            }
+            jwt.getUnverifiedSessionId().ifPresent(s -> setUnverifiedContext(requestContext, SESSION_ID_KEY, s));
+            jwt.getUnverifiedTokenId().ifPresent(s -> setUnverifiedContext(requestContext, TOKEN_ID_KEY, s));
         } catch (Throwable t) {
             log.debug("Unable to process auth header.", t);
         }
@@ -73,6 +64,7 @@ public class BearerTokenLoggingFilter implements ContainerRequestFilter {
     }
 
     private void setUnverifiedContext(ContainerRequestContext requestContext, String key, String value) {
+        // TODO(rfink): Decide if we still want to use the "*" notation, Issue #39.
         // * indicates unverified
         MDC.put(key, value + "*");
         requestContext.setProperty(getRequestPropertyKey(key), value + "*");

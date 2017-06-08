@@ -37,6 +37,7 @@ package com.palantir.tokens2.auth;
  * Small changes were made to respect this repository's code conventions.
  * No change in behavior are expected from such changes.
  */
+// TODO(rfink): Can we make this package-private?
 public final class Preconditions {
     private Preconditions() {}
 
@@ -46,7 +47,7 @@ public final class Preconditions {
         }
     }
 
-    static String format(String rawTemplate, Object... args) {
+    private static String format(String rawTemplate, Object... args) {
         String template = String.valueOf(rawTemplate); // null -> "null"
 
         // start substituting the arguments into the '%s' placeholders

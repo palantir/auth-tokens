@@ -75,5 +75,4 @@ public final class JsonWebTokenTests {
             assertEquals("Invalid JWT: cannot parse payload", e.getMessage());
         }
     }
-
 }

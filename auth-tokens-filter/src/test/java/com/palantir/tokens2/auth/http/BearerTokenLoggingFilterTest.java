@@ -35,9 +35,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.mockito.stubbing.Answer;
 
 @RunWith(MockitoJUnitRunner.class)
 public class BearerTokenLoggingFilterTest {
@@ -69,30 +67,21 @@ public class BearerTokenLoggingFilterTest {
         requestProperties = new HashMap<>();
         MDC.clear();
 
-        doAnswer(new Answer<Object>() {
-            @Override
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                Object[] args = invocation.getArguments();
-                return requestProperties.get((String) args[0]);
-            }
+        doAnswer(invocation -> {
+            Object[] args = invocation.getArguments();
+            return requestProperties.get(args[0]);
         }).when(requestContext).getProperty(anyString());
 
-        doAnswer(new Answer<Object>() {
-            @Override
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                Object[] args = invocation.getArguments();
-                requestProperties.remove((String) args[0]);
-                return null;
-            }
+        doAnswer(invocation -> {
+            Object[] args = invocation.getArguments();
+            requestProperties.remove(args[0]);
+            return null;
         }).when(requestContext).removeProperty(anyString());
 
-        doAnswer(new Answer<Object>() {
-            @Override
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                Object[] args = invocation.getArguments();
-                requestProperties.put((String) args[0], args[1]);
-                return null;
-            }
+        doAnswer(invocation -> {
+            Object[] args = invocation.getArguments();
+            requestProperties.put((String) args[0], args[1]);
+            return null;
         }).when(requestContext).setProperty(anyString(), anyObject());
     }
 

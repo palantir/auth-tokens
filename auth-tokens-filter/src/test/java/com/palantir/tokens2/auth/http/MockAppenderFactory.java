@@ -27,7 +27,7 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import io.dropwizard.logging.AbstractAppenderFactory;
 
 /**
- * An {@link AppenderFactory} implementation that allows recovery of the appender
+ * An {@link AbstractAppenderFactory} implementation that allows recovery of the appender
  * for use in tests.
  * <p>
  * Jetty/Dropwizard do not have an alternative scheme for grabbing the appender
@@ -37,7 +37,7 @@ import io.dropwizard.logging.AbstractAppenderFactory;
 @JsonTypeName("mock")
 public final class MockAppenderFactory extends AbstractAppenderFactory {
 
-    public static final Appender<ILoggingEvent> MOCK_REQUEST_APPENDER = setup();
+    private static final Appender<ILoggingEvent> MOCK_REQUEST_APPENDER = setup();
 
     private static Appender<ILoggingEvent> setup() {
         @SuppressWarnings("unchecked")
@@ -51,5 +51,4 @@ public final class MockAppenderFactory extends AbstractAppenderFactory {
             Layout<ILoggingEvent> layout) {
         return MOCK_REQUEST_APPENDER;
     }
-
 }
