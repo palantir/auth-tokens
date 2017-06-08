@@ -27,6 +27,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
+/**
+ * Attempts to extract a {@link UnverifiedJsonWebToken JSON Web Token} from the {@link ContainerRequestContext
+ * request's} {@link HttpHeaders#AUTHORIZATION authorization header}, and populates the SLF4J {@link MDC} and the {@link
+ * ContainerRequestContext request context} with user id, session id, and token id extracted from the JWT. This filter
+ * is best-effort and does not throw an exception in case any of these steps fail.
+ */
 @Priority(Priorities.AUTHORIZATION)
 public class BearerTokenLoggingFilter implements ContainerRequestFilter {
     private static final Logger log = LoggerFactory.getLogger(BearerTokenLoggingFilter.class);
@@ -64,10 +70,8 @@ public class BearerTokenLoggingFilter implements ContainerRequestFilter {
     }
 
     private void setUnverifiedContext(ContainerRequestContext requestContext, String key, String value) {
-        // TODO(rfink): Decide if we still want to use the "*" notation, Issue #39.
-        // * indicates unverified
-        MDC.put(key, value + "*");
-        requestContext.setProperty(getRequestPropertyKey(key), value + "*");
+        MDC.put(key, value);
+        requestContext.setProperty(getRequestPropertyKey(key), value);
     }
 
     public static String getRequestPropertyKey(String key) {

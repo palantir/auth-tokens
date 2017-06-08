@@ -102,9 +102,9 @@ public final class BearerTokenLoggingFilterTest {
         when(requestContext.getHeaderString(HttpHeaders.AUTHORIZATION)).thenReturn(AUTH_HEADER);
         filter.filter(requestContext);
 
-        assertThat(MDC.get(USER_ID_KEY)).isEqualTo(USER_ID + "*");
+        assertThat(MDC.get(USER_ID_KEY)).isEqualTo(USER_ID);
         assertThat(requestContext.getProperty(BearerTokenLoggingFilter.getRequestPropertyKey(USER_ID_KEY)))
-                .isEqualTo(USER_ID + "*");
+                .isEqualTo(USER_ID);
     }
 
     @Test
@@ -112,9 +112,9 @@ public final class BearerTokenLoggingFilterTest {
         when(requestContext.getHeaderString(HttpHeaders.AUTHORIZATION)).thenReturn(AUTH_HEADER);
         filter.filter(requestContext);
 
-        assertThat(MDC.get(SESSION_ID_KEY)).isEqualTo(SESSION_ID + "*");
+        assertThat(MDC.get(SESSION_ID_KEY)).isEqualTo(SESSION_ID);
         assertThat(requestContext.getProperty(BearerTokenLoggingFilter.getRequestPropertyKey(SESSION_ID_KEY)))
-                .isEqualTo(SESSION_ID + "*");
+                .isEqualTo(SESSION_ID);
     }
 
     @Test
@@ -122,9 +122,9 @@ public final class BearerTokenLoggingFilterTest {
         when(requestContext.getHeaderString(HttpHeaders.AUTHORIZATION)).thenReturn(AUTH_HEADER);
         filter.filter(requestContext);
 
-        assertThat(MDC.get(TOKEN_ID_KEY)).isEqualTo(TOKEN_ID + "*");
+        assertThat(MDC.get(TOKEN_ID_KEY)).isEqualTo(TOKEN_ID);
         assertThat(requestContext.getProperty(BearerTokenLoggingFilter.getRequestPropertyKey(TOKEN_ID_KEY)))
-                .isEqualTo(TOKEN_ID + "*");
+                .isEqualTo(TOKEN_ID);
     }
 
     private void assertThatMdcIsCleared() {
