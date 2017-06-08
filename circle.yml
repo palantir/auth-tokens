@@ -20,7 +20,7 @@ test:
 
 deployment:
   releases:
-    tag: /[0-9]+(\.[0-9]+)+/
+    tag: /[0-9]+(\.[0-9]+)+((-rc[0-9]{1,2})(\.[0-9])?)?/
     commands:
       - ./gradlew -i bintrayUpload
 
