@@ -75,6 +75,6 @@ public class BearerTokenLoggingFilter implements ContainerRequestFilter {
     }
 
     public static String getRequestPropertyKey(String key) {
-        return "com.palantir.tokens2.auth." + key;
+        return "com.palantir.tokens.auth." + key;
     }
 }
