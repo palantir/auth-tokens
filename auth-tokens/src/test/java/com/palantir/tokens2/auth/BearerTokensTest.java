@@ -21,7 +21,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -48,7 +48,7 @@ public final class BearerTokensTest {
         // Override the System user home directory and write a token to the default token file
         String tempUserHome = TEMP_FOLDER.newFolder().getAbsolutePath();
         Path homeTokenPath = Paths.get(tempUserHome).resolve(BearerTokens.DEFAULT_API_TOKEN_FILE);
-        Files.write(homeTokenPath, USER_HOME_TOKEN.toString().getBytes(Charset.defaultCharset()));
+        Files.write(homeTokenPath, USER_HOME_TOKEN.toString().getBytes(StandardCharsets.UTF_8));
         System.setProperty(USER_HOME_PROPERTY, tempUserHome);
     }
 
@@ -116,7 +116,7 @@ public final class BearerTokensTest {
 
     private static File writeTokenToFile(String token) throws IOException {
         File file = TEMP_FOLDER.newFile();
-        Files.write(file.toPath(), token.getBytes(Charset.defaultCharset()));
+        Files.write(file.toPath(), token.getBytes(StandardCharsets.UTF_8));
         return file;
     }
 }

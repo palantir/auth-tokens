@@ -17,6 +17,7 @@
 package com.palantir.tokens2.auth;
 
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import java.io.IOException;
@@ -79,17 +80,17 @@ public abstract class UnverifiedJsonWebToken {
                 "Invalid JWT: expected 3 segments, found %s",
                 segments.length);
 
-        JsonWebTokenPayload payload = extractPayload(segments[1]);
+        JwtPayload payload = extractPayload(segments[1]);
 
         return ImmutableUnverifiedJsonWebToken.of(
-                decodeUuidBytes(payload.getSub()),
-                payload.getSid().map(UnverifiedJsonWebToken::decodeUuidBytes),
-                payload.getJti().map(UnverifiedJsonWebToken::decodeUuidBytes));
+                decodeUuidBytes(payload.sub),
+                payload.sid.map(UnverifiedJsonWebToken::decodeUuidBytes),
+                payload.jti.map(UnverifiedJsonWebToken::decodeUuidBytes));
     }
 
-    private static JsonWebTokenPayload extractPayload(String payload) {
+    private static JwtPayload extractPayload(String payload) {
         try {
-            return MAPPER.readValue(Base64.getDecoder().decode(payload), JsonWebTokenPayload.class);
+            return MAPPER.readValue(Base64.getDecoder().decode(payload), JwtPayload.class);
         } catch (IOException e) {
             throw new IllegalArgumentException("Invalid JWT: cannot parse payload", e);
         }
@@ -109,5 +110,29 @@ public abstract class UnverifiedJsonWebToken {
         long high = byteBuffer.getLong();
         long low = byteBuffer.getLong();
         return new UUID(high, low).toString();
+    }
+
+    private static class JwtPayload {
+
+        @JsonProperty("sub")
+        private byte[] sub;
+
+        /**
+         * Indicates this token's session identifier (only for session tokens).
+         */
+        @JsonProperty("sid")
+        private Optional<byte[]> sid = Optional.empty();
+
+        /**
+         * Indicates this token's expiry (only for session tokens).
+         */
+        @JsonProperty("exp")
+        private Optional<Long> exp = Optional.empty();
+
+        /**
+         * Indicates this token's identifier (only for API tokens).
+         */
+        @JsonProperty("jti")
+        private Optional<byte[]> jti = Optional.empty();
     }
 }

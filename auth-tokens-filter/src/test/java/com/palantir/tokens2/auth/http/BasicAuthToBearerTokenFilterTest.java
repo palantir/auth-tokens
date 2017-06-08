@@ -38,7 +38,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
-public class BasicAuthToBearerTokenFilterTest {
+public final class BasicAuthToBearerTokenFilterTest {
 
     private static final BaseEncoding BASE_64_ENCODING = BaseEncoding.base64Url();
 
@@ -52,13 +52,13 @@ public class BasicAuthToBearerTokenFilterTest {
     private BasicAuthToBearerTokenFilter tokenFilter;
 
     @Before
-    public final void setUp() throws Exception {
+    public void before() throws Exception {
         MockitoAnnotations.initMocks(this);
         tokenFilter = new BasicAuthToBearerTokenFilter();
     }
 
     @Test
-    public final void testExpectedHeader() throws Exception {
+    public void testExpectedHeader() throws Exception {
         String password = "password";
         setPassword(password);
         filter();
@@ -66,7 +66,7 @@ public class BasicAuthToBearerTokenFilterTest {
     }
 
     @Test
-    public final void testNotInstanceOfHttpServletRequest() throws Exception {
+    public void testNotInstanceOfHttpServletRequest() throws Exception {
         // servletRequestWrapper is not instanceof HttpServletRequest
         ServletRequestWrapper servletRequestWrapper = new ServletRequestWrapper(httpServletRequest);
         filter(servletRequestWrapper);
@@ -74,21 +74,21 @@ public class BasicAuthToBearerTokenFilterTest {
     }
 
     @Test
-    public final void testNullAuthHeader() throws Exception {
+    public void testNullAuthHeader() throws Exception {
         setAuthHeader(null);
         filter();
         assertRequestUnchanged();
     }
 
     @Test
-    public final void testAuthHeaderNotBasicAuth() throws IOException, ServletException {
+    public void testAuthHeaderNotBasicAuth() throws IOException, ServletException {
         setAuthHeader("something unexpected");
         filter();
         assertRequestUnchanged();
     }
 
     @Test
-    public final void testCannotDecode() throws IOException, ServletException {
+    public void testCannotDecode() throws IOException, ServletException {
         String encodedCreds = "not base-64 encoded";
         setBasicAuthHeader(encodedCreds);
         filter();
@@ -96,7 +96,7 @@ public class BasicAuthToBearerTokenFilterTest {
     }
 
     @Test
-    public final void testLacksColon() throws IOException, ServletException {
+    public void testLacksColon() throws IOException, ServletException {
         String credentials = "lacks-colon";
         setCredentials(credentials);
         filter();
