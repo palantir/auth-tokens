@@ -19,10 +19,12 @@ package com.palantir.tokens2.auth.http;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+// CHECKSTYLE:OFF
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.Layout;
+// CHECKSTYLE:ON
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import io.dropwizard.logging.AbstractAppenderFactory;
 

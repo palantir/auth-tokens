@@ -17,7 +17,7 @@
 package com.palantir.tokens2.auth;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -51,7 +51,7 @@ public final class BearerTokens {
      * malformed and an {@link IOException} when there is a problem reading the file.
      */
     public static BearerToken fromPath(Path path) throws IOException {
-        List<String> lines = Files.readAllLines(path, Charset.defaultCharset());
+        List<String> lines = Files.readAllLines(path, StandardCharsets.UTF_8);
         if (lines.size() != 1) {
             throw new IllegalArgumentException(String.format(
                     "Invalid api token file, expected one line but found %d lines: %s", lines.size(), path));

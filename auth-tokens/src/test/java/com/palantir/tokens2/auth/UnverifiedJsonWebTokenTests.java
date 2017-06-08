@@ -22,7 +22,7 @@ import static org.junit.Assert.fail;
 import java.util.Optional;
 import org.junit.Test;
 
-public final class JsonWebTokenTests {
+public final class UnverifiedJsonWebTokenTests {
 
     private static final BearerToken SESSION_TOKEN = BearerToken.valueOf("eyJhbGciOiJFUzI1NiJ9."
             + "eyJleHAiOjE0NTk1NTIzNDksInNpZCI6IlA4WmoxRDVJVGUyNlR0Z"
@@ -41,6 +41,7 @@ public final class JsonWebTokenTests {
 
     private static final String USERID = "c393f659-0301-434e-a9c9-72304a507ffc";
     private static final String SESSION_ID = "3fc663d4-3e48-4ded-ba4e-d78af98b8363";
+    private static final String TOKEN_ID = "a459b4a1-5089-4fe0-8655-d5dfd9b2b7fd";
 
     @Test
     public void testAsJwt_validJwtFromSessionToken() {
@@ -54,6 +55,7 @@ public final class JsonWebTokenTests {
         UnverifiedJsonWebToken token = UnverifiedJsonWebToken.of(API_TOKEN);
         assertEquals(USERID, token.getUnverifiedUserId());
         assertEquals(Optional.empty(), token.getUnverifiedSessionId());
+        assertEquals(Optional.of(TOKEN_ID), token.getUnverifiedTokenId());
     }
 
     @Test
