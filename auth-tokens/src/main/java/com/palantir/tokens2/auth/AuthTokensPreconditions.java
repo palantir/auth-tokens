@@ -37,9 +37,13 @@ package com.palantir.tokens2.auth;
  * Small changes were made to respect this repository's code conventions.
  * No change in behavior are expected from such changes.
  */
-// TODO(rfink): Can we make this package-private?
-public final class Preconditions {
-    private Preconditions() {}
+
+/**
+ * Despite being public, this class must not be used outside this library. It is considered internal API and it's
+ * implementation and signatures may change without notice.
+ */
+public final class AuthTokensPreconditions {
+    private AuthTokensPreconditions() {}
 
     public static void checkArgument(boolean expression, String errorMessageTemplate, Object... errorMessageArgs) {
         if (!expression) {

@@ -74,7 +74,7 @@ public abstract class UnverifiedJsonWebToken {
      */
     public static UnverifiedJsonWebToken of(BearerToken token) {
         String[] segments = token.getToken().split("\\.");
-        Preconditions.checkArgument(
+        AuthTokensPreconditions.checkArgument(
                 segments.length == 3,
                 "Invalid JWT: expected 3 segments, found %s",
                 segments.length);
@@ -101,7 +101,7 @@ public abstract class UnverifiedJsonWebToken {
      * Palantir stores UUIDs in this format to optimize on shorter JWTs.
      */
     private static String decodeUuidBytes(byte[] bytes) {
-        Preconditions.checkArgument(
+        AuthTokensPreconditions.checkArgument(
                 bytes.length == 16,
                 "Invalid JWT: cannot decode UUID, require 16 bytes, found %s",
                 bytes.length);
