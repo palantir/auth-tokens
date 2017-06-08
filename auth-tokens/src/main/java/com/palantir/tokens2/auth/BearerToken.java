@@ -41,8 +41,8 @@ public abstract class BearerToken {
 
     @JsonCreator
     public static BearerToken valueOf(String token) {
-        Preconditions.checkArgument(token != null, "BearerToken cannot be null");
-        Preconditions.checkArgument(!token.isEmpty(), "BearerToken cannot be empty");
+        AuthTokensPreconditions.checkArgument(token != null, "BearerToken cannot be null");
+        AuthTokensPreconditions.checkArgument(!token.isEmpty(), "BearerToken cannot be empty");
         if (!VALIDATION_PATTERN.matcher(token).matches()) {
             log.trace("Error parsing BearerToken, must match pattern {}: {}", VALIDATION_PATTERN_STRING, token);
             throw new IllegalArgumentException("BearerToken must match pattern " + VALIDATION_PATTERN_STRING);
