@@ -98,6 +98,16 @@ public final class BearerTokenLoggingFilterTest {
     }
 
     @Test
+    public void assertContextPropKeyPrefixIsStable() {
+        when(requestContext.getHeaderString(HttpHeaders.AUTHORIZATION)).thenReturn(AUTH_HEADER);
+        filter.filter(requestContext);
+
+        assertThat(MDC.get(USER_ID_KEY)).isEqualTo(USER_ID);
+        assertThat(requestContext.getProperty("com.palantir.tokens.auth.userId"))
+                .isEqualTo(USER_ID);
+    }
+
+    @Test
     public void userIdInformationIsSet() {
         when(requestContext.getHeaderString(HttpHeaders.AUTHORIZATION)).thenReturn(AUTH_HEADER);
         filter.filter(requestContext);
