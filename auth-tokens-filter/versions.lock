@@ -17,16 +17,16 @@
             "locked": "2.6.7",
             "transitive": [
                 "com.fasterxml.jackson.datatype:jackson-datatype-jdk8",
-                "com.palantir.tokens2:auth-tokens"
+                "com.palantir.tokens:auth-tokens"
             ]
         },
         "com.fasterxml.jackson.datatype:jackson-datatype-jdk8": {
             "locked": "2.6.7",
             "transitive": [
-                "com.palantir.tokens2:auth-tokens"
+                "com.palantir.tokens:auth-tokens"
             ]
         },
-        "com.palantir.tokens2:auth-tokens": {
+        "com.palantir.tokens:auth-tokens": {
             "project": true
         },
         "javax.annotation:javax.annotation-api": {
@@ -73,7 +73,7 @@
         "org.slf4j:slf4j-api": {
             "locked": "1.7.25",
             "transitive": [
-                "com.palantir.tokens2:auth-tokens"
+                "com.palantir.tokens:auth-tokens"
             ]
         }
     },
@@ -95,16 +95,16 @@
             "locked": "2.6.7",
             "transitive": [
                 "com.fasterxml.jackson.datatype:jackson-datatype-jdk8",
-                "com.palantir.tokens2:auth-tokens"
+                "com.palantir.tokens:auth-tokens"
             ]
         },
         "com.fasterxml.jackson.datatype:jackson-datatype-jdk8": {
             "locked": "2.6.7",
             "transitive": [
-                "com.palantir.tokens2:auth-tokens"
+                "com.palantir.tokens:auth-tokens"
             ]
         },
-        "com.palantir.tokens2:auth-tokens": {
+        "com.palantir.tokens:auth-tokens": {
             "project": true
         },
         "javax.annotation:javax.annotation-api": {
@@ -151,7 +151,7 @@
         "org.slf4j:slf4j-api": {
             "locked": "1.7.25",
             "transitive": [
-                "com.palantir.tokens2:auth-tokens"
+                "com.palantir.tokens:auth-tokens"
             ]
         }
     }

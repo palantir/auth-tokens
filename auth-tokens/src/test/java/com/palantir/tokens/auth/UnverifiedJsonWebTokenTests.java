@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.palantir.tokens2.auth;
+package com.palantir.tokens.auth;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
