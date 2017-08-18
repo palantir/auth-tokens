@@ -37,7 +37,7 @@ allprojects {
         propertiesFile file: project.rootProject.file('versions.props')
     }
 
-    group 'com.palantir.tokens2'
+    group 'com.palantir.tokens'
 
     repositories {
         jcenter()

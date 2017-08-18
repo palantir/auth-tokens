@@ -31,8 +31,8 @@ Provides a filter to inject user identifier information into slf4j and Jetty log
 Gradle:
 ```
 dependencies {
-    compile "com.palantir.tokens2:auth-tokens:<version>"
-    compile "com.palantir.tokens2:auth-tokens-filter:<version>"
+    compile "com.palantir.tokens:auth-tokens:<version>"
+    compile "com.palantir.tokens:auth-tokens-filter:<version>"
 }
 ```
 

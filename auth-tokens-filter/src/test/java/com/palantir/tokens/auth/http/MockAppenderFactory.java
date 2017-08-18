@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.palantir.tokens2.auth.http;
+package com.palantir.tokens.auth.http;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;

@@ -28,7 +28,7 @@
  * the License.
  */
 
-package com.palantir.tokens2.auth;
+package com.palantir.tokens.auth;
 
 /*
  * Derived from com.google.common.base.Preconditions

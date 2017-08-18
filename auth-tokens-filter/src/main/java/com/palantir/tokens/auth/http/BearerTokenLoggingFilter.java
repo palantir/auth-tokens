@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package com.palantir.tokens2.auth.http;
+package com.palantir.tokens.auth.http;
 
-import com.palantir.tokens2.auth.AuthHeader;
-import com.palantir.tokens2.auth.UnverifiedJsonWebToken;
+import com.palantir.tokens.auth.AuthHeader;
+import com.palantir.tokens.auth.UnverifiedJsonWebToken;
 import javax.annotation.Priority;
 import javax.ws.rs.Priorities;
 import javax.ws.rs.container.ContainerRequestContext;
