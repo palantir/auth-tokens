@@ -14,10 +14,6 @@ The value class presenting the OAuth 2.0 [Bearer Token](https://tools.ietf.org/h
 
 A value class used to represent the HTTP Authorization header expected to contain a Bearer Token, and which contains utility methods for extracting the Bearer Token from the header's value.
 
-## BearerTokens
-
-Provides utilities for handling the Bearer Tokens, such as reading tokens from files.
-
 ## UnverifiedJsonWebToken
 
 Parses and provides insight into a Json Web Token payload.
