@@ -18,6 +18,7 @@ package com.palantir.tokens.auth;
 
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import java.io.IOException;
@@ -42,7 +43,8 @@ import org.immutables.value.Value;
 public abstract class UnverifiedJsonWebToken {
 
     private static final ObjectMapper MAPPER = new ObjectMapper()
-            .registerModule(new Jdk8Module());
+            .registerModule(new Jdk8Module())
+            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
     /**
      * Returns the unverified user id, i.e., the "sub" (subject) field of the JWT.
