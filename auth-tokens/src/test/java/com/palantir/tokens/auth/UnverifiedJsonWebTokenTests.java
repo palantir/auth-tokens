@@ -33,6 +33,11 @@ public final class UnverifiedJsonWebTokenTests {
             + "eyJzdWIiOiJ3NVAyV1FNQlEwNnB5WEl3U2xCLy9BPT0iLCJqdGkiOiJwRm0wb1ZDSlQrQ0dWZFhmMmJLMy9RPT0ifQ."
             + "hBUerwGsc4FFPIujHJ-7ncGe3-zZQcdPOuRZ8B84nzPNYjlyPmB8VLizsvR23CK3KQUEAlQ2AN_9a5p5_WgPAQ");
 
+    private static final BearerToken PROXY_TOKEN = BearerToken.valueOf("eyJhbGciOiJFUzI1NiJ9."
+            + "eyJ0eXAiOiJwIiwic3ViIjoidzVQMldRTUJRMDZweVhJd1NsQi8vQT09IiwianRpIjoicEZtMG9WQ0pUK0NHVmRYZj"
+            + "JiSzMvUT09In0.5s1oFL0XMMooE1eW1-CkCVwctT-RXcbTR-TPCy7JUOjb_39UnZYUfNlsn4aHi5M2C5hAiQUxmG"
+            + "-NvjlrKNHPZw");
+
     private static final BearerToken INVALID_BEARER_TOKEN = BearerToken.valueOf("IncorrectBearerToken");
 
     private static final BearerToken INVALID_PAYLOAD_TOKEN = BearerToken.valueOf("eyJhbGciOiJFUzI1NiJ9."
@@ -53,6 +58,14 @@ public final class UnverifiedJsonWebTokenTests {
     @Test
     public void testAsJwt_validJwtFromApiToken() {
         UnverifiedJsonWebToken token = UnverifiedJsonWebToken.of(API_TOKEN);
+        assertEquals(USERID, token.getUnverifiedUserId());
+        assertEquals(Optional.empty(), token.getUnverifiedSessionId());
+        assertEquals(Optional.of(TOKEN_ID), token.getUnverifiedTokenId());
+    }
+
+    @Test
+    public void testAsJwt_validJwtFromProxyToken() {
+        UnverifiedJsonWebToken token = UnverifiedJsonWebToken.of(PROXY_TOKEN);
         assertEquals(USERID, token.getUnverifiedUserId());
         assertEquals(Optional.empty(), token.getUnverifiedSessionId());
         assertEquals(Optional.of(TOKEN_ID), token.getUnverifiedTokenId());
