@@ -51,16 +51,16 @@ public class BearerTokenLoggingFilter implements ContainerRequestFilter {
             return;
         }
 
+        UnverifiedJsonWebToken jwt;
         try {
-            UnverifiedJsonWebToken jwt = UnverifiedJsonWebToken.of(
-                    AuthHeader.valueOf(rawAuthHeader).getBearerToken());
-
-            setUnverifiedContext(requestContext, USER_ID_KEY, jwt.getUnverifiedUserId());
-            jwt.getUnverifiedSessionId().ifPresent(s -> setUnverifiedContext(requestContext, SESSION_ID_KEY, s));
-            jwt.getUnverifiedTokenId().ifPresent(s -> setUnverifiedContext(requestContext, TOKEN_ID_KEY, s));
-        } catch (Throwable t) {
-            log.debug("Unable to process auth header.", t);
+            jwt = UnverifiedJsonWebToken.of(AuthHeader.valueOf(rawAuthHeader).getBearerToken());
+        } catch (IllegalArgumentException e) {
+            log.debug("Unable to process auth header.", e);
+            return;
         }
+        setUnverifiedContext(requestContext, USER_ID_KEY, jwt.getUnverifiedUserId());
+        jwt.getUnverifiedSessionId().ifPresent(s -> setUnverifiedContext(requestContext, SESSION_ID_KEY, s));
+        jwt.getUnverifiedTokenId().ifPresent(s -> setUnverifiedContext(requestContext, TOKEN_ID_KEY, s));
     }
 
     private void clearMdc() {
