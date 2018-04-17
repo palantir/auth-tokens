@@ -17,6 +17,7 @@
 package com.palantir.tokens.auth;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.Optional;
@@ -69,6 +70,7 @@ public final class UnverifiedJsonWebTokenTests {
         assertEquals(USERID, token.getUnverifiedUserId());
         assertEquals(Optional.empty(), token.getUnverifiedSessionId());
         assertEquals(Optional.of(TOKEN_ID), token.getUnverifiedTokenId());
+        assertTrue(token.isProxyToken());
     }
 
     @Test

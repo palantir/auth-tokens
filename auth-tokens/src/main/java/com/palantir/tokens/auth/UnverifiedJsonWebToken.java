@@ -66,6 +66,10 @@ public abstract class UnverifiedJsonWebToken {
     @Value.Parameter
     public abstract Optional<String> getUnverifiedTokenId();
 
+    /** Returns true when this token is a proxy token. */
+    @Value.Parameter
+    public abstract boolean isProxyToken();
+
     /**
      * Attempts to create an {@link UnverifiedJsonWebToken} from provided {@link BearerToken}.
      * <p>
@@ -87,7 +91,8 @@ public abstract class UnverifiedJsonWebToken {
         return ImmutableUnverifiedJsonWebToken.of(
                 decodeUuidBytes(payload.sub),
                 payload.sid.map(UnverifiedJsonWebToken::decodeUuidBytes),
-                payload.jti.map(UnverifiedJsonWebToken::decodeUuidBytes));
+                payload.jti.map(UnverifiedJsonWebToken::decodeUuidBytes),
+                "p".equals(payload.typ));
     }
 
     private static JwtPayload extractPayload(String payload) {
@@ -136,5 +141,8 @@ public abstract class UnverifiedJsonWebToken {
          */
         @JsonProperty("jti")
         private Optional<byte[]> jti = Optional.empty();
+
+        @JsonProperty("typ")
+        private String typ = "";
     }
 }
