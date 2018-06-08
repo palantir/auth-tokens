@@ -42,7 +42,6 @@ public abstract class BearerToken {
     public abstract String getToken();
 
     @Value.Derived
-    @Value.Auxiliary
     byte[] getTokenAsBytes() {
         return getToken().getBytes(StandardCharsets.UTF_8);
     }
