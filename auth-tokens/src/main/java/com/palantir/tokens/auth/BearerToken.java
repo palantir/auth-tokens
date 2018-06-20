@@ -18,6 +18,8 @@ package com.palantir.tokens.auth;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
 import java.util.regex.Pattern;
 import org.immutables.value.Value;
 import org.slf4j.Logger;
@@ -39,6 +41,12 @@ public abstract class BearerToken {
     @JsonValue
     public abstract String getToken();
 
+    @Value.Derived
+    @SuppressWarnings("DesignForExtension")
+    byte[] getTokenAsBytes() {
+        return getToken().getBytes(StandardCharsets.UTF_8);
+    }
+
     @JsonCreator
     public static BearerToken valueOf(String token) {
         AuthTokensPreconditions.checkArgument(token != null, "BearerToken cannot be null");
@@ -53,5 +61,17 @@ public abstract class BearerToken {
     @Override
     public final String toString() {
         return getToken();
+    }
+
+    @Override
+    public final boolean equals(Object other) {
+        return other != null
+                && other instanceof BearerToken
+                && MessageDigest.isEqual(((BearerToken) other).getTokenAsBytes(), getTokenAsBytes());
+    }
+
+    @Override
+    public final int hashCode() {
+        return getToken().hashCode();
     }
 }
