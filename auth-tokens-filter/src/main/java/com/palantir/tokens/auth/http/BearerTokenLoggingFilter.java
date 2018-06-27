@@ -17,6 +17,7 @@
 package com.palantir.tokens.auth.http;
 
 import com.palantir.tokens.auth.AuthHeader;
+import com.palantir.tokens.auth.BearerToken;
 import com.palantir.tokens.auth.UnverifiedJsonWebToken;
 import javax.annotation.Priority;
 import javax.ws.rs.Priorities;
@@ -51,15 +52,17 @@ public class BearerTokenLoggingFilter implements ContainerRequestFilter {
             return;
         }
 
-        try {
-            UnverifiedJsonWebToken jwt = UnverifiedJsonWebToken.of(
-                    AuthHeader.valueOf(rawAuthHeader).getBearerToken());
+        if (hasJwtStructure(rawAuthHeader)) {
+            try {
+                UnverifiedJsonWebToken jwt = UnverifiedJsonWebToken.of(
+                        AuthHeader.valueOf(rawAuthHeader).getBearerToken());
 
-            setUnverifiedContext(requestContext, USER_ID_KEY, jwt.getUnverifiedUserId());
-            jwt.getUnverifiedSessionId().ifPresent(s -> setUnverifiedContext(requestContext, SESSION_ID_KEY, s));
-            jwt.getUnverifiedTokenId().ifPresent(s -> setUnverifiedContext(requestContext, TOKEN_ID_KEY, s));
-        } catch (Throwable t) {
-            log.debug("Unable to process auth header.", t);
+                setUnverifiedContext(requestContext, USER_ID_KEY, jwt.getUnverifiedUserId());
+                jwt.getUnverifiedSessionId().ifPresent(s -> setUnverifiedContext(requestContext, SESSION_ID_KEY, s));
+                jwt.getUnverifiedTokenId().ifPresent(s -> setUnverifiedContext(requestContext, TOKEN_ID_KEY, s));
+            } catch (Throwable t) {
+                log.debug("Unable to process auth header.", t);
+            }
         }
     }
 
@@ -67,6 +70,13 @@ public class BearerTokenLoggingFilter implements ContainerRequestFilter {
         MDC.remove(USER_ID_KEY);
         MDC.remove(SESSION_ID_KEY);
         MDC.remove(TOKEN_ID_KEY);
+    }
+
+    /**
+     * Based on the structure check from {@link UnverifiedJsonWebToken#of(BearerToken)}.
+     */
+    private boolean hasJwtStructure(String rawAuthHeader) {
+        return rawAuthHeader.split("\\.").length == 3;
     }
 
     private void setUnverifiedContext(ContainerRequestContext requestContext, String key, String value) {
