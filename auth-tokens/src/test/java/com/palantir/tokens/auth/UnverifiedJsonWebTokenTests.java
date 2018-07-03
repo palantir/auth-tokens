@@ -58,17 +58,31 @@ public final class UnverifiedJsonWebTokenTests {
     @Test
     public void testAsJwt_validJwtFromApiToken() {
         UnverifiedJsonWebToken token = UnverifiedJsonWebToken.of(API_TOKEN);
-        assertEquals(USERID, token.getUnverifiedUserId());
-        assertEquals(Optional.empty(), token.getUnverifiedSessionId());
-        assertEquals(Optional.of(TOKEN_ID), token.getUnverifiedTokenId());
+        assertValidApiToken(token);
     }
 
     @Test
     public void testAsJwt_validJwtFromProxyToken() {
         UnverifiedJsonWebToken token = UnverifiedJsonWebToken.of(PROXY_TOKEN);
-        assertEquals(USERID, token.getUnverifiedUserId());
-        assertEquals(Optional.empty(), token.getUnverifiedSessionId());
-        assertEquals(Optional.of(TOKEN_ID), token.getUnverifiedTokenId());
+        assertValidApiToken(token);
+    }
+
+    @Test
+    public void testAsJwt_validJwtFromParsedToken() {
+        Optional<UnverifiedJsonWebToken> token = UnverifiedJsonWebToken.tryParse(PROXY_TOKEN.getToken());
+        assertValidApiToken(token.get());
+    }
+
+    @Test
+    public void invalidJwt_parseReturnsEmpty() {
+        Optional<UnverifiedJsonWebToken> parsedJwt = UnverifiedJsonWebToken.tryParse(INVALID_BEARER_TOKEN.getToken());
+        assertEquals(parsedJwt, Optional.empty());
+    }
+
+    @Test
+    public void invalidJwt_parseReturnsEmpty_validStructure() {
+        Optional<UnverifiedJsonWebToken> parsedJwt = UnverifiedJsonWebToken.tryParse(INVALID_PAYLOAD_TOKEN.getToken());
+        assertEquals(parsedJwt, Optional.empty());
     }
 
     @Test
@@ -89,5 +103,11 @@ public final class UnverifiedJsonWebTokenTests {
         } catch (RuntimeException e) {
             assertEquals("Invalid JWT: cannot parse payload", e.getMessage());
         }
+    }
+
+    private void assertValidApiToken(UnverifiedJsonWebToken token) {
+        assertEquals(USERID, token.getUnverifiedUserId());
+        assertEquals(Optional.empty(), token.getUnverifiedSessionId());
+        assertEquals(Optional.of(TOKEN_ID), token.getUnverifiedTokenId());
     }
 }
