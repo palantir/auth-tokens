@@ -20,7 +20,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
-import java.util.regex.Pattern;
+import java.util.BitSet;
 import org.immutables.value.Value;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +35,20 @@ public abstract class BearerToken {
     private static final Logger log = LoggerFactory.getLogger(BearerToken.class);
 
     private static final String VALIDATION_PATTERN_STRING = "^[A-Za-z0-9\\-\\._~\\+/]+=*$";
-    private static final Pattern VALIDATION_PATTERN = Pattern.compile(VALIDATION_PATTERN_STRING);
+    private static final BitSet allowedCharacters = new BitSet();
+
+    static {
+        allowedCharacters.set('A', 'Z' + 1);
+        allowedCharacters.set('a', 'z' + 1);
+        allowedCharacters.set('0', '9' + 1);
+        allowedCharacters.set('-');
+        allowedCharacters.set('.');
+        allowedCharacters.set('_');
+        allowedCharacters.set('~');
+        allowedCharacters.set('+');
+        allowedCharacters.set('/');
+        allowedCharacters.set('=');
+    }
 
     @Value.Parameter
     @JsonValue
@@ -51,11 +64,24 @@ public abstract class BearerToken {
     public static BearerToken valueOf(String token) {
         AuthTokensPreconditions.checkArgument(token != null, "BearerToken cannot be null");
         AuthTokensPreconditions.checkArgument(!token.isEmpty(), "BearerToken cannot be empty");
-        if (!VALIDATION_PATTERN.matcher(token).matches()) {
+        if (!isValidBearerToken(token)) {
             log.trace("Error parsing BearerToken, must match pattern {}: {}", VALIDATION_PATTERN_STRING, token);
             throw new IllegalArgumentException("BearerToken must match pattern " + VALIDATION_PATTERN_STRING);
         }
         return ImmutableBearerToken.of(token);
+    }
+
+    private static boolean isValidBearerToken(String token) {
+        boolean isAtEnd = false;
+        int length = token.length();
+        for (int i = 0; i < length; i++) {
+            char character = token.charAt(i);
+            if ((isAtEnd && character != '=') || !allowedCharacters.get(character)) {
+                return false;
+            }
+            isAtEnd = isAtEnd || character == '=';
+        }
+        return true;
     }
 
     @Override
