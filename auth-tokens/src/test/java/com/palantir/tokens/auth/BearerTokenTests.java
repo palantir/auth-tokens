@@ -43,7 +43,7 @@ public final class BearerTokenTests {
 
     @Test
     public void testFromString_specialCharacters() {
-        List<String> validTokens = Arrays.asList("-._~+/=", "abc=", "a=");
+        List<String> validTokens = Arrays.asList("-._~+/=", "a", "abc", "abc=", "a=", "a===");
         for (String validToken : validTokens) {
             BearerToken.valueOf(validToken);
         }
