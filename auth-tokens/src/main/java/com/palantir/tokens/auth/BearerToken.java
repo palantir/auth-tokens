@@ -81,6 +81,7 @@ public abstract class BearerToken {
         return ImmutableBearerToken.of(token);
     }
 
+    // Optimized implementation of the regular expression VALIDATION_PATTERN_STRING
     private static boolean isValidBearerToken(String token) {
         boolean isAtEnd = false;
         int length = token.length();
