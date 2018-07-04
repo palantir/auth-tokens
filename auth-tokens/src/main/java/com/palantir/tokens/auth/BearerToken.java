@@ -18,7 +18,6 @@ package com.palantir.tokens.auth;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
-import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.util.BitSet;
 import org.immutables.value.Value;
@@ -54,19 +53,17 @@ public abstract class BearerToken {
     @JsonValue
     public abstract String getToken();
 
-    /**
-     * isValidBearerToken validates that this is safe.
-     */
+    // We use a hand-written getBytes() implementation for performance reasons.
+    // Note that we don't need to worry about the character set (e.g., UTF-8) because
+    // the set of allowable characters are single bytes.
     @Value.Derived
     @SuppressWarnings("DesignForExtension")
     byte[] getTokenAsBytes() {
         String token = getToken();
         byte[] result = new byte[token.length()];
-
         for (int i = 0; i < result.length; i++) {
             result[i] = (byte) token.charAt(i);
         }
-
         return result;
     }
 
