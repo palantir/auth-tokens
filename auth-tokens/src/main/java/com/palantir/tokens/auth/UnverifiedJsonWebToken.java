@@ -23,9 +23,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.util.Base64;
 import java.util.Optional;
 import java.util.UUID;
+import javax.xml.bind.DatatypeConverter;
 import org.immutables.value.Value;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -111,7 +111,7 @@ public abstract class UnverifiedJsonWebToken {
 
     private static JwtPayload extractPayload(String payload) {
         try {
-            return MAPPER.readValue(Base64.getDecoder().decode(payload), JwtPayload.class);
+            return MAPPER.readValue(DatatypeConverter.parseBase64Binary(payload), JwtPayload.class);
         } catch (IOException e) {
             throw new IllegalArgumentException("Invalid JWT: cannot parse payload", e);
         }
@@ -130,8 +130,10 @@ public abstract class UnverifiedJsonWebToken {
         ByteBuffer byteBuffer = ByteBuffer.wrap(bytes);
         long high = byteBuffer.getLong();
         long low = byteBuffer.getLong();
-        return new UUID(high, low).toString();
+
+        return UuidStringConverter.toString(new UUID(high, low));
     }
+
 
     private static class JwtPayload {
 
