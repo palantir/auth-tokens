@@ -130,10 +130,8 @@ public abstract class UnverifiedJsonWebToken {
         ByteBuffer byteBuffer = ByteBuffer.wrap(bytes);
         long high = byteBuffer.getLong();
         long low = byteBuffer.getLong();
-
         return UuidStringConverter.toString(new UUID(high, low));
     }
-
 
     private static class JwtPayload {
 

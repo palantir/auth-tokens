@@ -21,6 +21,11 @@ import java.util.UUID;
 /**
  * Heavily based on Jackson's 'UUIDSerializer'. Changes made have been to change the format to comply
  * with Palantir style, and make the method return a string rather than writing into a JSON processor.
+ *
+ * That project is Apache 2.0 licensed, but the original source contains no license header on its own,
+ * so here we link to their license file.
+ *
+ * https://github.com/FasterXML/jackson-databind/blob/master/src/main/resources/META-INF/LICENSE
  */
 class UuidStringConverter {
     private final static char[] HEX_CHARS = "0123456789abcdef".toCharArray();
@@ -45,7 +50,6 @@ class UuidStringConverter {
         writeInt((int) lsb, ch, 28);
         return new String(ch);
     }
-
 
     private static void writeInt(int bits, char[] ch, int offset) {
         writeShort(bits >> 16, ch, offset);
