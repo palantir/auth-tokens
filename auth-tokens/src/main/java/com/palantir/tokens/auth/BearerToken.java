@@ -54,10 +54,20 @@ public abstract class BearerToken {
     @JsonValue
     public abstract String getToken();
 
+    /**
+     * isValidBearerToken validates that this is safe.
+     */
     @Value.Derived
     @SuppressWarnings("DesignForExtension")
     byte[] getTokenAsBytes() {
-        return getToken().getBytes(StandardCharsets.UTF_8);
+        String token = getToken();
+        byte[] result = new byte[token.length()];
+
+        for (int i = 0; i < result.length; i++) {
+            result[i] = (byte) token.charAt(i);
+        }
+
+        return result;
     }
 
     @JsonCreator
@@ -76,9 +86,12 @@ public abstract class BearerToken {
         int length = token.length();
         for (int i = 0; i < length; i++) {
             char character = token.charAt(i);
-            if ((isAtEnd && character != '=') || !allowedCharacters.get(character)) {
+            if (isAtEnd && character != '=') {
+                return false;
+            } else if (!allowedCharacters.get(character)) {
                 return false;
             }
+
             isAtEnd = isAtEnd || character == '=';
         }
         return true;
