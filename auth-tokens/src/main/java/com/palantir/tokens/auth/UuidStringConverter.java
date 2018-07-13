@@ -27,8 +27,8 @@ import java.util.UUID;
  *
  * https://github.com/FasterXML/jackson-databind/blob/master/src/main/resources/META-INF/LICENSE
  */
-class UuidStringConverter {
-    private final static char[] HEX_CHARS = "0123456789abcdef".toCharArray();
+final class UuidStringConverter {
+    private static final char[] HEX_CHARS = "0123456789abcdef".toCharArray();
 
     private UuidStringConverter() {}
 
@@ -37,10 +37,9 @@ class UuidStringConverter {
         final long msb = value.getMostSignificantBits();
         writeInt((int) (msb >> 32), ch, 0);
         ch[8] = '-';
-        int i = (int) msb;
-        writeShort(i >>> 16, ch, 9);
+        writeShort((int) msb >>> 16, ch, 9);
         ch[13] = '-';
-        writeShort(i, ch, 14);
+        writeShort((int) msb, ch, 14);
         ch[18] = '-';
 
         final long lsb = value.getLeastSignificantBits();
