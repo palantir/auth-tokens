@@ -32,4 +32,18 @@ public class UuidStringConverterTests {
                     assertThat(UuidStringConverter.toString(uuid)).isEqualTo(uuid.toString());
                 });
     }
+
+    @Test
+    public void name() {
+        long val = Double.doubleToLongBits(Math.pow(-2, 32));
+        System.out.println(Long.toHexString(val));
+
+        int outterCast = (int) (val >>> 16);
+        System.out.println(outterCast);
+        System.out.println(Long.toHexString(outterCast));
+
+        int innerCast = ((int) val) >>> 16;
+        System.out.println(innerCast);
+        System.out.println(Long.toHexString(innerCast));
+    }
 }
