@@ -80,9 +80,9 @@ public abstract class BearerToken {
     // Optimized implementation of the regular expression VALIDATION_PATTERN_STRING
     private static boolean isValidBearerToken(String token) {
         int length = token.length();
-        int cursor;
+        int cursor = 0;
 
-        for (cursor = 0; cursor < length; cursor++) {
+        for (; cursor < length; cursor++) {
             if (!allowedCharacters.get(token.charAt(cursor))) {
                 break;
             }

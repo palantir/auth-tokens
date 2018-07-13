@@ -35,9 +35,9 @@ final class UuidStringConverter {
     static String toString(UUID value) {
         final char[] ch = new char[36];
         final long msb = value.getMostSignificantBits();
-        writeInt((int) (msb >> 32), ch, 0);
+        writeInt((int) (msb >>> 32), ch, 0);
         ch[8] = '-';
-        writeShort((int) msb >>> 16, ch, 9);
+        writeShort((int) (msb >>> 16), ch, 9);
         ch[13] = '-';
         writeShort((int) msb, ch, 14);
         ch[18] = '-';
