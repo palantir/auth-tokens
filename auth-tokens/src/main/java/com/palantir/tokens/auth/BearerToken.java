@@ -46,7 +46,6 @@ public abstract class BearerToken {
         allowedCharacters.set('~');
         allowedCharacters.set('+');
         allowedCharacters.set('/');
-        allowedCharacters.set('=');
     }
 
     @Value.Parameter
@@ -87,10 +86,12 @@ public abstract class BearerToken {
             if (isAtEnd && character != '=') {
                 return false;
             } else if (!allowedCharacters.get(character)) {
-                return false;
+                if (i > 0 && character == '=') {
+                    isAtEnd = true;
+                } else {
+                    return false;
+                }
             }
-
-            isAtEnd = isAtEnd || character == '=';
         }
         return true;
     }
