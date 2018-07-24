@@ -46,7 +46,6 @@ public abstract class BearerToken {
         allowedCharacters.set('~');
         allowedCharacters.set('+');
         allowedCharacters.set('/');
-        allowedCharacters.set('=');
     }
 
     @Value.Parameter
@@ -80,18 +79,27 @@ public abstract class BearerToken {
 
     // Optimized implementation of the regular expression VALIDATION_PATTERN_STRING
     private static boolean isValidBearerToken(String token) {
-        boolean isAtEnd = false;
         int length = token.length();
-        for (int i = 0; i < length; i++) {
-            char character = token.charAt(i);
-            if (isAtEnd && character != '=') {
-                return false;
-            } else if (!allowedCharacters.get(character)) {
+        int cursor = 0;
+
+        for (; cursor < length; cursor++) {
+            if (!allowedCharacters.get(token.charAt(cursor))) {
+                break;
+            }
+        }
+
+        // Need at least one valid character
+        if (cursor == 0) {
+            return false;
+        }
+
+        // Only trailing '=' is allowed after valid characters
+        for (; cursor < length; cursor++) {
+            if (token.charAt(cursor) != '=') {
                 return false;
             }
-
-            isAtEnd = isAtEnd || character == '=';
         }
+
         return true;
     }
 
