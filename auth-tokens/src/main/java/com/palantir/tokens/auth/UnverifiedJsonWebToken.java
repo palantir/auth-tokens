@@ -27,6 +27,8 @@ import java.util.Base64;
 import java.util.Optional;
 import java.util.UUID;
 import org.immutables.value.Value;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Represents the parsed form of a JWT but does not verify the token signature.
@@ -45,6 +47,8 @@ public abstract class UnverifiedJsonWebToken {
     private static final ObjectMapper MAPPER = new ObjectMapper()
             .registerModule(new Jdk8Module())
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
+    private static final Logger log = LoggerFactory.getLogger(UnverifiedJsonWebToken.class);
 
     /**
      * Returns the unverified user id, i.e., the "sub" (subject) field of the JWT.
@@ -65,6 +69,21 @@ public abstract class UnverifiedJsonWebToken {
      */
     @Value.Parameter
     public abstract Optional<String> getUnverifiedTokenId();
+
+    /**
+     * Does a lower cost check on the structure of string provided
+     * before attempting to create an {@link UnverifiedJsonWebToken}.
+     */
+    public static Optional<UnverifiedJsonWebToken> tryParse(String rawAuthHeader) {
+        if (rawAuthHeader.chars().filter(x -> x == '.').count() == 2) {
+            try {
+                return Optional.of(of(AuthHeader.valueOf(rawAuthHeader).getBearerToken()));
+            } catch (Throwable t) {
+                log.debug("Unable to process auth header.", t);
+            }
+        }
+        return Optional.empty();
+    }
 
     /**
      * Attempts to create an {@link UnverifiedJsonWebToken} from provided {@link BearerToken}.
@@ -111,7 +130,7 @@ public abstract class UnverifiedJsonWebToken {
         ByteBuffer byteBuffer = ByteBuffer.wrap(bytes);
         long high = byteBuffer.getLong();
         long low = byteBuffer.getLong();
-        return new UUID(high, low).toString();
+        return UuidStringConverter.toString(new UUID(high, low));
     }
 
     private static class JwtPayload {

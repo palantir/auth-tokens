@@ -16,8 +16,8 @@
 
 package com.palantir.tokens.auth.http;
 
-import com.palantir.tokens.auth.AuthHeader;
 import com.palantir.tokens.auth.UnverifiedJsonWebToken;
+import java.util.Optional;
 import javax.annotation.Priority;
 import javax.ws.rs.Priorities;
 import javax.ws.rs.container.ContainerRequestContext;
@@ -51,16 +51,12 @@ public class BearerTokenLoggingFilter implements ContainerRequestFilter {
             return;
         }
 
-        try {
-            UnverifiedJsonWebToken jwt = UnverifiedJsonWebToken.of(
-                    AuthHeader.valueOf(rawAuthHeader).getBearerToken());
-
+        Optional<UnverifiedJsonWebToken> parsedJwt = UnverifiedJsonWebToken.tryParse(rawAuthHeader);
+        parsedJwt.ifPresent(jwt -> {
             setUnverifiedContext(requestContext, USER_ID_KEY, jwt.getUnverifiedUserId());
             jwt.getUnverifiedSessionId().ifPresent(s -> setUnverifiedContext(requestContext, SESSION_ID_KEY, s));
             jwt.getUnverifiedTokenId().ifPresent(s -> setUnverifiedContext(requestContext, TOKEN_ID_KEY, s));
-        } catch (Throwable t) {
-            log.debug("Unable to process auth header.", t);
-        }
+        });
     }
 
     private void clearMdc() {
