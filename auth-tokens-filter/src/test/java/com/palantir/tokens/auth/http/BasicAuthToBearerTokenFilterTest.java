@@ -24,6 +24,7 @@ import com.google.common.io.BaseEncoding;
 import com.google.common.net.HttpHeaders;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
@@ -132,8 +133,11 @@ public final class BasicAuthToBearerTokenFilterTest {
 
     private void assertChainRequestHasAuthHeader(String expectedAuthHeader) throws IOException, ServletException {
         HttpServletRequest value = (HttpServletRequest) getChainRequest();
+
         String actualAuthHeader = value.getHeader(HttpHeaders.AUTHORIZATION);
         assertThat(actualAuthHeader).isEqualTo(expectedAuthHeader);
+
+        assertThat(Collections.list(value.getHeaders(HttpHeaders.AUTHORIZATION))).containsExactly(expectedAuthHeader);
     }
 
     private void assertRequestUnchanged() throws IOException, ServletException {

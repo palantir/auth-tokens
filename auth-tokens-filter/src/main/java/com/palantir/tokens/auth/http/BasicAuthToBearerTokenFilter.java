@@ -21,6 +21,8 @@ import com.palantir.tokens.auth.AuthTokensPreconditions;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.Collections;
+import java.util.Enumeration;
 import java.util.Objects;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -90,6 +92,14 @@ public class BasicAuthToBearerTokenFilter implements Filter {
 
     private ServletRequest addBearerToken(HttpServletRequest request, final AuthHeader authHeader) {
         return new HttpServletRequestWrapper(request) {
+            @Override
+            public Enumeration<String> getHeaders(String name) {
+                if (Objects.equals(name, HttpHeaders.AUTHORIZATION)) {
+                    return Collections.enumeration(Collections.singletonList(authHeader.toString()));
+                }
+                return super.getHeaders(name);
+            }
+
             @Override
             public String getHeader(String name) {
                 if (Objects.equals(name, HttpHeaders.AUTHORIZATION)) {
