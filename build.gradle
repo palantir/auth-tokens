@@ -9,7 +9,7 @@ buildscript {
 
     dependencies {
         classpath 'gradle.plugin.com.palantir:gradle-circle-style:1.1.2'
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.3'
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4'
         classpath 'com.netflix.nebula:gradle-dependency-lock-plugin:4.9.3'
         classpath 'com.netflix.nebula:gradle-info-plugin:3.0.3'
         classpath 'com.netflix.nebula:nebula-dependency-recommender:5.2.0'
