@@ -16,7 +16,7 @@ buildscript {
         classpath 'com.netflix.nebula:nebula-publishing-plugin:5.1.4'
         classpath 'gradle.plugin.com.palantir.gradle.gitversion:gradle-git-version:0.4.2'
         classpath "com.palantir.baseline:gradle-baseline-java:${baselineVersion}"
-        classpath 'gradle.plugin.org.inferred:gradle-processors:1.2.15'
+        classpath 'gradle.plugin.org.inferred:gradle-processors:2.1.0'
         classpath 'com.netflix.nebula:nebula-bintray-plugin:3.3.4'
         classpath 'com.palantir.configurationresolver:gradle-configuration-resolver-plugin:0.3.0'
     }
