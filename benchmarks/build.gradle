@@ -1,0 +1,7 @@
+dependencies {
+    compile project(":auth-tokens")
+    compile 'org.openjdk.jmh:jmh-core'
+    compileOnly 'org.openjdk.jmh:jmh-generator-annprocess'
+    annotationProcessor 'org.openjdk.jmh:jmh-generator-annprocess'
+}
+
