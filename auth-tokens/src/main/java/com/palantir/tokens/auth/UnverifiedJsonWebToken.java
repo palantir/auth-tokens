@@ -76,25 +76,52 @@ public abstract class UnverifiedJsonWebToken {
      * Does a lower cost check on the structure of string provided
      * before attempting to create an {@link UnverifiedJsonWebToken}.
      */
+    // Heavily optimized implementation expected to produce identical results to:
+    // try {
+    //   Optional.of(of(AuthHeader.valueOf(rawAuthHeader).getBearerToken()));
+    // catch (Throwable ignored) {
+    //   return Optional.empty();
+    // }
     public static Optional<UnverifiedJsonWebToken> tryParse(String rawAuthHeader) {
-        if (countCharacter(rawAuthHeader, '.') == 2) {
-            try {
-                return Optional.of(of(AuthHeader.valueOf(rawAuthHeader).getBearerToken()));
-            } catch (Throwable t) {
-                log.debug("Unable to process auth header.", t);
+        int beginPayload = 0;
+        int payloadLength = 0;
+        int periods = 0;
+        for (int i = 0; i < rawAuthHeader.length(); i++) {
+            if (rawAuthHeader.charAt(i) == '.') {
+                switch (periods++) {
+                    case 0:
+                        beginPayload = i + 1;
+                        break;
+                    case 1:
+                        payloadLength = i - beginPayload;
+                        break;
+                }
             }
+        }
+        if (periods != 2) {
+            return Optional.empty();
+        }
+
+        if (!BearerToken.isValidBearerToken(rawAuthHeader, rawAuthHeader.startsWith("Bearer ") ? 7 : 0)) {
+            return Optional.empty();
+        }
+
+        try {
+            return Optional.of(of(extractPayload(extractPayloadBytes(rawAuthHeader, beginPayload, payloadLength))));
+        } catch (Throwable t) {
+            log.debug("Unable to process auth header.", t);
         }
         return Optional.empty();
     }
 
-    private static int countCharacter(String input, char toCount) {
-        int count = 0;
-        for (int i = 0; i < input.length(); i++) {
-            if (input.charAt(i) == toCount) {
-                ++count;
-            }
+    // Avoid String.getBytes(charset) for performance.
+    // BearerToken.isValidBearerToken has already validated that there are no multi-byte characters
+    private static byte[] extractPayloadBytes(String rawAuthHeader, int offset, int length) {
+        byte[] result = new byte[length];
+        for (int i = 0; i < length; i++) {
+            result[i] = (byte) rawAuthHeader.charAt(offset + i);
         }
-        return count;
+        return result;
     }
 
     /**
@@ -107,14 +134,20 @@ public abstract class UnverifiedJsonWebToken {
      * An anticipated use of this class is making a best-effort user id extraction for logging.
      */
     public static UnverifiedJsonWebToken of(BearerToken token) {
-        String[] segments = token.getToken().split("\\.");
+        return of(token.getToken());
+    }
+
+    public static UnverifiedJsonWebToken of(String token) {
+        String[] segments = token.split("\\.");
         AuthTokensPreconditions.checkArgument(
                 segments.length == 3,
                 "Invalid JWT: expected 3 segments, found %s",
                 segments.length);
 
-        JwtPayload payload = extractPayload(segments[1]);
+        return of(extractPayload(segments[1]));
+    }
 
+    private static UnverifiedJsonWebToken of(JwtPayload payload) {
         return ImmutableUnverifiedJsonWebToken.of(
                 decodeUuidBytes(payload.sub),
                 payload.sid.map(UnverifiedJsonWebToken::decodeUuidBytes),
@@ -122,6 +155,14 @@ public abstract class UnverifiedJsonWebToken {
     }
 
     private static JwtPayload extractPayload(String payload) {
+        try {
+            return READER.readValue(Base64.getDecoder().decode(payload));
+        } catch (IOException e) {
+            throw new IllegalArgumentException("Invalid JWT: cannot parse payload", e);
+        }
+    }
+
+    private static JwtPayload extractPayload(byte[] payload) {
         try {
             return READER.readValue(Base64.getDecoder().decode(payload));
         } catch (IOException e) {

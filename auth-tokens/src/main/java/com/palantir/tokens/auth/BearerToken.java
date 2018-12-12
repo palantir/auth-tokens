@@ -77,10 +77,14 @@ public abstract class BearerToken {
         return ImmutableBearerToken.of(token);
     }
 
+    static boolean isValidBearerToken(String token) {
+        return isValidBearerToken(token, 0);
+    }
+
     // Optimized implementation of the regular expression VALIDATION_PATTERN_STRING
-    private static boolean isValidBearerToken(String token) {
+    static boolean isValidBearerToken(String token, int offset) {
         int length = token.length();
-        int cursor = 0;
+        int cursor = offset;
 
         for (; cursor < length; cursor++) {
             if (!allowedCharacters.get(token.charAt(cursor))) {
@@ -89,7 +93,7 @@ public abstract class BearerToken {
         }
 
         // Need at least one valid character
-        if (cursor == 0) {
+        if (cursor == offset) {
             return false;
         }
 
