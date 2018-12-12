@@ -102,26 +102,17 @@ public abstract class UnverifiedJsonWebToken {
             return Optional.empty();
         }
 
-        if (!BearerToken.isValidBearerToken(rawAuthHeader, rawAuthHeader.startsWith("Bearer ") ? 7 : 0)) {
+        if (!Tokens.isValidBearerToken(rawAuthHeader, rawAuthHeader.startsWith("Bearer ") ? 7 : 0)) {
             return Optional.empty();
         }
 
         try {
-            return Optional.of(of(extractPayload(extractPayloadBytes(rawAuthHeader, beginPayload, payloadLength))));
+            return Optional.of(of(
+                    extractPayload(Tokens.tokenValueAsBytes(rawAuthHeader, beginPayload, payloadLength))));
         } catch (Throwable t) {
             log.debug("Unable to process auth header.", t);
         }
         return Optional.empty();
-    }
-
-    // Avoid String.getBytes(charset) for performance.
-    // BearerToken.isValidBearerToken has already validated that there are no multi-byte characters
-    private static byte[] extractPayloadBytes(String rawAuthHeader, int offset, int length) {
-        byte[] result = new byte[length];
-        for (int i = 0; i < length; i++) {
-            result[i] = (byte) rawAuthHeader.charAt(offset + i);
-        }
-        return result;
     }
 
     /**
@@ -138,13 +129,11 @@ public abstract class UnverifiedJsonWebToken {
     }
 
     public static UnverifiedJsonWebToken of(String token) {
-        String[] segments = token.split("\\.");
-        AuthTokensPreconditions.checkArgument(
-                segments.length == 3,
-                "Invalid JWT: expected 3 segments, found %s",
-                segments.length);
-
-        return of(extractPayload(segments[1]));
+        Optional<UnverifiedJsonWebToken> maybeToken = tryParse(token);
+        if (!maybeToken.isPresent()) {
+            throw new IllegalArgumentException("Invalid JWT: cannot parse payload");
+        }
+        return maybeToken.get();
     }
 
     private static UnverifiedJsonWebToken of(JwtPayload payload) {
@@ -152,14 +141,6 @@ public abstract class UnverifiedJsonWebToken {
                 decodeUuidBytes(payload.sub),
                 payload.sid.map(UnverifiedJsonWebToken::decodeUuidBytes),
                 payload.jti.map(UnverifiedJsonWebToken::decodeUuidBytes));
-    }
-
-    private static JwtPayload extractPayload(String payload) {
-        try {
-            return READER.readValue(Base64.getDecoder().decode(payload));
-        } catch (IOException e) {
-            throw new IllegalArgumentException("Invalid JWT: cannot parse payload", e);
-        }
     }
 
     private static JwtPayload extractPayload(byte[] payload) {

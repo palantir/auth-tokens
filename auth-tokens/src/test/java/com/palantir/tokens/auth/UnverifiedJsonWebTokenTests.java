@@ -91,7 +91,7 @@ public final class UnverifiedJsonWebTokenTests {
             UnverifiedJsonWebToken.of(INVALID_BEARER_TOKEN);
             fail();
         } catch (RuntimeException e) {
-            assertEquals("Invalid JWT: expected 3 segments, found 1", e.getMessage());
+            assertEquals("Invalid JWT: cannot parse payload", e.getMessage());
         }
     }
 
