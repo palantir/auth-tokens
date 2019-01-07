@@ -1,6 +1,7 @@
 com.fasterxml.jackson.*:jackson-* = 2.6.7
 com.google.code.findbugs:jsr = 3.0.0
 com.google.code.findbugs:annotations = 3.0.0
+com.google.guava:guava = 23.6.1-jre
 io.dropwizard:dropwizard-testing = 0.9.2
 javax.annotation:javax.annotation-api = 1.2
 javax.servlet:javax.servlet-api = 3.1.0

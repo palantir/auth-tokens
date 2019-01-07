@@ -16,6 +16,7 @@
 
 package com.palantir.tokens.auth;
 
+import com.google.common.base.Strings;
 import java.util.Optional;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
@@ -30,7 +31,7 @@ import org.openjdk.jmh.annotations.Warmup;
 @Warmup(iterations = 10, time = 5)
 @Measurement(iterations = 3, time = 3)
 public class UnverifiedJsonWebTokenBenchmarks {
-    private static final String NOT_JWT = repeat("NotJwt", 40);
+    private static final String NOT_JWT = Strings.repeat("NotJwt", 40);
     private static final String SESSION_TOKEN = "Bearer eyJhbGciOiJFUzI1NiJ9."
             + "eyJleHAiOjE0NTk1NTIzNDksInNpZCI6IlA4WmoxRDVJVGUyNlR0Z"
             + "UsrWXVEWXc9PSIsInN1YiI6Inc1UDJXUU1CUTA2cHlYSXdTbEIvL0E9PSJ9"
@@ -46,13 +47,5 @@ public class UnverifiedJsonWebTokenBenchmarks {
     @BenchmarkMode(Mode.Throughput)
     public final Optional<UnverifiedJsonWebToken> parseSessionToken() {
         return UnverifiedJsonWebToken.tryParse(SESSION_TOKEN);
-    }
-
-    private static String repeat(CharSequence seq, int count) {
-        StringBuilder buffer = new StringBuilder(seq.length() * count);
-        for (int i = 0; i < count; i++) {
-            buffer.append(seq);
-        }
-        return buffer.toString();
     }
 }
