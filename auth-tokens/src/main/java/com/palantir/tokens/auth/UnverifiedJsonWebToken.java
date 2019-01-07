@@ -20,6 +20,7 @@ package com.palantir.tokens.auth;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectReader;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Base64;
@@ -43,8 +44,9 @@ import org.slf4j.LoggerFactory;
 @ImmutablesStyle
 public abstract class UnverifiedJsonWebToken {
 
-    private static final ObjectMapper MAPPER = new ObjectMapper()
-            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    private static final ObjectReader READER = new ObjectMapper()
+            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+            .readerFor(JwtPayload.class);
 
     private static final Logger log = LoggerFactory.getLogger(UnverifiedJsonWebToken.class);
 
@@ -73,7 +75,7 @@ public abstract class UnverifiedJsonWebToken {
      * before attempting to create an {@link UnverifiedJsonWebToken}.
      */
     public static Optional<UnverifiedJsonWebToken> tryParse(String rawAuthHeader) {
-        if (rawAuthHeader.chars().filter(x -> x == '.').count() == 2) {
+        if (countCharacter(rawAuthHeader, '.') == 2) {
             try {
                 return Optional.of(of(AuthHeader.valueOf(rawAuthHeader).getBearerToken()));
             } catch (Throwable t) {
@@ -81,6 +83,16 @@ public abstract class UnverifiedJsonWebToken {
             }
         }
         return Optional.empty();
+    }
+
+    private static int countCharacter(String input, char toCount) {
+        int count = 0;
+        for (int i = 0; i < input.length(); i++) {
+            if (input.charAt(i) == toCount) {
+                ++count;
+            }
+        }
+        return count;
     }
 
     /**
@@ -109,7 +121,7 @@ public abstract class UnverifiedJsonWebToken {
 
     private static JwtPayload extractPayload(String payload) {
         try {
-            return MAPPER.readValue(Base64.getDecoder().decode(payload), JwtPayload.class);
+            return READER.readValue(Base64.getDecoder().decode(payload));
         } catch (IOException e) {
             throw new IllegalArgumentException("Invalid JWT: cannot parse payload", e);
         }
