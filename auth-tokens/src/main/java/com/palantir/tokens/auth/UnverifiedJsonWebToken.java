@@ -21,7 +21,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
-import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Base64;
@@ -46,7 +45,6 @@ import org.slf4j.LoggerFactory;
 public abstract class UnverifiedJsonWebToken {
 
     private static final ObjectReader READER = new ObjectMapper()
-            .registerModule(new Jdk8Module())
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
             .readerFor(JwtPayload.class);
 
@@ -117,8 +115,8 @@ public abstract class UnverifiedJsonWebToken {
 
         return ImmutableUnverifiedJsonWebToken.of(
                 decodeUuidBytes(payload.sub),
-                payload.sid.map(UnverifiedJsonWebToken::decodeUuidBytes),
-                payload.jti.map(UnverifiedJsonWebToken::decodeUuidBytes));
+                Optional.ofNullable(payload.sid).map(UnverifiedJsonWebToken::decodeUuidBytes),
+                Optional.ofNullable(payload.jti).map(UnverifiedJsonWebToken::decodeUuidBytes));
     }
 
     private static JwtPayload extractPayload(String payload) {
@@ -151,21 +149,21 @@ public abstract class UnverifiedJsonWebToken {
         private byte[] sub;
 
         /**
-         * Indicates this token's session identifier (only for session tokens).
+         * Indicates this token's session identifier (only for session tokens, otherwise null).
          */
         @JsonProperty("sid")
-        private Optional<byte[]> sid = Optional.empty();
+        private byte[] sid;
 
         /**
-         * Indicates this token's expiry (only for session tokens).
+         * Indicates this token's expiry (only for session tokens, otherwise null).
          */
         @JsonProperty("exp")
-        private Optional<Long> exp = Optional.empty();
+        private Long exp;
 
         /**
-         * Indicates this token's identifier (only for API tokens).
+         * Indicates this token's identifier (only for API tokens, otherwise null).
          */
         @JsonProperty("jti")
-        private Optional<byte[]> jti = Optional.empty();
+        private byte[] jti;
     }
 }
