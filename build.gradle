@@ -18,7 +18,6 @@ apply plugin: 'com.palantir.baseline'
 apply plugin: 'com.palantir.git-version'
 
 allprojects {
-    apply plugin: 'nebula.dependency-recommender'
     group 'com.palantir.tokens'
 
     repositories {
