@@ -1,44 +1,24 @@
 buildscript {
     repositories {
-        jcenter()
+        gradlePluginPortal()
         maven { url  "http://palantir.bintray.com/releases" }
-        maven {
-            url 'https://plugins.gradle.org/m2/'
-        }
     }
 
     dependencies {
-        classpath 'gradle.plugin.com.palantir:gradle-circle-style:1.1.2'
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.3'
-        classpath 'com.netflix.nebula:gradle-dependency-lock-plugin:4.9.3'
-        classpath 'com.netflix.nebula:gradle-info-plugin:3.0.3'
-        classpath 'com.netflix.nebula:nebula-dependency-recommender:5.2.0'
-        classpath 'com.netflix.nebula:nebula-publishing-plugin:5.1.4'
-        classpath 'gradle.plugin.com.palantir.gradle.gitversion:gradle-git-version:0.4.2'
-        classpath "com.palantir.baseline:gradle-baseline-java:${baselineVersion}"
-        classpath 'gradle.plugin.org.inferred:gradle-processors:1.2.15'
-        classpath 'com.netflix.nebula:nebula-bintray-plugin:3.3.4'
-        classpath 'com.palantir.configurationresolver:gradle-configuration-resolver-plugin:0.3.0'
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4'
+        classpath 'com.netflix.nebula:gradle-dependency-lock-plugin:7.0.1'
+        classpath 'com.netflix.nebula:nebula-publishing-plugin:9.1.1'
+        classpath 'com.palantir.baseline:gradle-baseline-java:0.46.0'
+        classpath 'com.palantir.gradle.gitversion:gradle-git-version:0.11.0'
+        classpath 'gradle.plugin.org.inferred:gradle-processors:2.1.0'
     }
 }
 
-apply plugin: 'com.palantir.baseline-config'
-apply plugin: 'com.palantir.baseline-idea'
+apply plugin: 'com.palantir.baseline'
 apply plugin: 'com.palantir.git-version'
-apply plugin: 'com.palantir.circle.style'
-
-dependencies {
-    baseline "com.palantir.baseline:gradle-baseline-java-config:${baselineVersion}@zip"
-}
 
 allprojects {
-    apply plugin: 'com.palantir.configuration-resolver'
     apply plugin: 'nebula.dependency-recommender'
-    dependencyRecommendations {
-        strategy OverrideTransitives
-        propertiesFile file: project.rootProject.file('versions.props')
-    }
-
     group 'com.palantir.tokens'
 
     repositories {
@@ -51,13 +31,13 @@ allprojects {
 
 subprojects {
     apply plugin: 'java'
-    apply plugin: 'com.palantir.baseline-checkstyle'
-    apply plugin: 'com.palantir.baseline-eclipse'
-    apply plugin: 'com.palantir.baseline-error-prone'
-    apply plugin: 'com.palantir.baseline-idea'
     apply plugin: 'org.inferred.processors'
 
     sourceCompatibility = 1.8
+    if (gradle.startParameter.taskNames.find {
+        it.endsWith('verifyDependencyLocksAreCurrent') || it.endsWith('build')}) {
+        gradle.startParameter.setTaskNames(gradle.startParameter.taskNames + ['generateLock'])
+    }
 
     apply plugin: 'nebula.dependency-lock'
     dependencyLock {
@@ -65,19 +45,17 @@ subprojects {
         lockFile = 'versions.lock'
         configurationNames = ['runtime', 'compileClasspath']
     }
-    task verifyDependencyLocksAreCurrent << {
-        def expectedDependencies = tasks.saveLock.getOutputLock()
-        def actualDependencies = tasks.saveLock.getGeneratedLock()
-        def digester = java.security.MessageDigest.getInstance('SHA')
-        logger.info("Verifying integrity of dependency locks: {} vs {}", expectedDependencies, actualDependencies)
-        if (digester.digest(expectedDependencies.bytes) != digester.digest(actualDependencies.bytes)) {
-            throw new GradleException("The dependencies of project " + project.name + " do not match the expected "
-                + "dependencies recorded in " + expectedDependencies + ". "
-                + "Run `./gradlew generateLock saveLock` and commit the updated version.lock files")
+    task verifyDependencyLocksAreCurrent {
+        doLast {
+            def expectedDependencies = tasks.saveLock.getOutputLock()
+            def actualDependencies = tasks.saveLock.getGeneratedLock()
+            def digester = java.security.MessageDigest.getInstance('SHA')
+            logger.info("Verifying integrity of dependency locks: {} vs {}", expectedDependencies, actualDependencies)
+            if (digester.digest(expectedDependencies.bytes) != digester.digest(actualDependencies.bytes)) {
+                throw new GradleException("The dependencies of project " + project.name + " do not match the expected "
+                    + "dependencies recorded in " + expectedDependencies + ". "
+                    + "Run `./gradlew generateLock saveLock` and commit the updated version.lock files")
+            }
         }
-    }
-
-    if (System.env.CIRCLE_TEST_REPORTS) {
-        test.reports.junitXml.destination = new File(System.env.CIRCLE_TEST_REPORTS, it.getName())
     }
 }
