@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Palantir Technologies, Inc. All rights reserved.
+ * (c) Copyright 2016 Palantir Technologies Inc. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,8 @@ public abstract class AuthHeader {
      * Takes the string form: "Bearer [token]" and creates a new {@link AuthHeader}.
      */
     public static AuthHeader valueOf(String authHeader) {
-        BearerToken bearerToken = BearerToken.valueOf(authHeader.replaceFirst("^Bearer ", ""));
+        BearerToken bearerToken = BearerToken.valueOf(authHeader.startsWith("Bearer ")
+                ? authHeader.substring(7) : authHeader);
         return ImmutableAuthHeader.of(bearerToken);
     }
 

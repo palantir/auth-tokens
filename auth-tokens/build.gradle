@@ -2,10 +2,10 @@ apply from: "${rootDir}/gradle/publish.gradle"
 
 dependencies {
     compile "com.fasterxml.jackson.core:jackson-databind"
-    compile "com.fasterxml.jackson.datatype:jackson-datatype-jdk8"
     compile "org.slf4j:slf4j-api"
 
-    processor "org.immutables:value"
+    annotationProcessor "org.immutables:value"
+    compileOnly "org.immutables:value::annotations"
 
     testCompile "com.google.code.findbugs:annotations"
     testCompile "junit:junit"

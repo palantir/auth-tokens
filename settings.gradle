@@ -1,3 +1,6 @@
+rootProject.name = 'auth-tokens'
+
 include 'auth-tokens'
 include 'auth-tokens-filter'
+include 'benchmarks'
 
