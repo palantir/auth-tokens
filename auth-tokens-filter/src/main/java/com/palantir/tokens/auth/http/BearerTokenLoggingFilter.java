@@ -43,10 +43,14 @@ public class BearerTokenLoggingFilter implements ContainerRequestFilter {
     public static final String SESSION_ID_KEY = "sessionId";
     public static final String TOKEN_ID_KEY = "tokenId";
 
-    private final String cookieAuthKey;
+    private final Optional<String> cookieAuthKey;
+
+    public BearerTokenLoggingFilter() {
+        this.cookieAuthKey = Optional.empty();
+    }
 
     public BearerTokenLoggingFilter(String cookieAuthKey) {
-        this.cookieAuthKey = cookieAuthKey;
+        this.cookieAuthKey = Optional.of(cookieAuthKey);
     }
 
     @Override
@@ -61,11 +65,13 @@ public class BearerTokenLoggingFilter implements ContainerRequestFilter {
             log.debug("No auth header present on request.");
         }
 
-        Cookie authCookie = requestContext.getCookies().get(cookieAuthKey);
-        if (authCookie != null) {
-            setAuthProperties(requestContext, authCookie.getValue());
-        } else {
-            log.debug("No auth token present in request cookies.");
+        if (cookieAuthKey.isPresent()) {
+            Cookie authCookie = requestContext.getCookies().get(cookieAuthKey.get());
+            if (authCookie != null) {
+                setAuthProperties(requestContext, authCookie.getValue());
+            } else {
+                log.debug("No auth token present in request cookies.");
+            }
         }
     }
 
