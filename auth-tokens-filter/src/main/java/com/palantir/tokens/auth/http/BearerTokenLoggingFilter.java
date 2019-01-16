@@ -30,9 +30,10 @@ import org.slf4j.MDC;
 
 /**
  * Attempts to extract a {@link UnverifiedJsonWebToken JSON Web Token} from the {@link ContainerRequestContext
- * request's} {@link HttpHeaders#AUTHORIZATION authorization header}, and populates the SLF4J {@link MDC} and the {@link
- * ContainerRequestContext request context} with user id, session id, and token id extracted from the JWT. This filter
- * is best-effort and does not throw an exception in case any of these steps fail.
+ * request's} {@link HttpHeaders#AUTHORIZATION authorization header} or cookie defined by cookieAuthKey name,
+ * and populates the SLF4J {@link MDC} and the {@link ContainerRequestContext request context} with user id, session id,
+ * and token id extracted from the JWT. This filter is best-effort and does not throw an exception in
+ * case any of these steps fail.
  */
 @Priority(Priorities.AUTHORIZATION)
 public class BearerTokenLoggingFilter implements ContainerRequestFilter {
@@ -60,7 +61,7 @@ public class BearerTokenLoggingFilter implements ContainerRequestFilter {
             log.debug("No auth header present on request.");
         }
 
-        Cookie authCookie = requestContext.getCookies().get(this.cookieAuthKey);
+        Cookie authCookie = requestContext.getCookies().get(cookieAuthKey);
         if (authCookie != null) {
             setAuthProperties(requestContext, authCookie.getValue());
         } else {
