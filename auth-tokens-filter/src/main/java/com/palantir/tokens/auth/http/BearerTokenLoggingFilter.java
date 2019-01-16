@@ -57,14 +57,14 @@ public class BearerTokenLoggingFilter implements ContainerRequestFilter {
             setAuthProperties(requestContext, rawAuthHeader);
             return;
         } else {
-            log.debug("No AuthHeader present on request.");
+            log.debug("No auth header present on request.");
         }
 
         Cookie authCookie = requestContext.getCookies().get(this.cookieAuthKey);
         if (authCookie != null) {
             setAuthProperties(requestContext, authCookie.getValue());
         } else {
-            log.debug("No bearer token present in request cookies.");
+            log.debug("No auth token present in request cookies.");
         }
     }
 
