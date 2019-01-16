@@ -22,6 +22,7 @@ import javax.annotation.Priority;
 import javax.ws.rs.Priorities;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
+import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.HttpHeaders;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,17 +42,34 @@ public class BearerTokenLoggingFilter implements ContainerRequestFilter {
     public static final String SESSION_ID_KEY = "sessionId";
     public static final String TOKEN_ID_KEY = "tokenId";
 
+    private final String cookieAuthKey;
+
+    public BearerTokenLoggingFilter(String cookieAuthKey) {
+        this.cookieAuthKey = cookieAuthKey;
+    }
+
     @Override
     public final void filter(ContainerRequestContext requestContext) {
         clearMdc();
 
         String rawAuthHeader = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
-        if (rawAuthHeader == null) {
-            log.debug("No AuthHeader present on request.");
+        if (rawAuthHeader != null) {
+            setAuthProperties(requestContext, rawAuthHeader);
             return;
+        } else {
+            log.debug("No AuthHeader present on request.");
         }
 
-        Optional<UnverifiedJsonWebToken> parsedJwt = UnverifiedJsonWebToken.tryParse(rawAuthHeader);
+        Cookie authCookie = requestContext.getCookies().get(this.cookieAuthKey);
+        if (authCookie != null) {
+            setAuthProperties(requestContext, authCookie.getValue());
+        } else {
+            log.debug("No bearer token present in request cookies.");
+        }
+    }
+
+    private void setAuthProperties(ContainerRequestContext requestContext, String rawToken) {
+        Optional<UnverifiedJsonWebToken> parsedJwt = UnverifiedJsonWebToken.tryParse(rawToken);
         parsedJwt.ifPresent(jwt -> {
             setUnverifiedContext(requestContext, USER_ID_KEY, jwt.getUnverifiedUserId());
             jwt.getUnverifiedSessionId().ifPresent(s -> setUnverifiedContext(requestContext, SESSION_ID_KEY, s));

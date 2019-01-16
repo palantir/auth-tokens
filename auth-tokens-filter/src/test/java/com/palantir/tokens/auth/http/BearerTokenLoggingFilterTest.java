@@ -22,6 +22,7 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.when;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.io.BaseEncoding;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
@@ -29,6 +30,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import javax.ws.rs.container.ContainerRequestContext;
+import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.HttpHeaders;
 import org.junit.Before;
 import org.junit.Test;
@@ -39,6 +41,8 @@ import org.slf4j.MDC;
 
 @RunWith(MockitoJUnitRunner.class)
 public final class BearerTokenLoggingFilterTest {
+
+    private static final String COOKIE_AUTH_KEY = "AUTH_KEY";
 
     private static final String USER_ID_KEY = BearerTokenLoggingFilter.USER_ID_KEY;
     private static final String SESSION_ID_KEY = BearerTokenLoggingFilter.SESSION_ID_KEY;
@@ -61,7 +65,7 @@ public final class BearerTokenLoggingFilterTest {
     private ContainerRequestContext requestContext;
     private Map<String, Object> requestProperties;
 
-    private BearerTokenLoggingFilter filter = new BearerTokenLoggingFilter();
+    private BearerTokenLoggingFilter filter = new BearerTokenLoggingFilter(COOKIE_AUTH_KEY);
 
     @Before
     public void before() {
@@ -98,6 +102,13 @@ public final class BearerTokenLoggingFilterTest {
     }
 
     @Test
+    public void mdcClearedIfInvalidCookieProvided() {
+        when(requestContext.getCookies())
+                .thenReturn(ImmutableMap.of(COOKIE_AUTH_KEY, new Cookie(COOKIE_AUTH_KEY, "BOGUS")));
+        assertThatMdcIsCleared();
+    }
+
+    @Test
     public void assertContextPropKeyPrefixIsStable() {
         when(requestContext.getHeaderString(HttpHeaders.AUTHORIZATION)).thenReturn(AUTH_HEADER);
         filter.filter(requestContext);
@@ -110,31 +121,47 @@ public final class BearerTokenLoggingFilterTest {
     @Test
     public void userIdInformationIsSet() {
         when(requestContext.getHeaderString(HttpHeaders.AUTHORIZATION)).thenReturn(AUTH_HEADER);
-        filter.filter(requestContext);
+        testMdcKeyIsSet(USER_ID_KEY, USER_ID);
+    }
 
-        assertThat(MDC.get(USER_ID_KEY)).isEqualTo(USER_ID);
-        assertThat(requestContext.getProperty(BearerTokenLoggingFilter.getRequestPropertyKey(USER_ID_KEY)))
-                .isEqualTo(USER_ID);
+    @Test
+    public void userIdInformationIsSetFromCookie() {
+        when(requestContext.getCookies())
+                .thenReturn(ImmutableMap.of(COOKIE_AUTH_KEY, new Cookie(COOKIE_AUTH_KEY, AUTH_HEADER)));
+        testMdcKeyIsSet(USER_ID_KEY, USER_ID);
     }
 
     @Test
     public void sessionIdInformationIsSet() {
         when(requestContext.getHeaderString(HttpHeaders.AUTHORIZATION)).thenReturn(AUTH_HEADER);
-        filter.filter(requestContext);
+        testMdcKeyIsSet(SESSION_ID_KEY, SESSION_ID);
+    }
 
-        assertThat(MDC.get(SESSION_ID_KEY)).isEqualTo(SESSION_ID);
-        assertThat(requestContext.getProperty(BearerTokenLoggingFilter.getRequestPropertyKey(SESSION_ID_KEY)))
-                .isEqualTo(SESSION_ID);
+    @Test
+    public void sessionIdInformationIsSetFromCookie() {
+        when(requestContext.getCookies())
+                .thenReturn(ImmutableMap.of(COOKIE_AUTH_KEY, new Cookie(COOKIE_AUTH_KEY, AUTH_HEADER)));
+        testMdcKeyIsSet(SESSION_ID_KEY, SESSION_ID);
     }
 
     @Test
     public void tokenIdInformationIsSet() {
         when(requestContext.getHeaderString(HttpHeaders.AUTHORIZATION)).thenReturn(AUTH_HEADER);
-        filter.filter(requestContext);
+        testMdcKeyIsSet(TOKEN_ID_KEY, TOKEN_ID);
+    }
 
-        assertThat(MDC.get(TOKEN_ID_KEY)).isEqualTo(TOKEN_ID);
-        assertThat(requestContext.getProperty(BearerTokenLoggingFilter.getRequestPropertyKey(TOKEN_ID_KEY)))
-                .isEqualTo(TOKEN_ID);
+    @Test
+    public void tokenIdInformationIsSetFromCookie() {
+        when(requestContext.getCookies())
+                .thenReturn(ImmutableMap.of(COOKIE_AUTH_KEY, new Cookie(COOKIE_AUTH_KEY, AUTH_HEADER)));
+        testMdcKeyIsSet(TOKEN_ID_KEY, TOKEN_ID);
+    }
+
+    private void testMdcKeyIsSet(String key, String expectedValue) {
+        filter.filter(requestContext);
+        assertThat(MDC.get(key)).isEqualTo(expectedValue);
+        assertThat(requestContext.getProperty(BearerTokenLoggingFilter.getRequestPropertyKey(key)))
+                .isEqualTo(expectedValue);
     }
 
     private void assertThatMdcIsCleared() {
