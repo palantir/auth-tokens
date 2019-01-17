@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2017 Palantir Technologies Inc. All rights reserved.
+ * (c) Copyright 2019 Palantir Technologies Inc. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,47 +22,44 @@ import javax.annotation.Priority;
 import javax.ws.rs.Priorities;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
-import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.Cookie;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
-/**
- * Attempts to extract a {@link UnverifiedJsonWebToken JSON Web Token} from the {@link ContainerRequestContext
- * request's} {@link HttpHeaders#AUTHORIZATION authorization header}, and populates the SLF4J {@link MDC} and the {@link
- * ContainerRequestContext request context} with user id, session id, and token id extracted from the JWT. This filter
- * is best-effort and does not throw an exception in case any of these steps fail.
- */
 @Priority(Priorities.AUTHORIZATION)
-public class BearerTokenLoggingFilter implements ContainerRequestFilter {
+class CookieBearerTokenLoggingFilter implements ContainerRequestFilter {
     private static final Logger log = LoggerFactory.getLogger(BearerTokenLoggingFilter.class);
+    private final String cookie;
 
-    public static final String USER_ID_KEY = "userId";
-    public static final String SESSION_ID_KEY = "sessionId";
-    public static final String TOKEN_ID_KEY = "tokenId";
+    public CookieBearerTokenLoggingFilter(String cookie) {
+        this.cookie = cookie;
+    }
 
     @Override
-    public final void filter(ContainerRequestContext requestContext) {
+    public void filter(ContainerRequestContext requestContext) {
         clearMdc();
 
-        String rawAuthHeader = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
-        if (rawAuthHeader == null) {
-            log.debug("No AuthHeader present on request.");
+        Cookie authCookie = requestContext.getCookies().get(cookie);
+        if (authCookie == null) {
+            log.debug("No auth token present in request cookies.");
             return;
         }
 
-        Optional<UnverifiedJsonWebToken> parsedJwt = UnverifiedJsonWebToken.tryParse(rawAuthHeader);
+        Optional<UnverifiedJsonWebToken> parsedJwt = UnverifiedJsonWebToken.tryParse(authCookie.getValue());
         parsedJwt.ifPresent(jwt -> {
-            setUnverifiedContext(requestContext, USER_ID_KEY, jwt.getUnverifiedUserId());
-            jwt.getUnverifiedSessionId().ifPresent(s -> setUnverifiedContext(requestContext, SESSION_ID_KEY, s));
-            jwt.getUnverifiedTokenId().ifPresent(s -> setUnverifiedContext(requestContext, TOKEN_ID_KEY, s));
+            setUnverifiedContext(requestContext, BearerTokenLoggingFilter.USER_ID_KEY, jwt.getUnverifiedUserId());
+            jwt.getUnverifiedSessionId()
+                    .ifPresent(s -> setUnverifiedContext(requestContext, BearerTokenLoggingFilter.SESSION_ID_KEY, s));
+            jwt.getUnverifiedTokenId()
+                    .ifPresent(s -> setUnverifiedContext(requestContext, BearerTokenLoggingFilter.TOKEN_ID_KEY, s));
         });
     }
 
     private static void clearMdc() {
-        MDC.remove(USER_ID_KEY);
-        MDC.remove(SESSION_ID_KEY);
-        MDC.remove(TOKEN_ID_KEY);
+        MDC.remove(BearerTokenLoggingFilter.USER_ID_KEY);
+        MDC.remove(BearerTokenLoggingFilter.SESSION_ID_KEY);
+        MDC.remove(BearerTokenLoggingFilter.TOKEN_ID_KEY);
     }
 
     private static void setUnverifiedContext(ContainerRequestContext requestContext, String key, String value) {
