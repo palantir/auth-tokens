@@ -28,11 +28,11 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
 @Priority(Priorities.AUTHORIZATION)
-class CookieBearerTokenLoggingFilter implements ContainerRequestFilter {
+class BearerTokenCookieLoggingFilter implements ContainerRequestFilter {
     private static final Logger log = LoggerFactory.getLogger(BearerTokenLoggingFilter.class);
     private final String cookie;
 
-    public CookieBearerTokenLoggingFilter(String cookie) {
+    BearerTokenCookieLoggingFilter(String cookie) {
         this.cookie = cookie;
     }
 
