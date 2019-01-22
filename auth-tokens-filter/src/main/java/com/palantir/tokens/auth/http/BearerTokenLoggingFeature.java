@@ -18,6 +18,8 @@ package com.palantir.tokens.auth.http;
 
 import static java.util.stream.Collectors.toList;
 
+import com.palantir.logsafe.SafeArg;
+import com.palantir.logsafe.exceptions.SafeIllegalStateException;
 import com.palantir.tokens.auth.BearerToken;
 import java.lang.reflect.Parameter;
 import java.util.Arrays;
@@ -46,13 +48,15 @@ public final class BearerTokenLoggingFeature implements DynamicFeature {
                 .collect(toList());
 
         if (authorizationHeaderParams.size() > 1) {
-            throw new IllegalStateException("Multiple parameters annotated with @HeaderParam('Authorization')");
+            throw new SafeIllegalStateException("Multiple parameters annotated with @HeaderParam('Authorization')",
+                    SafeArg.of("class", resourceInfo.getResourceClass()),
+                    SafeArg.of("method", resourceInfo.getResourceMethod()));
         }
 
         if (authorizationHeaderParams.size() == 1) {
-            log.debug("Enabling BearerTokenLoggingFilter",
-                    resourceInfo.getResourceClass(),
-                    resourceInfo.getResourceMethod());
+            log.debug("Enabling BearerTokenLoggingFilter {} {}",
+                    SafeArg.of("class", resourceInfo.getResourceClass()),
+                    SafeArg.of("method", resourceInfo.getResourceMethod()));
             context.register(BearerTokenLoggingFilter.class);
             return;
         }
@@ -63,22 +67,23 @@ public final class BearerTokenLoggingFeature implements DynamicFeature {
                 .collect(toList());
 
         if (cookieParams.size() > 1) {
-            throw new IllegalStateException("Multiple BearerToken parameters annotated with @CookieParam");
+            throw new SafeIllegalStateException("Multiple BearerToken parameters annotated with @CookieParam",
+                    SafeArg.of("class", resourceInfo.getResourceClass()),
+                    SafeArg.of("method", resourceInfo.getResourceMethod()));
         }
 
         if (cookieParams.size() == 1) {
             String cookieName = cookieParams.get(0).getAnnotation(CookieParam.class).value();
-            log.debug("Enabling BearerTokenCookieLoggingFilter",
-                    resourceInfo.getResourceClass(),
-                    resourceInfo.getResourceMethod());
+            log.debug("Enabling BearerTokenCookieLoggingFilter {} {}",
+                    SafeArg.of("class", resourceInfo.getResourceClass()),
+                    SafeArg.of("method", resourceInfo.getResourceMethod()));
             context.register(new BearerTokenCookieLoggingFilter(cookieName));
             return;
         }
 
-        log.debug(
-                "Not adding BearerTokenLoggingFilter or BearerTokenCookieLoggingFilter as no "
-                        + "@HeaderParam or @CookieParam annotated arguments were found",
-                resourceInfo.getResourceClass(),
-                resourceInfo.getResourceMethod());
+        log.debug("Not adding BearerTokenLoggingFilter or BearerTokenCookieLoggingFilter as no "
+                        + "@HeaderParam or @CookieParam annotated arguments were found: {} {}",
+                SafeArg.of("class", resourceInfo.getResourceClass()),
+                SafeArg.of("method", resourceInfo.getResourceMethod()));
     }
 }
