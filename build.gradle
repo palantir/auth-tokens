@@ -57,4 +57,7 @@ subprojects {
             }
         }
     }
+
+    verifyDependencyLocksAreCurrent.dependsOn(generateLock)
+    check.dependsOn(verifyDependencyLocksAreCurrent)
 }
