@@ -22,9 +22,11 @@ import static org.mockito.Mockito.when;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.Appender;
-import ch.qos.logback.core.Layout;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import io.dropwizard.logging.AbstractAppenderFactory;
+import io.dropwizard.logging.async.AsyncAppenderFactory;
+import io.dropwizard.logging.filter.LevelFilterFactory;
+import io.dropwizard.logging.layout.LayoutFactory;
 
 /**
  * An {@link AbstractAppenderFactory} implementation that allows recovery of the appender
@@ -47,8 +49,12 @@ public final class MockAppenderFactory extends AbstractAppenderFactory {
     }
 
     @Override
-    public Appender<ILoggingEvent> build(LoggerContext context, String applicationName,
-            Layout<ILoggingEvent> layout) {
+    public Appender build(
+            LoggerContext context,
+            String applicationName,
+            LayoutFactory layoutFactory,
+            LevelFilterFactory levelFilterFactory,
+            AsyncAppenderFactory asyncAppenderFactory) {
         return MOCK_REQUEST_APPENDER;
     }
 }
