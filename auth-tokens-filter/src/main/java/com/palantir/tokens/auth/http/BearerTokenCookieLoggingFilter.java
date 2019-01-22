@@ -25,7 +25,6 @@ import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.core.Cookie;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
 
 @Priority(Priorities.AUTHORIZATION)
 class BearerTokenCookieLoggingFilter implements ContainerRequestFilter {
@@ -38,7 +37,7 @@ class BearerTokenCookieLoggingFilter implements ContainerRequestFilter {
 
     @Override
     public void filter(ContainerRequestContext requestContext) {
-        clearMdc();
+        Utilities.clearMdc();
 
         Cookie authCookie = requestContext.getCookies().get(cookie);
         if (authCookie == null) {
@@ -47,27 +46,6 @@ class BearerTokenCookieLoggingFilter implements ContainerRequestFilter {
         }
 
         Optional<UnverifiedJsonWebToken> parsedJwt = UnverifiedJsonWebToken.tryParse(authCookie.getValue());
-        parsedJwt.ifPresent(jwt -> {
-            setUnverifiedContext(requestContext, BearerTokenLoggingFilter.USER_ID_KEY, jwt.getUnverifiedUserId());
-            jwt.getUnverifiedSessionId()
-                    .ifPresent(s -> setUnverifiedContext(requestContext, BearerTokenLoggingFilter.SESSION_ID_KEY, s));
-            jwt.getUnverifiedTokenId()
-                    .ifPresent(s -> setUnverifiedContext(requestContext, BearerTokenLoggingFilter.TOKEN_ID_KEY, s));
-        });
-    }
-
-    private static void clearMdc() {
-        MDC.remove(BearerTokenLoggingFilter.USER_ID_KEY);
-        MDC.remove(BearerTokenLoggingFilter.SESSION_ID_KEY);
-        MDC.remove(BearerTokenLoggingFilter.TOKEN_ID_KEY);
-    }
-
-    private static void setUnverifiedContext(ContainerRequestContext requestContext, String key, String value) {
-        MDC.put(key, value);
-        requestContext.setProperty(getRequestPropertyKey(key), value);
-    }
-
-    public static String getRequestPropertyKey(String key) {
-        return "com.palantir.tokens.auth." + key;
+        Utilities.recordUnverifiedJwt(requestContext, parsedJwt);
     }
 }

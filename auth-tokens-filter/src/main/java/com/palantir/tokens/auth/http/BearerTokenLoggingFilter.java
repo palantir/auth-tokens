@@ -37,13 +37,13 @@ import org.slf4j.MDC;
 public class BearerTokenLoggingFilter implements ContainerRequestFilter {
     private static final Logger log = LoggerFactory.getLogger(BearerTokenLoggingFilter.class);
 
-    public static final String USER_ID_KEY = "userId";
-    public static final String SESSION_ID_KEY = "sessionId";
-    public static final String TOKEN_ID_KEY = "tokenId";
+    public static final String USER_ID_KEY = Utilities.Key.USER_ID.getMdcKey();
+    public static final String SESSION_ID_KEY = Utilities.Key.SESSION_ID.getMdcKey();
+    public static final String TOKEN_ID_KEY = Utilities.Key.TOKEN_ID.getMdcKey();
 
     @Override
     public final void filter(ContainerRequestContext requestContext) {
-        clearMdc();
+        Utilities.clearMdc();
 
         String rawAuthHeader = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
         if (rawAuthHeader == null) {
@@ -52,22 +52,7 @@ public class BearerTokenLoggingFilter implements ContainerRequestFilter {
         }
 
         Optional<UnverifiedJsonWebToken> parsedJwt = UnverifiedJsonWebToken.tryParse(rawAuthHeader);
-        parsedJwt.ifPresent(jwt -> {
-            setUnverifiedContext(requestContext, USER_ID_KEY, jwt.getUnverifiedUserId());
-            jwt.getUnverifiedSessionId().ifPresent(s -> setUnverifiedContext(requestContext, SESSION_ID_KEY, s));
-            jwt.getUnverifiedTokenId().ifPresent(s -> setUnverifiedContext(requestContext, TOKEN_ID_KEY, s));
-        });
-    }
-
-    private static void clearMdc() {
-        MDC.remove(USER_ID_KEY);
-        MDC.remove(SESSION_ID_KEY);
-        MDC.remove(TOKEN_ID_KEY);
-    }
-
-    private static void setUnverifiedContext(ContainerRequestContext requestContext, String key, String value) {
-        MDC.put(key, value);
-        requestContext.setProperty(getRequestPropertyKey(key), value);
+        Utilities.recordUnverifiedJwt(requestContext, parsedJwt);
     }
 
     public static String getRequestPropertyKey(String key) {
