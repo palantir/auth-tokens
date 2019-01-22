@@ -22,12 +22,8 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.when;
 
-import com.google.common.io.BaseEncoding;
-import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.HttpHeaders;
 import org.junit.Before;
@@ -43,19 +39,6 @@ public final class BearerTokenLoggingFilterTest {
     private static final String USER_ID_KEY = BearerTokenLoggingFilter.USER_ID_KEY;
     private static final String SESSION_ID_KEY = BearerTokenLoggingFilter.SESSION_ID_KEY;
     private static final String TOKEN_ID_KEY = BearerTokenLoggingFilter.TOKEN_ID_KEY;
-
-    private static final String USER_ID = UUID.randomUUID().toString();
-    private static final String SESSION_ID = UUID.randomUUID().toString();
-    private static final String TOKEN_ID = UUID.randomUUID().toString();
-    private static final String AUTH_HEADER = "Bearer "
-            + "unused."
-            + BaseEncoding.base64Url().omitPadding().encode(
-            ("{"
-                    + "\"sub\": \"" + encodeUuid(USER_ID) + "\","
-                    + "\"sid\": \"" + encodeUuid(SESSION_ID) + "\","
-                    + "\"jti\": \"" + encodeUuid(TOKEN_ID) + "\"}"
-            ).getBytes(StandardCharsets.UTF_8))
-            + ".unused";
 
     @Mock
     private ContainerRequestContext requestContext;
@@ -99,42 +82,42 @@ public final class BearerTokenLoggingFilterTest {
 
     @Test
     public void assertContextPropKeyPrefixIsStable() {
-        when(requestContext.getHeaderString(HttpHeaders.AUTHORIZATION)).thenReturn(AUTH_HEADER);
+        when(requestContext.getHeaderString(HttpHeaders.AUTHORIZATION)).thenReturn(TestConstants.AUTH_HEADER);
         filter.filter(requestContext);
 
-        assertThat(MDC.get(USER_ID_KEY)).isEqualTo(USER_ID);
+        assertThat(MDC.get(USER_ID_KEY)).isEqualTo(TestConstants.USER_ID);
         assertThat(requestContext.getProperty("com.palantir.tokens.auth.userId"))
-                .isEqualTo(USER_ID);
+                .isEqualTo(TestConstants.USER_ID);
     }
 
     @Test
     public void userIdInformationIsSet() {
-        when(requestContext.getHeaderString(HttpHeaders.AUTHORIZATION)).thenReturn(AUTH_HEADER);
+        when(requestContext.getHeaderString(HttpHeaders.AUTHORIZATION)).thenReturn(TestConstants.AUTH_HEADER);
         filter.filter(requestContext);
 
-        assertThat(MDC.get(USER_ID_KEY)).isEqualTo(USER_ID);
+        assertThat(MDC.get(USER_ID_KEY)).isEqualTo(TestConstants.USER_ID);
         assertThat(requestContext.getProperty(BearerTokenLoggingFilter.getRequestPropertyKey(USER_ID_KEY)))
-                .isEqualTo(USER_ID);
+                .isEqualTo(TestConstants.USER_ID);
     }
 
     @Test
     public void sessionIdInformationIsSet() {
-        when(requestContext.getHeaderString(HttpHeaders.AUTHORIZATION)).thenReturn(AUTH_HEADER);
+        when(requestContext.getHeaderString(HttpHeaders.AUTHORIZATION)).thenReturn(TestConstants.AUTH_HEADER);
         filter.filter(requestContext);
 
-        assertThat(MDC.get(SESSION_ID_KEY)).isEqualTo(SESSION_ID);
+        assertThat(MDC.get(SESSION_ID_KEY)).isEqualTo(TestConstants.SESSION_ID);
         assertThat(requestContext.getProperty(BearerTokenLoggingFilter.getRequestPropertyKey(SESSION_ID_KEY)))
-                .isEqualTo(SESSION_ID);
+                .isEqualTo(TestConstants.SESSION_ID);
     }
 
     @Test
     public void tokenIdInformationIsSet() {
-        when(requestContext.getHeaderString(HttpHeaders.AUTHORIZATION)).thenReturn(AUTH_HEADER);
+        when(requestContext.getHeaderString(HttpHeaders.AUTHORIZATION)).thenReturn(TestConstants.AUTH_HEADER);
         filter.filter(requestContext);
 
-        assertThat(MDC.get(TOKEN_ID_KEY)).isEqualTo(TOKEN_ID);
+        assertThat(MDC.get(TOKEN_ID_KEY)).isEqualTo(TestConstants.TOKEN_ID);
         assertThat(requestContext.getProperty(BearerTokenLoggingFilter.getRequestPropertyKey(TOKEN_ID_KEY)))
-                .isEqualTo(TOKEN_ID);
+                .isEqualTo(TestConstants.TOKEN_ID);
     }
 
     private void assertThatMdcIsCleared() {
@@ -147,13 +130,5 @@ public final class BearerTokenLoggingFilterTest {
         assertThat(MDC.get(USER_ID_KEY)).isNull();
         assertThat(MDC.get(SESSION_ID_KEY)).isNull();
         assertThat(MDC.get(TOKEN_ID_KEY)).isNull();
-    }
-
-    private static String encodeUuid(String uuidString) {
-        UUID uuid = UUID.fromString(uuidString);
-        ByteBuffer bb = ByteBuffer.wrap(new byte[16]);
-        bb.putLong(uuid.getMostSignificantBits());
-        bb.putLong(uuid.getLeastSignificantBits());
-        return BaseEncoding.base64().encode(bb.array());
     }
 }
