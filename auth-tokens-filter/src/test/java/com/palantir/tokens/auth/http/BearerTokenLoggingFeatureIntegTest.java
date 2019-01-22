@@ -79,6 +79,16 @@ public class BearerTokenLoggingFeatureIntegTest {
                 .getStatus()).isEqualTo(200);
     }
 
+    @Test
+    public void non_auth_cookie_doesnt_get_logged() {
+        assertThat(target.path("/non-auth-cookie").request()
+                .cookie(new Cookie(
+                        "SOME_COOKIE",
+                        AuthHeader.valueOf(TestConstants.AUTH_HEADER).getBearerToken().toString()))
+                .get()
+                .getStatus()).isEqualTo(200);
+    }
+
     public static final class Server extends Application<Configuration> {
         @Override
         public void run(Configuration configuration, Environment environment) throws Exception {
@@ -89,6 +99,7 @@ public class BearerTokenLoggingFeatureIntegTest {
 
     @Path("/")
     public static final class Resource {
+
         @GET
         @Path("success")
         public boolean success(@HeaderParam(HttpHeaders.AUTHORIZATION) AuthHeader unused) {
@@ -104,6 +115,15 @@ public class BearerTokenLoggingFeatureIntegTest {
             assertThat(MDC.get("userId")).isEqualTo(TestConstants.USER_ID);
             assertThat(MDC.get("sessionId")).isEqualTo(TestConstants.SESSION_ID);
             assertThat(MDC.get("tokenId")).isEqualTo(TestConstants.TOKEN_ID);
+            return true;
+        }
+
+        @GET
+        @Path("non-auth-cookie")
+        public boolean nonAuthCookie(@CookieParam("NON_AUTH_COOKIE") Integer unused) {
+            assertThat(MDC.get("userId")).isNull();
+            assertThat(MDC.get("sessionId")).isNull();
+            assertThat(MDC.get("tokenId")).isNull();
             return true;
         }
 
