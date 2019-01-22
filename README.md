@@ -32,6 +32,14 @@ dependencies {
 }
 ```
 
+In your server's initialize method:
+```java
+environment.jersey().register(BearerTokenLoggingFeature.class);
+```
+
+This is a jax-rs DynamicFeature which sets up either the `BearerTokenLoggingFilter` or the `BearerTokenCookieLoggingFilter`
+in front of each of your endpoints, depending on whether they have a `@HeaderParam("Authorization")` or a `@CookieParam(*) BearerToken`. If your endpoint has neither of these parameters then no filter will be added.
+
 ## Contributing
 
 Before working on the code, if you plan to contribute changes, please read the [CONTRIBUTING](CONTRIBUTING.md) document.

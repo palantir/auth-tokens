@@ -8,6 +8,7 @@ dependencies {
     compile "org.eclipse.jetty:jetty-security"
     compile "org.eclipse.jetty:jetty-server"
     compile "org.slf4j:slf4j-api"
+    implementation "com.palantir.safe-logging:preconditions"
 
     testCompile "io.dropwizard:dropwizard-testing"
     testCompile "junit:junit"

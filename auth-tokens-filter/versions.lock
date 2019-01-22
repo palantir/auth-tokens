@@ -1,21 +1,36 @@
 {
     "compileClasspath": {
         "com.fasterxml.jackson.core:jackson-annotations": {
-            "locked": "2.6.7",
+            "locked": "2.8.9",
             "transitive": [
                 "com.fasterxml.jackson.core:jackson-databind"
             ]
         },
         "com.fasterxml.jackson.core:jackson-core": {
-            "locked": "2.6.7",
+            "locked": "2.8.9",
             "transitive": [
                 "com.fasterxml.jackson.core:jackson-databind"
             ]
         },
         "com.fasterxml.jackson.core:jackson-databind": {
-            "locked": "2.6.7",
+            "locked": "2.8.9",
             "transitive": [
                 "com.palantir.tokens:auth-tokens"
+            ]
+        },
+        "com.google.errorprone:error_prone_annotations": {
+            "locked": "2.3.2",
+            "transitive": [
+                "com.palantir.safe-logging:safe-logging"
+            ]
+        },
+        "com.palantir.safe-logging:preconditions": {
+            "locked": "1.8.0"
+        },
+        "com.palantir.safe-logging:safe-logging": {
+            "locked": "1.8.0",
+            "transitive": [
+                "com.palantir.safe-logging:preconditions"
             ]
         },
         "com.palantir.tokens:auth-tokens": {
@@ -34,29 +49,29 @@
             "locked": "2.0.1"
         },
         "org.eclipse.jetty:jetty-http": {
-            "locked": "9.4.5.v20170502",
+            "locked": "9.4.6.v20170531",
             "transitive": [
                 "org.eclipse.jetty:jetty-server"
             ]
         },
         "org.eclipse.jetty:jetty-io": {
-            "locked": "9.4.5.v20170502",
+            "locked": "9.4.6.v20170531",
             "transitive": [
                 "org.eclipse.jetty:jetty-http",
                 "org.eclipse.jetty:jetty-server"
             ]
         },
         "org.eclipse.jetty:jetty-security": {
-            "locked": "9.4.5.v20170502"
+            "locked": "9.4.6.v20170531"
         },
         "org.eclipse.jetty:jetty-server": {
-            "locked": "9.4.5.v20170502",
+            "locked": "9.4.6.v20170531",
             "transitive": [
                 "org.eclipse.jetty:jetty-security"
             ]
         },
         "org.eclipse.jetty:jetty-util": {
-            "locked": "9.4.5.v20170502",
+            "locked": "9.4.6.v20170531",
             "transitive": [
                 "org.eclipse.jetty:jetty-http",
                 "org.eclipse.jetty:jetty-io"
@@ -71,19 +86,19 @@
     },
     "runtime": {
         "com.fasterxml.jackson.core:jackson-annotations": {
-            "locked": "2.6.7",
+            "locked": "2.8.9",
             "transitive": [
                 "com.fasterxml.jackson.core:jackson-databind"
             ]
         },
         "com.fasterxml.jackson.core:jackson-core": {
-            "locked": "2.6.7",
+            "locked": "2.8.9",
             "transitive": [
                 "com.fasterxml.jackson.core:jackson-databind"
             ]
         },
         "com.fasterxml.jackson.core:jackson-databind": {
-            "locked": "2.6.7",
+            "locked": "2.8.9",
             "transitive": [
                 "com.palantir.tokens:auth-tokens"
             ]
@@ -104,29 +119,29 @@
             "locked": "2.0.1"
         },
         "org.eclipse.jetty:jetty-http": {
-            "locked": "9.4.5.v20170502",
+            "locked": "9.4.6.v20170531",
             "transitive": [
                 "org.eclipse.jetty:jetty-server"
             ]
         },
         "org.eclipse.jetty:jetty-io": {
-            "locked": "9.4.5.v20170502",
+            "locked": "9.4.6.v20170531",
             "transitive": [
                 "org.eclipse.jetty:jetty-http",
                 "org.eclipse.jetty:jetty-server"
             ]
         },
         "org.eclipse.jetty:jetty-security": {
-            "locked": "9.4.5.v20170502"
+            "locked": "9.4.6.v20170531"
         },
         "org.eclipse.jetty:jetty-server": {
-            "locked": "9.4.5.v20170502",
+            "locked": "9.4.6.v20170531",
             "transitive": [
                 "org.eclipse.jetty:jetty-security"
             ]
         },
         "org.eclipse.jetty:jetty-util": {
-            "locked": "9.4.5.v20170502",
+            "locked": "9.4.6.v20170531",
             "transitive": [
                 "org.eclipse.jetty:jetty-http",
                 "org.eclipse.jetty:jetty-io"
