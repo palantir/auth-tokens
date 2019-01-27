@@ -37,10 +37,6 @@ import org.slf4j.MDC;
 public class BearerTokenLoggingFilter implements ContainerRequestFilter {
     private static final Logger log = LoggerFactory.getLogger(BearerTokenLoggingFilter.class);
 
-    public static final String USER_ID_KEY = Utilities.Key.USER_ID.getMdcKey();
-    public static final String SESSION_ID_KEY = Utilities.Key.SESSION_ID.getMdcKey();
-    public static final String TOKEN_ID_KEY = Utilities.Key.TOKEN_ID.getMdcKey();
-
     @Override
     public final void filter(ContainerRequestContext requestContext) {
         Utilities.clearMdc();
@@ -53,9 +49,5 @@ public class BearerTokenLoggingFilter implements ContainerRequestFilter {
 
         Optional<UnverifiedJsonWebToken> parsedJwt = UnverifiedJsonWebToken.tryParse(rawAuthHeader);
         Utilities.recordUnverifiedJwt(requestContext, parsedJwt);
-    }
-
-    public static String getRequestPropertyKey(String key) {
-        return "com.palantir.tokens.auth." + key;
     }
 }
