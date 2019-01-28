@@ -55,6 +55,12 @@ public class BearerTokenLoggingFilter implements ContainerRequestFilter {
         Utilities.recordUnverifiedJwt(requestContext, parsedJwt);
     }
 
+    /**
+     * Construct mdc key for property.
+     *
+     * @deprecated MDC keys are considered private. Extract information directly from authorization in your application.
+     */
+    @Deprecated
     public static String getRequestPropertyKey(String key) {
         return "com.palantir.tokens.auth." + key;
     }

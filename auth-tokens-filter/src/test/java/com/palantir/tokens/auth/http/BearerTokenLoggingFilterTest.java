@@ -36,9 +36,9 @@ import org.slf4j.MDC;
 @RunWith(MockitoJUnitRunner.class)
 public final class BearerTokenLoggingFilterTest {
 
-    private static final String USER_ID_KEY = BearerTokenLoggingFilter.USER_ID_KEY;
-    private static final String SESSION_ID_KEY = BearerTokenLoggingFilter.SESSION_ID_KEY;
-    private static final String TOKEN_ID_KEY = BearerTokenLoggingFilter.TOKEN_ID_KEY;
+    private static final String USER_ID_KEY = Utilities.Key.USER_ID.getMdcKey();
+    private static final String SESSION_ID_KEY = Utilities.Key.SESSION_ID.getMdcKey();
+    private static final String TOKEN_ID_KEY = Utilities.Key.TOKEN_ID.getMdcKey();
 
     @Mock
     private ContainerRequestContext requestContext;
@@ -96,7 +96,7 @@ public final class BearerTokenLoggingFilterTest {
         filter.filter(requestContext);
 
         assertThat(MDC.get(USER_ID_KEY)).isEqualTo(TestConstants.USER_ID);
-        assertThat(requestContext.getProperty(BearerTokenLoggingFilter.getRequestPropertyKey(USER_ID_KEY)))
+        assertThat(requestContext.getProperty(Utilities.getRequestPropertyKey(USER_ID_KEY)))
                 .isEqualTo(TestConstants.USER_ID);
     }
 
@@ -106,7 +106,7 @@ public final class BearerTokenLoggingFilterTest {
         filter.filter(requestContext);
 
         assertThat(MDC.get(SESSION_ID_KEY)).isEqualTo(TestConstants.SESSION_ID);
-        assertThat(requestContext.getProperty(BearerTokenLoggingFilter.getRequestPropertyKey(SESSION_ID_KEY)))
+        assertThat(requestContext.getProperty(Utilities.getRequestPropertyKey(SESSION_ID_KEY)))
                 .isEqualTo(TestConstants.SESSION_ID);
     }
 
@@ -116,7 +116,7 @@ public final class BearerTokenLoggingFilterTest {
         filter.filter(requestContext);
 
         assertThat(MDC.get(TOKEN_ID_KEY)).isEqualTo(TestConstants.TOKEN_ID);
-        assertThat(requestContext.getProperty(BearerTokenLoggingFilter.getRequestPropertyKey(TOKEN_ID_KEY)))
+        assertThat(requestContext.getProperty(Utilities.getRequestPropertyKey(TOKEN_ID_KEY)))
                 .isEqualTo(TestConstants.TOKEN_ID);
     }
 

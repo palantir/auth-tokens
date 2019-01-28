@@ -52,6 +52,10 @@ final class Utilities {
         }
     }
 
+    static String getRequestPropertyKey(String key) {
+        return "com.palantir.tokens.auth." + key;
+    }
+
     enum Key {
         USER_ID("userId"),
         SESSION_ID("sessionId"),
@@ -62,7 +66,7 @@ final class Utilities {
 
         Key(String mdc) {
             this.mdc = mdc;
-            this.context = BearerTokenLoggingFilter.getRequestPropertyKey(mdc);
+            this.context = getRequestPropertyKey(mdc);
         }
 
         public String getMdcKey() {
