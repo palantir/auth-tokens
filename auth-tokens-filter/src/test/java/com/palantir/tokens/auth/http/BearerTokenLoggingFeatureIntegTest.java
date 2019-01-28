@@ -24,6 +24,8 @@ import io.dropwizard.Application;
 import io.dropwizard.Configuration;
 import io.dropwizard.setup.Environment;
 import io.dropwizard.testing.junit.DropwizardAppRule;
+import java.util.Arrays;
+import java.util.Collection;
 import javax.ws.rs.CookieParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
@@ -36,9 +38,25 @@ import org.glassfish.jersey.client.JerseyClientBuilder;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.slf4j.MDC;
 
+@RunWith(Parameterized.class)
 public class BearerTokenLoggingFeatureIntegTest {
+
+    @Parameterized.Parameters
+    public static Collection<Object[]> data() {
+        return Arrays.asList(new Object[][] {
+                {"/direct"}, {"/inherited"}
+        });
+    }
+
+    private final String pathPrefix;
+
+    public BearerTokenLoggingFeatureIntegTest(String pathPrefix) {
+        this.pathPrefix = pathPrefix;
+    }
 
     @ClassRule
     public static final DropwizardAppRule<Configuration> app = new DropwizardAppRule<>(Server.class);
@@ -55,7 +73,7 @@ public class BearerTokenLoggingFeatureIntegTest {
 
     @Test
     public void mdc_values_should_be_populated_from_http_header() {
-        assertThat(target.path("/success").request()
+        assertThat(target.path(pathPrefix + "/success").request()
                 .header("Authorization", TestConstants.AUTH_HEADER)
                 .get()
                 .getStatus()).isEqualTo(200);
@@ -63,7 +81,7 @@ public class BearerTokenLoggingFeatureIntegTest {
 
     @Test
     public void mdc_values_should_be_populated_when_cookie_is_a_bearertoken() {
-        assertThat(target.path("/cookies").request()
+        assertThat(target.path(pathPrefix + "/cookies").request()
                 .cookie(new Cookie(
                         "SOME_COOKIE",
                         AuthHeader.valueOf(TestConstants.AUTH_HEADER).getBearerToken().toString()))
@@ -73,7 +91,7 @@ public class BearerTokenLoggingFeatureIntegTest {
 
     @Test
     public void auth_header_passed_to_no_header_endpoint_is_not_picked_up() {
-        assertThat(target.path("/no-header").request()
+        assertThat(target.path(pathPrefix + "/no-header").request()
                 .header("Authorization", TestConstants.AUTH_HEADER)
                 .get()
                 .getStatus()).isEqualTo(200);
@@ -81,7 +99,7 @@ public class BearerTokenLoggingFeatureIntegTest {
 
     @Test
     public void non_auth_cookie_doesnt_get_logged() {
-        assertThat(target.path("/non-auth-cookie").request()
+        assertThat(target.path(pathPrefix + "/non-auth-cookie").request()
                 .cookie(new Cookie(
                         "SOME_COOKIE",
                         AuthHeader.valueOf(TestConstants.AUTH_HEADER).getBearerToken().toString()))
@@ -91,14 +109,64 @@ public class BearerTokenLoggingFeatureIntegTest {
 
     public static final class Server extends Application<Configuration> {
         @Override
-        public void run(Configuration configuration, Environment environment) throws Exception {
-            environment.jersey().register(new Resource());
+        public void run(Configuration configuration, Environment environment) {
+            environment.jersey().register(new ResourceImpl());
+            environment.jersey().register(new DirectResource());
             environment.jersey().register(BearerTokenLoggingFeature.class);
         }
     }
 
-    @Path("/")
-    public static final class Resource {
+    @Path("/inherited")
+    interface Resource {
+        @GET
+        @Path("success")
+        boolean success(@HeaderParam(HttpHeaders.AUTHORIZATION) AuthHeader unused);
+
+        @GET
+        @Path("cookies")
+        boolean cookies(@CookieParam("SOME_COOKIE") BearerToken unused);
+
+        @GET
+        @Path("non-auth-cookie")
+        boolean nonAuthCookie(@CookieParam("NON_AUTH_COOKIE") Integer unused);
+
+        @GET
+        @Path("no-header")
+        boolean noHeader();
+    }
+
+    public static final class ResourceImpl implements Resource {
+        public boolean success(AuthHeader unused) {
+            assertThat(MDC.get("userId")).isEqualTo(TestConstants.USER_ID);
+            assertThat(MDC.get("sessionId")).isEqualTo(TestConstants.SESSION_ID);
+            assertThat(MDC.get("tokenId")).isEqualTo(TestConstants.TOKEN_ID);
+            return true;
+        }
+
+        public boolean cookies(BearerToken unused) {
+            assertThat(MDC.get("userId")).isEqualTo(TestConstants.USER_ID);
+            assertThat(MDC.get("sessionId")).isEqualTo(TestConstants.SESSION_ID);
+            assertThat(MDC.get("tokenId")).isEqualTo(TestConstants.TOKEN_ID);
+            return true;
+        }
+
+        public boolean nonAuthCookie(Integer unused) {
+            assertThat(MDC.get("userId")).isNull();
+            assertThat(MDC.get("sessionId")).isNull();
+            assertThat(MDC.get("tokenId")).isNull();
+            return true;
+        }
+
+        public boolean noHeader() {
+            assertThat(MDC.get("userId")).isNull();
+            assertThat(MDC.get("sessionId")).isNull();
+            assertThat(MDC.get("tokenId")).isNull();
+            return true;
+        }
+    }
+
+    @Path("/direct")
+    public static final class DirectResource {
 
         @GET
         @Path("success")
