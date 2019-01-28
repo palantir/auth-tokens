@@ -117,7 +117,7 @@ public class BearerTokenLoggingFeatureIntegTest {
     }
 
     @Path("/inherited")
-    interface Resource {
+    public interface Resource {
         @GET
         @Path("success")
         boolean success(@HeaderParam(HttpHeaders.AUTHORIZATION) AuthHeader unused);
