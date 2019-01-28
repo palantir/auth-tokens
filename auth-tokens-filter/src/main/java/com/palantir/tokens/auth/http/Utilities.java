@@ -52,7 +52,7 @@ final class Utilities {
         }
     }
 
-    public static String getRequestPropertyKey(String key) {
+    static String getRequestPropertyKey(String key) {
         return "com.palantir.tokens.auth." + key;
     }
 
