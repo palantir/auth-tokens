@@ -40,42 +40,10 @@
             "locked": "1.2"
         },
         "javax.servlet:javax.servlet-api": {
-            "locked": "3.1.0",
-            "transitive": [
-                "org.eclipse.jetty:jetty-server"
-            ]
+            "locked": "3.1.0"
         },
         "javax.ws.rs:javax.ws.rs-api": {
             "locked": "2.0.1"
-        },
-        "org.eclipse.jetty:jetty-http": {
-            "locked": "9.4.6.v20170531",
-            "transitive": [
-                "org.eclipse.jetty:jetty-server"
-            ]
-        },
-        "org.eclipse.jetty:jetty-io": {
-            "locked": "9.4.6.v20170531",
-            "transitive": [
-                "org.eclipse.jetty:jetty-http",
-                "org.eclipse.jetty:jetty-server"
-            ]
-        },
-        "org.eclipse.jetty:jetty-security": {
-            "locked": "9.4.6.v20170531"
-        },
-        "org.eclipse.jetty:jetty-server": {
-            "locked": "9.4.6.v20170531",
-            "transitive": [
-                "org.eclipse.jetty:jetty-security"
-            ]
-        },
-        "org.eclipse.jetty:jetty-util": {
-            "locked": "9.4.6.v20170531",
-            "transitive": [
-                "org.eclipse.jetty:jetty-http",
-                "org.eclipse.jetty:jetty-io"
-            ]
         },
         "org.slf4j:slf4j-api": {
             "locked": "1.7.25",
@@ -110,42 +78,10 @@
             "locked": "1.2"
         },
         "javax.servlet:javax.servlet-api": {
-            "locked": "3.1.0",
-            "transitive": [
-                "org.eclipse.jetty:jetty-server"
-            ]
+            "locked": "3.1.0"
         },
         "javax.ws.rs:javax.ws.rs-api": {
             "locked": "2.0.1"
-        },
-        "org.eclipse.jetty:jetty-http": {
-            "locked": "9.4.6.v20170531",
-            "transitive": [
-                "org.eclipse.jetty:jetty-server"
-            ]
-        },
-        "org.eclipse.jetty:jetty-io": {
-            "locked": "9.4.6.v20170531",
-            "transitive": [
-                "org.eclipse.jetty:jetty-http",
-                "org.eclipse.jetty:jetty-server"
-            ]
-        },
-        "org.eclipse.jetty:jetty-security": {
-            "locked": "9.4.6.v20170531"
-        },
-        "org.eclipse.jetty:jetty-server": {
-            "locked": "9.4.6.v20170531",
-            "transitive": [
-                "org.eclipse.jetty:jetty-security"
-            ]
-        },
-        "org.eclipse.jetty:jetty-util": {
-            "locked": "9.4.6.v20170531",
-            "transitive": [
-                "org.eclipse.jetty:jetty-http",
-                "org.eclipse.jetty:jetty-io"
-            ]
         },
         "org.slf4j:slf4j-api": {
             "locked": "1.7.25",
