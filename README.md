@@ -1,3 +1,7 @@
+<p align="right">
+<a href="https://autorelease.general.dmz.palantir.tech/palantir/auth-tokens"><img src="https://img.shields.io/badge/Perform%20an-Autorelease-success.svg" alt="Autorelease"></a>
+</p>
+
 [![Circle CI](https://circleci.com/gh/palantir/auth-tokens.svg?style=shield)](https://circleci.com/gh/palantir/auth-tokens)
 [ ![Download](https://api.bintray.com/packages/palantir/releases/auth-tokens/images/download.svg) ](https://bintray.com/palantir/releases/auth-tokens/_latestVersion)
 
