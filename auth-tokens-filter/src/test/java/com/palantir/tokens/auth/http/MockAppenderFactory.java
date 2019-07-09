@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+// CHECKSTYLE.OFF: BanLoggingImplementations
+
 package com.palantir.tokens.auth.http;
 
 import static org.mockito.Mockito.mock;
