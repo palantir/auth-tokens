@@ -15,6 +15,21 @@
         "com.fasterxml.jackson.core:jackson-databind": {
             "locked": "2.8.9"
         },
+        "com.google.errorprone:error_prone_annotations": {
+            "locked": "2.3.2",
+            "transitive": [
+                "com.palantir.safe-logging:safe-logging"
+            ]
+        },
+        "com.palantir.safe-logging:preconditions": {
+            "locked": "1.8.0"
+        },
+        "com.palantir.safe-logging:safe-logging": {
+            "locked": "1.8.0",
+            "transitive": [
+                "com.palantir.safe-logging:preconditions"
+            ]
+        },
         "org.immutables:value": {
             "locked": "2.5.3"
         },

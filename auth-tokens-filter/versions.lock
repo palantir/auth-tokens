@@ -71,6 +71,24 @@
                 "com.palantir.tokens:auth-tokens"
             ]
         },
+        "com.google.errorprone:error_prone_annotations": {
+            "locked": "2.3.2",
+            "transitive": [
+                "com.palantir.safe-logging:safe-logging"
+            ]
+        },
+        "com.palantir.safe-logging:preconditions": {
+            "locked": "1.8.0",
+            "transitive": [
+                "com.palantir.tokens:auth-tokens"
+            ]
+        },
+        "com.palantir.safe-logging:safe-logging": {
+            "locked": "1.8.0",
+            "transitive": [
+                "com.palantir.safe-logging:preconditions"
+            ]
+        },
         "com.palantir.tokens:auth-tokens": {
             "project": true
         },
