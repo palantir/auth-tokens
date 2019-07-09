@@ -18,6 +18,7 @@ package com.palantir.tokens.auth;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+import com.palantir.logsafe.exceptions.SafeIllegalArgumentException;
 import java.security.MessageDigest;
 import java.util.BitSet;
 import org.immutables.value.Value;
@@ -72,7 +73,7 @@ public abstract class BearerToken {
         AuthTokensPreconditions.checkArgument(!token.isEmpty(), "BearerToken cannot be empty");
         if (!isValidBearerToken(token)) {
             log.trace("Error parsing BearerToken, must match pattern {}: {}", VALIDATION_PATTERN_STRING, token);
-            throw new IllegalArgumentException("BearerToken must match pattern " + VALIDATION_PATTERN_STRING);
+            throw new SafeIllegalArgumentException("BearerToken must match pattern " + VALIDATION_PATTERN_STRING);
         }
         return ImmutableBearerToken.of(token);
     }

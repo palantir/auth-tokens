@@ -136,28 +136,28 @@ public class BearerTokenLoggingFeatureIntegTest {
     }
 
     public static final class ResourceImpl implements Resource {
-        public boolean success(AuthHeader unused) {
+        @Override public boolean success(AuthHeader unused) {
             assertThat(MDC.get("userId")).isEqualTo(TestConstants.USER_ID);
             assertThat(MDC.get("sessionId")).isEqualTo(TestConstants.SESSION_ID);
             assertThat(MDC.get("tokenId")).isEqualTo(TestConstants.TOKEN_ID);
             return true;
         }
 
-        public boolean cookies(BearerToken unused) {
+        @Override public boolean cookies(BearerToken unused) {
             assertThat(MDC.get("userId")).isEqualTo(TestConstants.USER_ID);
             assertThat(MDC.get("sessionId")).isEqualTo(TestConstants.SESSION_ID);
             assertThat(MDC.get("tokenId")).isEqualTo(TestConstants.TOKEN_ID);
             return true;
         }
 
-        public boolean nonAuthCookie(Integer unused) {
+        @Override public boolean nonAuthCookie(Integer unused) {
             assertThat(MDC.get("userId")).isNull();
             assertThat(MDC.get("sessionId")).isNull();
             assertThat(MDC.get("tokenId")).isNull();
             return true;
         }
 
-        public boolean noHeader() {
+        @Override public boolean noHeader() {
             assertThat(MDC.get("userId")).isNull();
             assertThat(MDC.get("sessionId")).isNull();
             assertThat(MDC.get("tokenId")).isNull();
