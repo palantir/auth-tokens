@@ -21,6 +21,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
+import com.palantir.logsafe.exceptions.SafeIllegalArgumentException;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Base64;
@@ -123,7 +124,7 @@ public abstract class UnverifiedJsonWebToken {
         try {
             return READER.readValue(Base64.getDecoder().decode(payload));
         } catch (IOException e) {
-            throw new IllegalArgumentException("Invalid JWT: cannot parse payload", e);
+            throw new SafeIllegalArgumentException("Invalid JWT: cannot parse payload", e);
         }
     }
 
