@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+// CHECKSTYLE.OFF: BanLoggingImplementations
+
 package com.palantir.tokens.auth.http;
 
 import static org.mockito.Mockito.mock;
@@ -37,7 +39,6 @@ import io.dropwizard.logging.layout.LayoutFactory;
  * but does not otherwise expose a way to get a handle on the logger itself.
  */
 @JsonTypeName("mock")
-@SuppressWarnings("checkstyle:BanLoggingImplementations")
 public final class MockAppenderFactory extends AbstractAppenderFactory {
 
     private static final Appender<ILoggingEvent> MOCK_REQUEST_APPENDER = setup();
