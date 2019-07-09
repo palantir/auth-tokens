@@ -1,4 +1,4 @@
-rootProject.name = 'auth-tokens'
+rootProject.name = 'auth-tokens-root'
 
 include 'auth-tokens'
 include 'auth-tokens-filter'
