@@ -58,12 +58,6 @@ public final class BearerTokenLoggingFilterTest {
 
         doAnswer(invocation -> {
             Object[] args = invocation.getArguments();
-            requestProperties.remove(args[0]);
-            return null;
-        }).when(requestContext).removeProperty(anyString());
-
-        doAnswer(invocation -> {
-            Object[] args = invocation.getArguments();
             requestProperties.put((String) args[0], args[1]);
             return null;
         }).when(requestContext).setProperty(anyString(), anyObject());
