@@ -14,8 +14,11 @@ buildscript {
     }
 }
 
-apply plugin: 'com.palantir.baseline'
-apply plugin: 'com.palantir.git-version'
+plugins {
+    id 'com.palantir.consistent-versions' version '1.9.2'
+    id 'com.palantir.baseline' version '0.65.0'
+    id 'com.palantir.git-version' version '0.11.0'
+}
 
 allprojects {
     group 'com.palantir.tokens'
@@ -33,31 +36,4 @@ subprojects {
     apply plugin: 'org.inferred.processors'
 
     sourceCompatibility = 1.8
-    if (gradle.startParameter.taskNames.find {
-        it.endsWith('verifyDependencyLocksAreCurrent') || it.endsWith('build')}) {
-        gradle.startParameter.setTaskNames(gradle.startParameter.taskNames + ['generateLock'])
-    }
-
-    apply plugin: 'nebula.dependency-lock'
-    dependencyLock {
-        includeTransitives = true
-        lockFile = 'versions.lock'
-        configurationNames = ['runtime', 'compileClasspath']
-    }
-    task verifyDependencyLocksAreCurrent {
-        doLast {
-            def expectedDependencies = tasks.saveLock.getOutputLock()
-            def actualDependencies = tasks.saveLock.getGeneratedLock()
-            def digester = java.security.MessageDigest.getInstance('SHA')
-            logger.info("Verifying integrity of dependency locks: {} vs {}", expectedDependencies, actualDependencies)
-            if (digester.digest(expectedDependencies.bytes) != digester.digest(actualDependencies.bytes)) {
-                throw new GradleException("The dependencies of project " + project.name + " do not match the expected "
-                    + "dependencies recorded in " + expectedDependencies + ". "
-                    + "Run `./gradlew generateLock saveLock` and commit the updated version.lock files")
-            }
-        }
-    }
-
-    verifyDependencyLocksAreCurrent.dependsOn(generateLock)
-    check.dependsOn(verifyDependencyLocksAreCurrent)
 }
