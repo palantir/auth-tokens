@@ -1,0 +1,5 @@
+type: improvement
+improvement:
+  description: Use safe-loggable log arguments and preconditions everywhere.
+  links:
+  - https://github.com/palantir/auth-tokens/pull/145
