@@ -21,10 +21,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
+import com.google.common.base.Splitter;
+import com.palantir.logsafe.Preconditions;
+import com.palantir.logsafe.SafeArg;
 import com.palantir.logsafe.exceptions.SafeIllegalArgumentException;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Base64;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import org.immutables.value.Value;
@@ -106,13 +110,13 @@ public abstract class UnverifiedJsonWebToken {
      * An anticipated use of this class is making a best-effort user id extraction for logging.
      */
     public static UnverifiedJsonWebToken of(BearerToken token) {
-        String[] segments = token.getToken().split("\\.");
-        AuthTokensPreconditions.checkArgument(
-                segments.length == 3,
-                "Invalid JWT: expected 3 segments, found %s",
-                segments.length);
+        List<String> segments = Splitter.on('.').splitToList(token.getToken());
+        Preconditions.checkArgument(
+                segments.size() == 3,
+                "Invalid JWT: expected 3 segments",
+                SafeArg.of("segmentsCount", segments.size()));
 
-        JwtPayload payload = extractPayload(segments[1]);
+        JwtPayload payload = extractPayload(segments.get(1));
 
         return ImmutableUnverifiedJsonWebToken.of(
                 decodeUuidBytes(payload.sub),
@@ -134,10 +138,10 @@ public abstract class UnverifiedJsonWebToken {
      * Palantir stores UUIDs in this format to optimize on shorter JWTs.
      */
     private static String decodeUuidBytes(byte[] bytes) {
-        AuthTokensPreconditions.checkArgument(
+        Preconditions.checkArgument(
                 bytes.length == 16,
-                "Invalid JWT: cannot decode UUID, require 16 bytes, found %s",
-                bytes.length);
+                "Invalid JWT: cannot decode UUID, require 16 bytes",
+                SafeArg.of("bytesLength", bytes.length));
         ByteBuffer byteBuffer = ByteBuffer.wrap(bytes);
         long high = byteBuffer.getLong();
         long low = byteBuffer.getLong();
