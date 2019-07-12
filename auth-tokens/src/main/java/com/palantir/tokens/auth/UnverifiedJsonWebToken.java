@@ -109,10 +109,12 @@ public abstract class UnverifiedJsonWebToken {
      */
     public static UnverifiedJsonWebToken of(BearerToken token) {
         String[] segments = token.getToken().split("\\.");
-        Preconditions.checkArgument(
-                segments.length == 3,
-                "Invalid JWT: expected 3 segments",
-                SafeArg.of("segmentsCount", segments.length));
+
+        // Avoid creating Arg on the hot path
+        if (segments.length != 3) {
+            throw new SafeIllegalArgumentException("Invalid JWT: expected 3 segments",
+                    SafeArg.of("segmentsCount", segments.length));
+        }
 
         JwtPayload payload = extractPayload(segments[1]);
 
