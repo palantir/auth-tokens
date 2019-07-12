@@ -19,6 +19,8 @@ package com.palantir.tokens.auth;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+import com.palantir.logsafe.SafeArg;
+import com.palantir.logsafe.testing.Assertions;
 import java.util.Optional;
 import org.junit.Test;
 
@@ -87,22 +89,18 @@ public final class UnverifiedJsonWebTokenTests {
 
     @Test
     public void invalidJwt_invalidNumberOfSegments() {
-        try {
-            UnverifiedJsonWebToken.of(INVALID_BEARER_TOKEN);
-            fail();
-        } catch (RuntimeException e) {
-            assertEquals("Invalid JWT: expected 3 segments, found 1", e.getMessage());
-        }
+        Assertions
+                .assertThatLoggableExceptionThrownBy(() -> UnverifiedJsonWebToken.of(INVALID_BEARER_TOKEN))
+                .hasLogMessage("Invalid JWT: expected 3 segments")
+                .hasExactlyArgs(SafeArg.of("segmentsCount", 1));
     }
 
     @Test
     public void invalidJwt_invalidPayloadToken() {
-        try {
-            UnverifiedJsonWebToken.of(INVALID_PAYLOAD_TOKEN);
-            fail();
-        } catch (RuntimeException e) {
-            assertEquals("Invalid JWT: cannot parse payload", e.getMessage());
-        }
+        Assertions
+                .assertThatLoggableExceptionThrownBy(() -> UnverifiedJsonWebToken.of(INVALID_PAYLOAD_TOKEN))
+                .hasLogMessage("Invalid JWT: cannot parse payload")
+                .hasExactlyArgs();
     }
 
     private void assertValidApiToken(UnverifiedJsonWebToken token) {
