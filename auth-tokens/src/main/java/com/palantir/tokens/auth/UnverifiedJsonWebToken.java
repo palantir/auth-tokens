@@ -112,8 +112,8 @@ public abstract class UnverifiedJsonWebToken {
 
         // Avoid creating Arg on the hot path
         if (segments.length != 3) {
-            throw new SafeIllegalArgumentException("Invalid JWT: expected 3 segments",
-                    SafeArg.of("segmentsCount", segments.length));
+            throw new SafeIllegalArgumentException(
+                    "Invalid JWT: expected 3 segments", SafeArg.of("segmentsCount", segments.length));
         }
 
         JwtPayload payload = extractPayload(segments[1]);
