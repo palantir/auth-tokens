@@ -18,6 +18,8 @@ package com.palantir.tokens.auth;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+import com.palantir.logsafe.Preconditions;
+import com.palantir.logsafe.SafeArg;
 import com.palantir.logsafe.exceptions.SafeIllegalArgumentException;
 import java.security.MessageDigest;
 import java.util.BitSet;
@@ -69,11 +71,11 @@ public abstract class BearerToken {
 
     @JsonCreator
     public static BearerToken valueOf(String token) {
-        AuthTokensPreconditions.checkArgument(token != null, "BearerToken cannot be null");
-        AuthTokensPreconditions.checkArgument(!token.isEmpty(), "BearerToken cannot be empty");
+        Preconditions.checkArgument(token != null, "BearerToken cannot be null");
+        Preconditions.checkArgument(!token.isEmpty(), "BearerToken cannot be empty");
         if (!isValidBearerToken(token)) {
-            log.trace("Error parsing BearerToken, must match pattern {}: {}", VALIDATION_PATTERN_STRING, token);
-            throw new SafeIllegalArgumentException("BearerToken must match pattern " + VALIDATION_PATTERN_STRING);
+            throw new SafeIllegalArgumentException("BearerToken must match pattern",
+                    SafeArg.of("validationPattern", VALIDATION_PATTERN_STRING));
         }
         return ImmutableBearerToken.of(token);
     }

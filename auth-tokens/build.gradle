@@ -11,5 +11,6 @@ dependencies {
     testCompile "com.google.code.findbugs:annotations"
     testCompile "junit:junit"
     testCompile "org.assertj:assertj-core"
+    testCompile 'com.palantir.safe-logging:preconditions-assertj'
 }
 

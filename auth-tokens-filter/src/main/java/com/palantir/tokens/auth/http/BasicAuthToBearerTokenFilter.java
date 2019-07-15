@@ -16,8 +16,9 @@
 
 package com.palantir.tokens.auth.http;
 
+import com.palantir.logsafe.Preconditions;
+import com.palantir.logsafe.exceptions.SafeIllegalArgumentException;
 import com.palantir.tokens.auth.AuthHeader;
-import com.palantir.tokens.auth.AuthTokensPreconditions;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
@@ -116,9 +117,9 @@ public class BasicAuthToBearerTokenFilter implements Filter {
         try {
             credentials = new String(BASE_64_ENCODING.decode(base64Credentials), StandardCharsets.UTF_8);
         } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("Could not decode credentials from auth header: " + e.getMessage());
+            throw new SafeIllegalArgumentException("Could not decode credentials from auth header", e);
         }
-        AuthTokensPreconditions.checkArgument(credentials.contains(":"), "Credentials lack colon character (:).");
+        Preconditions.checkArgument(credentials.contains(":"), "Credentials lack colon character (:).");
         String password = credentials.split(":", 2)[1];
         return AuthHeader.valueOf(password);
     }

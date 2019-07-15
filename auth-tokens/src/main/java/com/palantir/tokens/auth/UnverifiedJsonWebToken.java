@@ -21,6 +21,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
+import com.palantir.logsafe.Preconditions;
+import com.palantir.logsafe.SafeArg;
 import com.palantir.logsafe.exceptions.SafeIllegalArgumentException;
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -107,10 +109,12 @@ public abstract class UnverifiedJsonWebToken {
      */
     public static UnverifiedJsonWebToken of(BearerToken token) {
         String[] segments = token.getToken().split("\\.");
-        AuthTokensPreconditions.checkArgument(
-                segments.length == 3,
-                "Invalid JWT: expected 3 segments, found %s",
-                segments.length);
+
+        // Avoid creating Arg on the hot path
+        if (segments.length != 3) {
+            throw new SafeIllegalArgumentException(
+                    "Invalid JWT: expected 3 segments", SafeArg.of("segmentsCount", segments.length));
+        }
 
         JwtPayload payload = extractPayload(segments[1]);
 
@@ -134,10 +138,10 @@ public abstract class UnverifiedJsonWebToken {
      * Palantir stores UUIDs in this format to optimize on shorter JWTs.
      */
     private static String decodeUuidBytes(byte[] bytes) {
-        AuthTokensPreconditions.checkArgument(
+        Preconditions.checkArgument(
                 bytes.length == 16,
-                "Invalid JWT: cannot decode UUID, require 16 bytes, found %s",
-                bytes.length);
+                "Invalid JWT: cannot decode UUID, require 16 bytes",
+                SafeArg.of("bytesLength", bytes.length));
         ByteBuffer byteBuffer = ByteBuffer.wrap(bytes);
         long high = byteBuffer.getLong();
         long low = byteBuffer.getLong();
