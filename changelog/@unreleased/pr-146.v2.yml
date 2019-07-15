@@ -1,0 +1,5 @@
+type: fix
+fix:
+  description: Fix logging in BearerTokenLoggingFeature.
+  links:
+  - https://github.com/palantir/auth-tokens/pull/146
