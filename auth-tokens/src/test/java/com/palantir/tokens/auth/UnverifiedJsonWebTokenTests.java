@@ -17,7 +17,6 @@
 package com.palantir.tokens.auth;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 import com.palantir.logsafe.SafeArg;
 import com.palantir.logsafe.testing.Assertions;
