@@ -75,7 +75,7 @@ public abstract class BearerToken {
         Preconditions.checkArgument(!token.isEmpty(), "BearerToken cannot be empty");
         if (!isValidBearerToken(token)) {
             throw new SafeIllegalArgumentException("BearerToken must match pattern",
-                    SafeArg.of("validationPatternString", VALIDATION_PATTERN_STRING));
+                    SafeArg.of("validationPattern", VALIDATION_PATTERN_STRING));
         }
         return ImmutableBearerToken.of(token);
     }
