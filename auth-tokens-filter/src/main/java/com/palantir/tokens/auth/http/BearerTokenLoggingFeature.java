@@ -23,6 +23,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -67,14 +68,14 @@ public final class BearerTokenLoggingFeature implements DynamicFeature {
             throw new SafeIllegalStateException(
                     "Multiple parameters annotated with @HeaderParam('Authorization')",
                     SafeArg.of("class", resourceInfo.getResourceClass()),
-                    SafeArg.of("method", resourceInfo.getResourceMethod()));
+                    SafeArg.of("method", Objects.toString(resourceInfo.getResourceMethod())));
         }
 
         if (authorizationHeaderParams.isPresent() && authorizationHeaderParams.get().size() == 1) {
             log.debug(
                     "Enabling BearerTokenLoggingFilter",
                     SafeArg.of("class", resourceInfo.getResourceClass()),
-                    SafeArg.of("method", resourceInfo.getResourceMethod()));
+                    SafeArg.of("method", Objects.toString(resourceInfo.getResourceMethod())));
             context.register(BearerTokenLoggingFilter.class);
             return;
         }
@@ -91,7 +92,7 @@ public final class BearerTokenLoggingFeature implements DynamicFeature {
             throw new SafeIllegalStateException(
                     "Multiple BearerToken parameters annotated with @CookieParam",
                     SafeArg.of("class", resourceInfo.getResourceClass()),
-                    SafeArg.of("method", resourceInfo.getResourceMethod()));
+                    SafeArg.of("method", Objects.toString(resourceInfo.getResourceMethod())));
         }
 
         if (cookieParams.isPresent() && cookieParams.get().size() == 1) {
@@ -99,7 +100,7 @@ public final class BearerTokenLoggingFeature implements DynamicFeature {
             log.debug(
                     "Enabling BearerTokenCookieLoggingFilter",
                     SafeArg.of("class", resourceInfo.getResourceClass()),
-                    SafeArg.of("method", resourceInfo.getResourceMethod()));
+                    SafeArg.of("method", Objects.toString(resourceInfo.getResourceMethod())));
             context.register(new BearerTokenCookieLoggingFilter(cookieName));
             return;
         }
@@ -109,7 +110,7 @@ public final class BearerTokenLoggingFeature implements DynamicFeature {
                         + "Not adding BearerTokenLoggingFilter or BearerTokenCookieLoggingFilter as no "
                         + "@HeaderParam or @CookieParam annotated arguments were found.",
                 SafeArg.of("class", resourceInfo.getResourceClass()),
-                SafeArg.of("method", resourceInfo.getResourceMethod()));
+                SafeArg.of("method", Objects.toString(resourceInfo.getResourceMethod())));
 
         context.register(new BearerTokenClearingFilter());
     }
