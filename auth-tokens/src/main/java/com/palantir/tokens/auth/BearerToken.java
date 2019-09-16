@@ -16,16 +16,15 @@
 
 package com.palantir.tokens.auth;
 
+import static com.palantir.logsafe.Preconditions.checkArgument;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
-import com.palantir.logsafe.Preconditions;
 import com.palantir.logsafe.SafeArg;
 import com.palantir.logsafe.exceptions.SafeIllegalArgumentException;
 import java.security.MessageDigest;
 import java.util.BitSet;
 import org.immutables.value.Value;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Value class representing an authentication bearer token.
@@ -33,8 +32,6 @@ import org.slf4j.LoggerFactory;
 @Value.Immutable
 @ImmutablesStyle
 public abstract class BearerToken {
-
-    private static final Logger log = LoggerFactory.getLogger(BearerToken.class);
 
     private static final String VALIDATION_PATTERN_STRING = "^[A-Za-z0-9\\-\\._~\\+/]+=*$";
     private static final BitSet allowedCharacters = new BitSet();
@@ -50,6 +47,11 @@ public abstract class BearerToken {
         allowedCharacters.set('+');
         allowedCharacters.set('/');
     }
+
+    private static final String INVALID_TOKEN_NULL_MESSAGE = "BearerToken cannot be null";
+    private static final String INVALID_TOKEN_EMPTY_MESSAGE = "BearerToken cannot be empty";
+    private static final String INVALID_TOKEN_PATTERN_MESSAGE = "BearerToken must match pattern";
+
 
     @Value.Parameter
     @JsonValue
@@ -71,10 +73,18 @@ public abstract class BearerToken {
 
     @JsonCreator
     public static BearerToken valueOf(String token) {
-        Preconditions.checkArgument(token != null, "BearerToken cannot be null");
-        Preconditions.checkArgument(!token.isEmpty(), "BearerToken cannot be empty");
+        checkArgument(
+                token != null,
+                INVALID_TOKEN_NULL_MESSAGE,
+                SafeArg.of("message", INVALID_TOKEN_NULL_MESSAGE));
+        checkArgument(
+                !token.isEmpty(),
+                INVALID_TOKEN_EMPTY_MESSAGE,
+                SafeArg.of("message", INVALID_TOKEN_EMPTY_MESSAGE));
         if (!isValidBearerToken(token)) {
-            throw new SafeIllegalArgumentException("BearerToken must match pattern",
+            throw new SafeIllegalArgumentException(
+                    INVALID_TOKEN_PATTERN_MESSAGE,
+                    SafeArg.of("message", INVALID_TOKEN_PATTERN_MESSAGE),
                     SafeArg.of("validationPattern", VALIDATION_PATTERN_STRING));
         }
         return ImmutableBearerToken.of(token);

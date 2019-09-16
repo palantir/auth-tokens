@@ -58,7 +58,9 @@ public final class BearerTokenTests {
             Assertions.assertThatLoggableExceptionThrownBy(() -> BearerToken.valueOf(invalidToken))
                     .isInstanceOf(IllegalArgumentException.class)
                     .hasLogMessage("BearerToken must match pattern")
-                    .hasExactlyArgs(SafeArg.of("validationPattern", "^[A-Za-z0-9\\-\\._~\\+/]+=*$"));
+                    .hasExactlyArgs(
+                            SafeArg.of("message", "BearerToken must match pattern"),
+                            SafeArg.of("validationPattern", "^[A-Za-z0-9\\-\\._~\\+/]+=*$"));
         }
     }
 

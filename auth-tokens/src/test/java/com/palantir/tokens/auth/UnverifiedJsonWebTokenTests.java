@@ -91,7 +91,9 @@ public final class UnverifiedJsonWebTokenTests {
         Assertions
                 .assertThatLoggableExceptionThrownBy(() -> UnverifiedJsonWebToken.of(INVALID_BEARER_TOKEN))
                 .hasLogMessage("Invalid JWT: expected 3 segments")
-                .hasExactlyArgs(SafeArg.of("segmentsCount", 1));
+                .hasExactlyArgs(
+                        SafeArg.of("message", "Invalid JWT: expected 3 segments"),
+                        SafeArg.of("segmentsCount", 1));
     }
 
     @Test
@@ -99,7 +101,7 @@ public final class UnverifiedJsonWebTokenTests {
         Assertions
                 .assertThatLoggableExceptionThrownBy(() -> UnverifiedJsonWebToken.of(INVALID_PAYLOAD_TOKEN))
                 .hasLogMessage("Invalid JWT: cannot parse payload")
-                .hasExactlyArgs();
+                .hasExactlyArgs(SafeArg.of("message", "Invalid JWT: cannot parse payload"));
     }
 
     private void assertValidApiToken(UnverifiedJsonWebToken token) {

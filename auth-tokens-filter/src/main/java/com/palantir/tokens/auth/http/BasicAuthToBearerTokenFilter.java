@@ -16,7 +16,9 @@
 
 package com.palantir.tokens.auth.http;
 
-import com.palantir.logsafe.Preconditions;
+import static com.palantir.logsafe.Preconditions.checkArgument;
+
+import com.palantir.logsafe.SafeArg;
 import com.palantir.logsafe.exceptions.SafeIllegalArgumentException;
 import com.palantir.tokens.auth.AuthHeader;
 import java.io.IOException;
@@ -48,6 +50,11 @@ public class BasicAuthToBearerTokenFilter implements Filter {
 
     private static final String BASIC_AUTH_STR = "Basic";
     private static final Base64.Decoder BASE_64_ENCODING = Base64.getUrlDecoder();
+
+    private static final String INVALID_CREDENTIALS_COLON_MESSAGE =
+            "Credentials lack colon character (:).";
+    private static final String INVALID_CREDENTIALS_DECODE_FAILED_MESSAGE =
+            "Could not decode credentials from auth header";
 
     @Override
     public void init(FilterConfig filterConfig) { }
@@ -117,9 +124,15 @@ public class BasicAuthToBearerTokenFilter implements Filter {
         try {
             credentials = new String(BASE_64_ENCODING.decode(base64Credentials), StandardCharsets.UTF_8);
         } catch (IllegalArgumentException e) {
-            throw new SafeIllegalArgumentException("Could not decode credentials from auth header", e);
+            throw new SafeIllegalArgumentException(
+                    INVALID_CREDENTIALS_DECODE_FAILED_MESSAGE,
+                    e,
+                    SafeArg.of("message", INVALID_CREDENTIALS_DECODE_FAILED_MESSAGE));
         }
-        Preconditions.checkArgument(credentials.contains(":"), "Credentials lack colon character (:).");
+        checkArgument(
+                credentials.contains(":"),
+                INVALID_CREDENTIALS_COLON_MESSAGE,
+                SafeArg.of("message", INVALID_CREDENTIALS_COLON_MESSAGE));
         String password = credentials.split(":", 2)[1];
         return AuthHeader.valueOf(password);
     }

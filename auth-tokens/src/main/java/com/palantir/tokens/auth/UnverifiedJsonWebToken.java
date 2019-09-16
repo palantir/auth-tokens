@@ -16,12 +16,12 @@
 
 package com.palantir.tokens.auth;
 
+import static com.palantir.logsafe.Preconditions.checkArgument;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
-import com.palantir.logsafe.Preconditions;
 import com.palantir.logsafe.SafeArg;
 import com.palantir.logsafe.exceptions.SafeIllegalArgumentException;
 import java.io.IOException;
@@ -52,6 +52,10 @@ public abstract class UnverifiedJsonWebToken {
             .readerFor(JwtPayload.class);
 
     private static final Logger log = LoggerFactory.getLogger(UnverifiedJsonWebToken.class);
+
+    private static final String INVALID_JWT_SEGMENTS_MESSAGE = "Invalid JWT: expected 3 segments";
+    private static final String INVALID_JWT_PARSE_FAILED_MESSAGE = "Invalid JWT: cannot parse payload";
+    private static final String INVALID_JWT_UUID_LENGTH_MESSAGE = "Invalid JWT: cannot decode UUID, require 16 bytes";
 
     /**
      * Returns the unverified user id, i.e., the "sub" (subject) field of the JWT.
@@ -113,7 +117,9 @@ public abstract class UnverifiedJsonWebToken {
         // Avoid creating Arg on the hot path
         if (segments.length != 3) {
             throw new SafeIllegalArgumentException(
-                    "Invalid JWT: expected 3 segments", SafeArg.of("segmentsCount", segments.length));
+                    INVALID_JWT_SEGMENTS_MESSAGE,
+                    SafeArg.of("message", INVALID_JWT_SEGMENTS_MESSAGE),
+                    SafeArg.of("segmentsCount", segments.length));
         }
 
         JwtPayload payload = extractPayload(segments[1]);
@@ -128,7 +134,10 @@ public abstract class UnverifiedJsonWebToken {
         try {
             return READER.readValue(Base64.getDecoder().decode(payload));
         } catch (IOException e) {
-            throw new SafeIllegalArgumentException("Invalid JWT: cannot parse payload", e);
+            throw new SafeIllegalArgumentException(
+                    INVALID_JWT_PARSE_FAILED_MESSAGE,
+                    e,
+                    SafeArg.of("message", INVALID_JWT_PARSE_FAILED_MESSAGE));
         }
     }
 
@@ -138,9 +147,10 @@ public abstract class UnverifiedJsonWebToken {
      * Palantir stores UUIDs in this format to optimize on shorter JWTs.
      */
     private static String decodeUuidBytes(byte[] bytes) {
-        Preconditions.checkArgument(
+        checkArgument(
                 bytes.length == 16,
-                "Invalid JWT: cannot decode UUID, require 16 bytes",
+                INVALID_JWT_UUID_LENGTH_MESSAGE,
+                SafeArg.of("message", INVALID_JWT_UUID_LENGTH_MESSAGE),
                 SafeArg.of("bytesLength", bytes.length));
         ByteBuffer byteBuffer = ByteBuffer.wrap(bytes);
         long high = byteBuffer.getLong();
