@@ -24,7 +24,6 @@ import com.palantir.logsafe.exceptions.SafeIllegalArgumentException;
 import java.security.MessageDigest;
 import java.util.BitSet;
 import org.immutables.value.Value;
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -34,7 +33,7 @@ import org.slf4j.LoggerFactory;
 @ImmutablesStyle
 public abstract class BearerToken {
 
-    private static final Logger log = LoggerFactory.getLogger(BearerToken.class);
+    static { LoggerFactory.getLogger(BearerToken.class); }
 
     private static final String VALIDATION_PATTERN_STRING = "^[A-Za-z0-9\\-\\._~\\+/]+=*$";
     private static final BitSet allowedCharacters = new BitSet();
