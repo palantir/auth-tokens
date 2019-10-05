@@ -159,11 +159,7 @@ public abstract class UnverifiedJsonWebToken {
         @JsonProperty("sid")
         private byte[] sid;
 
-        /**
-         * Indicates this token's expiry (only for session tokens, otherwise null).
-         */
-        @JsonProperty("exp")
-        private Long exp;
+
 
         /**
          * Indicates this token's identifier (only for API tokens, otherwise null).
