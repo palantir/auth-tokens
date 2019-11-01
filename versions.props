@@ -10,5 +10,5 @@ junit:junit = 4.12
 org.assertj:assertj-core = 3.14.0
 org.immutables:value = 2.8.1
 org.mockito:mockito-core = 3.1.0
-org.openjdk.jmh:* = 1.21
+org.openjdk.jmh:* = 1.22
 org.slf4j:slf4j-api = 1.7.25
