@@ -22,12 +22,11 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.palantir.logsafe.SafeArg;
-import com.palantir.logsafe.testing.Assertions;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import javax.ws.rs.NotAuthorizedException;
 import org.junit.Test;
 
 /**
@@ -41,6 +40,7 @@ public final class BearerTokenTests {
     public void testConstructorUsage() {
         BearerToken bearerToken = BearerToken.valueOf(TOKEN_STRING);
         assertThat(bearerToken.getToken()).isEqualTo(TOKEN_STRING);
+        new NotAuthorizedException("asdf");
     }
 
     @Test
@@ -55,24 +55,23 @@ public final class BearerTokenTests {
     public void testFromString_invalidTokens() {
         List<String> invalidTokens = Arrays.asList(" space", "space ", "with space", "#", " ", "(", "=", "=a");
         for (String invalidToken : invalidTokens) {
-            Assertions.assertThatLoggableExceptionThrownBy(() -> BearerToken.valueOf(invalidToken))
-                    .isInstanceOf(IllegalArgumentException.class)
-                    .hasLogMessage("BearerToken must match pattern")
-                    .hasExactlyArgs(SafeArg.of("validationPattern", "^[A-Za-z0-9\\-\\._~\\+/]+=*$"));
+            assertThatThrownBy(() -> BearerToken.valueOf(invalidToken))
+                    .isInstanceOf(NotAuthorizedException.class)
+                    .hasMessageContaining("Bearer token must match pattern:");
         }
     }
 
     @Test
     public void testTokenCannotBeBlank() {
         assertThatThrownBy(() -> BearerToken.valueOf(""))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(NotAuthorizedException.class);
     }
 
     @Test
     @SuppressFBWarnings("NP_NULL_PARAM_DEREF_NONVIRTUAL")
     public void testTokenCannotBeNull() {
         assertThatThrownBy(() -> BearerToken.valueOf(null))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(NotAuthorizedException.class);
     }
 
     @Test
