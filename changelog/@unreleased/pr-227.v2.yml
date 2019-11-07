@@ -1,0 +1,5 @@
+type: improvement
+improvement:
+  description: Throw `NotAuthorizedException` for malformed bearer tokens.
+  links:
+  - https://github.com/palantir/auth-tokens/pull/227
