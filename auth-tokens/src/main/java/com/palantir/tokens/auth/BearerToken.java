@@ -23,6 +23,7 @@ import com.palantir.logsafe.SafeArg;
 import com.palantir.logsafe.exceptions.SafeIllegalArgumentException;
 import java.security.MessageDigest;
 import java.util.BitSet;
+import javax.ws.rs.NotAuthorizedException;
 import org.immutables.value.Value;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -74,8 +75,7 @@ public abstract class BearerToken {
         Preconditions.checkArgument(token != null, "BearerToken cannot be null");
         Preconditions.checkArgument(!token.isEmpty(), "BearerToken cannot be empty");
         if (!isValidBearerToken(token)) {
-            throw new SafeIllegalArgumentException("BearerToken must match pattern",
-                    SafeArg.of("validationPattern", VALIDATION_PATTERN_STRING));
+            throw new NotAuthorizedException("Bearer token must match pattern: " + VALIDATION_PATTERN_STRING);
         }
         return ImmutableBearerToken.of(token);
     }
