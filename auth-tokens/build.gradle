@@ -3,9 +3,10 @@ apply plugin: 'com.palantir.revapi'
 
 dependencies {
     compile "com.fasterxml.jackson.core:jackson-databind"
+    compile "javax.ws.rs:javax.ws.rs-api"
     compile "org.slf4j:slf4j-api"
     implementation 'com.palantir.safe-logging:preconditions'
-    implementation 'javax.ws.rs:javax.ws.rs-api'
+
 
     annotationProcessor "org.immutables:value"
     compileOnly "org.immutables:value::annotations"
