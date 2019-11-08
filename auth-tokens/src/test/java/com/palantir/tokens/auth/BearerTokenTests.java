@@ -55,7 +55,7 @@ public final class BearerTokenTests {
         for (String invalidToken : invalidTokens) {
             Assertions.assertThatLoggableExceptionThrownBy(() -> BearerToken.valueOf(invalidToken))
                     .isInstanceOf(MalformedAuthTokenException.class)
-                    .hasLogMessage("Bearer token must match pattern");
+                    .hasLogMessage("BearerToken must match pattern");
         }
     }
 
@@ -63,7 +63,7 @@ public final class BearerTokenTests {
     public void testTokenCannotBeBlank() {
         Assertions.assertThatLoggableExceptionThrownBy(() -> BearerToken.valueOf(""))
                 .isInstanceOf(MalformedAuthTokenException.class)
-                .hasLogMessage("Bearer token cannot be empty");
+                .hasLogMessage("BearerToken cannot be empty");
     }
 
     @Test
@@ -71,7 +71,7 @@ public final class BearerTokenTests {
     public void testTokenCannotBeNull() {
         Assertions.assertThatLoggableExceptionThrownBy(() -> BearerToken.valueOf(null))
                 .isInstanceOf(MalformedAuthTokenException.class)
-                .hasLogMessage("Bearer token cannot be null");
+                .hasLogMessage("BearerToken cannot be null");
     }
 
     @Test

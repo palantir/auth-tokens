@@ -70,12 +70,12 @@ public abstract class BearerToken {
     @JsonCreator
     public static BearerToken valueOf(String token) {
         if (token == null) {
-            throw new MalformedAuthTokenException("Bearer token cannot be null");
+            throw new MalformedAuthTokenException("BearerToken cannot be null");
         } else if (token.isEmpty()) {
-            throw new MalformedAuthTokenException("Bearer token cannot be empty");
+            throw new MalformedAuthTokenException("BearerToken cannot be empty");
         } else if (!isValidBearerToken(token)) {
             throw new MalformedAuthTokenException(
-                    "Bearer token must match pattern",
+                    "BearerToken must match pattern",
                     SafeArg.of("validationPattern", VALIDATION_PATTERN_STRING));
         }
         return ImmutableBearerToken.of(token);
