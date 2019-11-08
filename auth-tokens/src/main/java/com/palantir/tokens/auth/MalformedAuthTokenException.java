@@ -24,11 +24,11 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public final class MalformedTokenException extends IllegalArgumentException implements SafeLoggable {
+public final class MalformedAuthTokenException extends IllegalArgumentException implements SafeLoggable {
     private final String logMessage;
     private final List<Arg<?>> arguments;
 
-    public MalformedTokenException(@CompileTimeConstant String message, Arg<?>... arguments) {
+    public MalformedAuthTokenException(@CompileTimeConstant String message, Arg<?>... arguments) {
         super(SafeExceptions.renderMessage(message, arguments));
         this.logMessage = message;
         this.arguments = Collections.unmodifiableList(Arrays.asList(arguments));

@@ -54,7 +54,7 @@ public final class BearerTokenTests {
         List<String> invalidTokens = Arrays.asList(" space", "space ", "with space", "#", " ", "(", "=", "=a");
         for (String invalidToken : invalidTokens) {
             Assertions.assertThatLoggableExceptionThrownBy(() -> BearerToken.valueOf(invalidToken))
-                    .isInstanceOf(MalformedTokenException.class)
+                    .isInstanceOf(MalformedAuthTokenException.class)
                     .hasLogMessage("Bearer token must match pattern");
         }
     }
@@ -62,7 +62,7 @@ public final class BearerTokenTests {
     @Test
     public void testTokenCannotBeBlank() {
         Assertions.assertThatLoggableExceptionThrownBy(() -> BearerToken.valueOf(""))
-                .isInstanceOf(MalformedTokenException.class)
+                .isInstanceOf(MalformedAuthTokenException.class)
                 .hasLogMessage("Bearer token cannot be empty");
     }
 
@@ -70,7 +70,7 @@ public final class BearerTokenTests {
     @SuppressFBWarnings("NP_NULL_PARAM_DEREF_NONVIRTUAL")
     public void testTokenCannotBeNull() {
         Assertions.assertThatLoggableExceptionThrownBy(() -> BearerToken.valueOf(null))
-                .isInstanceOf(MalformedTokenException.class)
+                .isInstanceOf(MalformedAuthTokenException.class)
                 .hasLogMessage("Bearer token cannot be null");
     }
 
