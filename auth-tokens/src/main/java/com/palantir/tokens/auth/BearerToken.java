@@ -71,11 +71,9 @@ public abstract class BearerToken {
     public static BearerToken valueOf(String token) {
         if (token == null) {
             throw new MalformedTokenException("Bearer token cannot be null");
-        }
-        if (token.isEmpty()) {
+        } else if (token.isEmpty()) {
             throw new MalformedTokenException("Bearer token cannot be empty");
-        }
-        if (!isValidBearerToken(token)) {
+        } else if (!isValidBearerToken(token)) {
             throw new MalformedTokenException(
                     "Bearer token must match pattern",
                     SafeArg.of("validationPattern", VALIDATION_PATTERN_STRING));
