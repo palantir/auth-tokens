@@ -28,7 +28,7 @@ public final class MalformedAuthTokenException extends IllegalArgumentException 
     private final String logMessage;
     private final List<Arg<?>> arguments;
 
-    public MalformedAuthTokenException(@CompileTimeConstant String message, Arg<?>... arguments) {
+    MalformedAuthTokenException(@CompileTimeConstant String message, Arg<?>... arguments) {
         super(SafeExceptions.renderMessage(message, arguments));
         this.logMessage = message;
         this.arguments = Collections.unmodifiableList(Arrays.asList(arguments));
