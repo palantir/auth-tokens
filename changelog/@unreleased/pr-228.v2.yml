@@ -2,4 +2,4 @@ type: improvement
 improvement:
   description: Throw `MalformedTokenException` for malformed bearer tokens.
   links:
-  - https://github.com/palantir/auth-tokens/pull/227
+  - https://github.com/palantir/auth-tokens/pull/228
