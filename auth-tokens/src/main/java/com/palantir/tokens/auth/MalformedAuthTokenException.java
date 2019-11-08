@@ -24,6 +24,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Exception thrown by {@link BearerToken} for malformed tokens.
+ */
 public final class MalformedAuthTokenException extends IllegalArgumentException implements SafeLoggable {
     private final String logMessage;
     private final List<Arg<?>> arguments;
