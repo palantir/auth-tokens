@@ -52,11 +52,11 @@ public final class MockAppenderFactory extends AbstractAppenderFactory {
 
     @Override
     public Appender build(
-            LoggerContext context,
-            String applicationName,
-            LayoutFactory layoutFactory,
-            LevelFilterFactory levelFilterFactory,
-            AsyncAppenderFactory asyncAppenderFactory) {
+            LoggerContext _context,
+            String _applicationName,
+            LayoutFactory _layoutFactory,
+            LevelFilterFactory _levelFilterFactory,
+            AsyncAppenderFactory _asyncAppenderFactory) {
         return MOCK_REQUEST_APPENDER;
     }
 }

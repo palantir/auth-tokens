@@ -109,7 +109,7 @@ public class BearerTokenLoggingFeatureIntegTest {
 
     public static final class Server extends Application<Configuration> {
         @Override
-        public void run(Configuration configuration, Environment environment) {
+        public void run(Configuration _configuration, Environment environment) {
             environment.jersey().register(new ResourceImpl());
             environment.jersey().register(new DirectResource());
             environment.jersey().register(BearerTokenLoggingFeature.class);
@@ -136,21 +136,21 @@ public class BearerTokenLoggingFeatureIntegTest {
     }
 
     public static final class ResourceImpl implements Resource {
-        @Override public boolean success(AuthHeader unused) {
+        @Override public boolean success(AuthHeader _value) {
             assertThat(MDC.get("userId")).isEqualTo(TestConstants.USER_ID);
             assertThat(MDC.get("sessionId")).isEqualTo(TestConstants.SESSION_ID);
             assertThat(MDC.get("tokenId")).isEqualTo(TestConstants.TOKEN_ID);
             return true;
         }
 
-        @Override public boolean cookies(BearerToken unused) {
+        @Override public boolean cookies(BearerToken _value) {
             assertThat(MDC.get("userId")).isEqualTo(TestConstants.USER_ID);
             assertThat(MDC.get("sessionId")).isEqualTo(TestConstants.SESSION_ID);
             assertThat(MDC.get("tokenId")).isEqualTo(TestConstants.TOKEN_ID);
             return true;
         }
 
-        @Override public boolean nonAuthCookie(Integer unused) {
+        @Override public boolean nonAuthCookie(Integer _value) {
             assertThat(MDC.get("userId")).isNull();
             assertThat(MDC.get("sessionId")).isNull();
             assertThat(MDC.get("tokenId")).isNull();
@@ -170,7 +170,7 @@ public class BearerTokenLoggingFeatureIntegTest {
 
         @GET
         @Path("success")
-        public boolean success(@HeaderParam(HttpHeaders.AUTHORIZATION) AuthHeader unused) {
+        public boolean success(@HeaderParam(HttpHeaders.AUTHORIZATION) AuthHeader _value) {
             assertThat(MDC.get("userId")).isEqualTo(TestConstants.USER_ID);
             assertThat(MDC.get("sessionId")).isEqualTo(TestConstants.SESSION_ID);
             assertThat(MDC.get("tokenId")).isEqualTo(TestConstants.TOKEN_ID);
@@ -179,7 +179,7 @@ public class BearerTokenLoggingFeatureIntegTest {
 
         @GET
         @Path("cookies")
-        public boolean cookies(@CookieParam("SOME_COOKIE") BearerToken unused) {
+        public boolean cookies(@CookieParam("SOME_COOKIE") BearerToken _value) {
             assertThat(MDC.get("userId")).isEqualTo(TestConstants.USER_ID);
             assertThat(MDC.get("sessionId")).isEqualTo(TestConstants.SESSION_ID);
             assertThat(MDC.get("tokenId")).isEqualTo(TestConstants.TOKEN_ID);
@@ -188,7 +188,7 @@ public class BearerTokenLoggingFeatureIntegTest {
 
         @GET
         @Path("non-auth-cookie")
-        public boolean nonAuthCookie(@CookieParam("NON_AUTH_COOKIE") Integer unused) {
+        public boolean nonAuthCookie(@CookieParam("NON_AUTH_COOKIE") Integer _value) {
             assertThat(MDC.get("userId")).isNull();
             assertThat(MDC.get("sessionId")).isNull();
             assertThat(MDC.get("tokenId")).isNull();
