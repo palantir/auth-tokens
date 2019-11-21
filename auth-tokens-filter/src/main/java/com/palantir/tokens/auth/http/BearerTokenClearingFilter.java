@@ -28,7 +28,7 @@ import javax.ws.rs.container.ContainerRequestFilter;
 @Priority(Priorities.AUTHORIZATION)
 public class BearerTokenClearingFilter implements ContainerRequestFilter {
     @Override
-    public final void filter(ContainerRequestContext requestContext) {
+    public final void filter(ContainerRequestContext _requestContext) {
         Utilities.clearMdc();
     }
 }

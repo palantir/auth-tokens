@@ -50,7 +50,7 @@ public class BasicAuthToBearerTokenFilter implements Filter {
     private static final Base64.Decoder BASE_64_ENCODING = Base64.getUrlDecoder();
 
     @Override
-    public void init(FilterConfig filterConfig) { }
+    public void init(FilterConfig _filterConfig) { }
 
     @Override
     public final void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
