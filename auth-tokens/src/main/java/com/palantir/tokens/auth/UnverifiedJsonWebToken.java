@@ -159,8 +159,6 @@ public abstract class UnverifiedJsonWebToken {
         @JsonProperty("sid")
         private byte[] sid;
 
-        
-
         /**
          * Indicates this token's identifier (only for API tokens, otherwise null).
          */

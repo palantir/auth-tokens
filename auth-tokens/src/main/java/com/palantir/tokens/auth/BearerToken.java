@@ -24,7 +24,6 @@ import com.palantir.logsafe.exceptions.SafeIllegalArgumentException;
 import java.security.MessageDigest;
 import java.util.BitSet;
 import org.immutables.value.Value;
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
