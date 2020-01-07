@@ -148,7 +148,7 @@ public abstract class UnverifiedJsonWebToken {
         return UuidStringConverter.toString(new UUID(high, low));
     }
 
-    private static class JwtPayload {
+    private static final class JwtPayload {
 
         @JsonProperty("sub")
         private byte[] sub;
@@ -158,12 +158,6 @@ public abstract class UnverifiedJsonWebToken {
          */
         @JsonProperty("sid")
         private byte[] sid;
-
-        /**
-         * Indicates this token's expiry (only for session tokens, otherwise null).
-         */
-        @JsonProperty("exp")
-        private Long exp;
 
         /**
          * Indicates this token's identifier (only for API tokens, otherwise null).
