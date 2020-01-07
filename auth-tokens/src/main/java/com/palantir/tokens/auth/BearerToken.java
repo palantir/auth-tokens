@@ -24,16 +24,11 @@ import com.palantir.logsafe.exceptions.SafeIllegalArgumentException;
 import java.security.MessageDigest;
 import java.util.BitSet;
 import org.immutables.value.Value;
-import org.slf4j.LoggerFactory;
 
-/**
- * Value class representing an authentication bearer token.
- */
+/** Value class representing an authentication bearer token. */
 @Value.Immutable
 @ImmutablesStyle
 public abstract class BearerToken {
-
-    static { LoggerFactory.getLogger(BearerToken.class); }
 
     private static final String VALIDATION_PATTERN_STRING = "^[A-Za-z0-9\\-\\._~\\+/]+=*$";
     private static final BitSet allowedCharacters = new BitSet();
@@ -73,8 +68,8 @@ public abstract class BearerToken {
         Preconditions.checkArgument(token != null, "BearerToken cannot be null");
         Preconditions.checkArgument(!token.isEmpty(), "BearerToken cannot be empty");
         if (!isValidBearerToken(token)) {
-            throw new SafeIllegalArgumentException("BearerToken must match pattern",
-                    SafeArg.of("validationPattern", VALIDATION_PATTERN_STRING));
+            throw new SafeIllegalArgumentException(
+                    "BearerToken must match pattern", SafeArg.of("validationPattern", VALIDATION_PATTERN_STRING));
         }
         return ImmutableBearerToken.of(token);
     }
