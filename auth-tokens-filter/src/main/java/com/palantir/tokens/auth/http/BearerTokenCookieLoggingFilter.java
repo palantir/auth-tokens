@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
 
 @Priority(Priorities.AUTHORIZATION)
 class BearerTokenCookieLoggingFilter implements ContainerRequestFilter {
-    private static final Logger log = LoggerFactory.getLogger(BearerTokenLoggingFilter.class);
+    private static final Logger log = LoggerFactory.getLogger(BearerTokenCookieLoggingFilter.class);
     private final String cookie;
 
     BearerTokenCookieLoggingFilter(String cookie) {
