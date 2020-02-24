@@ -16,7 +16,7 @@
 
 package com.palantir.tokens.auth;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import com.palantir.logsafe.SafeArg;
 import com.palantir.logsafe.testing.Assertions;
@@ -52,8 +52,8 @@ public final class UnverifiedJsonWebTokenTests {
     @Test
     public void testAsJwt_validJwtFromSessionToken() {
         UnverifiedJsonWebToken token = UnverifiedJsonWebToken.of(SESSION_TOKEN);
-        assertEquals(USERID, token.getUnverifiedUserId());
-        assertEquals(Optional.of(SESSION_ID), token.getUnverifiedSessionId());
+        assertThat(token.getUnverifiedUserId()).isEqualTo(USERID);
+        assertThat(token.getUnverifiedSessionId()).isEqualTo(Optional.of(SESSION_ID));
     }
 
     @Test
@@ -77,13 +77,13 @@ public final class UnverifiedJsonWebTokenTests {
     @Test
     public void invalidJwt_parseReturnsEmpty() {
         Optional<UnverifiedJsonWebToken> parsedJwt = UnverifiedJsonWebToken.tryParse(INVALID_BEARER_TOKEN.getToken());
-        assertEquals(parsedJwt, Optional.empty());
+        assertThat(parsedJwt).isNotPresent();
     }
 
     @Test
     public void invalidJwt_parseReturnsEmpty_validStructure() {
         Optional<UnverifiedJsonWebToken> parsedJwt = UnverifiedJsonWebToken.tryParse(INVALID_PAYLOAD_TOKEN.getToken());
-        assertEquals(parsedJwt, Optional.empty());
+        assertThat(parsedJwt).isNotPresent();
     }
 
     @Test
@@ -103,8 +103,8 @@ public final class UnverifiedJsonWebTokenTests {
     }
 
     private void assertValidApiToken(UnverifiedJsonWebToken token) {
-        assertEquals(USERID, token.getUnverifiedUserId());
-        assertEquals(Optional.empty(), token.getUnverifiedSessionId());
-        assertEquals(Optional.of(TOKEN_ID), token.getUnverifiedTokenId());
+        assertThat(token.getUnverifiedUserId()).isEqualTo(USERID);
+        assertThat(token.getUnverifiedSessionId()).isNotPresent();
+        assertThat(token.getUnverifiedTokenId()).isEqualTo(Optional.of(TOKEN_ID));
     }
 }
