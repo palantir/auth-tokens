@@ -1,0 +1,5 @@
+type: fix
+fix:
+  description: Replace javax dependencies with equivalent jakarta ones
+  links:
+  - https://github.com/palantir/auth-tokens/pull/389
