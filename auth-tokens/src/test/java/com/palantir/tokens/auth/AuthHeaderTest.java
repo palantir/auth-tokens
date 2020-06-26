@@ -40,5 +40,4 @@ public final class AuthHeaderTest {
     public void testToApiToken_removeFirstBearer() {
         assertThat(AuthHeader.valueOf("Bearer Bearer")).isEqualTo(AuthHeader.of(BearerToken.valueOf("Bearer")));
     }
-
 }

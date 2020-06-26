@@ -42,17 +42,18 @@ public final class BearerTokenLoggingFeature implements DynamicFeature {
     @Override
     public void configure(ResourceInfo resourceInfo, FeatureContext context) {
         List<Method> superInterfaceMethods = Stream.concat(
-                Stream.of(resourceInfo.getResourceMethod()),
-                Arrays.stream(resourceInfo.getResourceClass().getInterfaces())
-                        .flatMap(cls -> {
-                            try {
-                                return Stream.of(cls.getDeclaredMethod(
-                                        resourceInfo.getResourceMethod().getName(),
-                                        resourceInfo.getResourceMethod().getParameterTypes()));
-                            } catch (NoSuchMethodException e) {
-                                return Stream.empty();
-                            }
-                        })).collect(Collectors.toList());
+                        Stream.of(resourceInfo.getResourceMethod()),
+                        Arrays.stream(resourceInfo.getResourceClass().getInterfaces())
+                                .flatMap(cls -> {
+                                    try {
+                                        return Stream.of(cls.getDeclaredMethod(
+                                                resourceInfo.getResourceMethod().getName(),
+                                                resourceInfo.getResourceMethod().getParameterTypes()));
+                                    } catch (NoSuchMethodException e) {
+                                        return Stream.empty();
+                                    }
+                                }))
+                .collect(Collectors.toList());
 
         Optional<List<Parameter>> authorizationHeaderParams = superInterfaceMethods.stream()
                 .map(method -> Arrays.stream(method.getParameters())
@@ -64,14 +65,16 @@ public final class BearerTokenLoggingFeature implements DynamicFeature {
                 .filter(paramList -> !paramList.isEmpty())
                 .findFirst();
 
-        if (authorizationHeaderParams.isPresent() && authorizationHeaderParams.get().size() > 1) {
+        if (authorizationHeaderParams.isPresent()
+                && authorizationHeaderParams.get().size() > 1) {
             throw new SafeIllegalStateException(
                     "Multiple parameters annotated with @HeaderParam('Authorization')",
                     SafeArg.of("class", resourceInfo.getResourceClass()),
                     SafeArg.of("method", Objects.toString(resourceInfo.getResourceMethod())));
         }
 
-        if (authorizationHeaderParams.isPresent() && authorizationHeaderParams.get().size() == 1) {
+        if (authorizationHeaderParams.isPresent()
+                && authorizationHeaderParams.get().size() == 1) {
             log.info(
                     "Enabling BearerTokenLoggingFilter",
                     SafeArg.of("class", resourceInfo.getResourceClass()),
@@ -96,7 +99,8 @@ public final class BearerTokenLoggingFeature implements DynamicFeature {
         }
 
         if (cookieParams.isPresent() && cookieParams.get().size() == 1) {
-            String cookieName = cookieParams.get().get(0).getAnnotation(CookieParam.class).value();
+            String cookieName =
+                    cookieParams.get().get(0).getAnnotation(CookieParam.class).value();
             log.info(
                     "Enabling BearerTokenCookieLoggingFilter",
                     SafeArg.of("class", resourceInfo.getResourceClass()),

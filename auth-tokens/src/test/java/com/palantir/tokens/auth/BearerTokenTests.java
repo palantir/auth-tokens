@@ -64,15 +64,13 @@ public final class BearerTokenTests {
 
     @Test
     public void testTokenCannotBeBlank() {
-        assertThatThrownBy(() -> BearerToken.valueOf(""))
-                .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> BearerToken.valueOf("")).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     @SuppressFBWarnings("NP_NULL_PARAM_DEREF_NONVIRTUAL")
     public void testTokenCannotBeNull() {
-        assertThatThrownBy(() -> BearerToken.valueOf(null))
-                .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> BearerToken.valueOf(null)).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test

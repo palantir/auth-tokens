@@ -28,12 +28,13 @@ final class TestConstants {
     static final String TOKEN_ID = UUID.randomUUID().toString();
     static final String AUTH_HEADER = "Bearer "
             + "unused."
-            + BaseEncoding.base64Url().omitPadding().encode(
-            ("{"
-                    + "\"sub\": \"" + encodeUuid(USER_ID) + "\","
-                    + "\"sid\": \"" + encodeUuid(SESSION_ID) + "\","
-                    + "\"jti\": \"" + encodeUuid(TOKEN_ID) + "\"}"
-            ).getBytes(StandardCharsets.UTF_8))
+            + BaseEncoding.base64Url()
+                    .omitPadding()
+                    .encode(("{"
+                                    + "\"sub\": \"" + encodeUuid(USER_ID) + "\","
+                                    + "\"sid\": \"" + encodeUuid(SESSION_ID) + "\","
+                                    + "\"jti\": \"" + encodeUuid(TOKEN_ID) + "\"}")
+                            .getBytes(StandardCharsets.UTF_8))
             + ".unused";
 
     private static String encodeUuid(String uuidString) {
