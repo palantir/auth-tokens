@@ -50,7 +50,7 @@ public class BasicAuthToBearerTokenFilter implements Filter {
     private static final Base64.Decoder BASE_64_ENCODING = Base64.getUrlDecoder();
 
     @Override
-    public void init(FilterConfig _filterConfig) { }
+    public void init(FilterConfig _filterConfig) {}
 
     @Override
     public final void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
@@ -60,8 +60,7 @@ public class BasicAuthToBearerTokenFilter implements Filter {
     }
 
     @Override
-    public void destroy() {
-    }
+    public void destroy() {}
 
     private ServletRequest addBearerTokenIfBasicAuth(ServletRequest request) {
         if (request instanceof HttpServletRequest) {
@@ -112,7 +111,8 @@ public class BasicAuthToBearerTokenFilter implements Filter {
     }
 
     private AuthHeader base64DecodePassword(String rawAuthHeader) {
-        String base64Credentials = rawAuthHeader.substring(BASIC_AUTH_STR.length()).trim();
+        String base64Credentials =
+                rawAuthHeader.substring(BASIC_AUTH_STR.length()).trim();
         String credentials;
         try {
             credentials = new String(BASE_64_ENCODING.decode(base64Credentials), StandardCharsets.UTF_8);

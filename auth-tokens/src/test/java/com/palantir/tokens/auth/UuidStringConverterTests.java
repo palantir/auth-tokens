@@ -26,10 +26,9 @@ public class UuidStringConverterTests {
 
     @Test
     public void testToString() {
-        IntStream.range(0, 10_000)
-                .forEach(x -> {
-                    UUID uuid = UUID.randomUUID();
-                    assertThat(UuidStringConverter.toString(uuid)).isEqualTo(uuid.toString());
-                });
+        IntStream.range(0, 10_000).forEach(x -> {
+            UUID uuid = UUID.randomUUID();
+            assertThat(UuidStringConverter.toString(uuid)).isEqualTo(uuid.toString());
+        });
     }
 }

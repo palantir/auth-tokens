@@ -45,8 +45,10 @@ public final class BasicAuthToBearerTokenFilterTest {
 
     @Mock
     private HttpServletRequest httpServletRequest;
+
     @Mock
     private FilterChain chain;
+
     @Captor
     private ArgumentCaptor<HttpServletRequest> requestArgumentCaptor;
 
@@ -71,7 +73,7 @@ public final class BasicAuthToBearerTokenFilterTest {
         // servletRequestWrapper is not instanceof HttpServletRequest
         ServletRequestWrapper servletRequestWrapper = new ServletRequestWrapper(httpServletRequest);
         filter(servletRequestWrapper);
-        assertFilteredRequestIs(servletRequestWrapper);  // filtered request is unchanged
+        assertFilteredRequestIs(servletRequestWrapper); // filtered request is unchanged
     }
 
     @Test
@@ -137,7 +139,8 @@ public final class BasicAuthToBearerTokenFilterTest {
         String actualAuthHeader = value.getHeader(HttpHeaders.AUTHORIZATION);
         assertThat(actualAuthHeader).isEqualTo(expectedAuthHeader);
 
-        assertThat(Collections.list(value.getHeaders(HttpHeaders.AUTHORIZATION))).containsExactly(expectedAuthHeader);
+        assertThat(Collections.list(value.getHeaders(HttpHeaders.AUTHORIZATION)))
+                .containsExactly(expectedAuthHeader);
     }
 
     private void assertRequestUnchanged() throws IOException, ServletException {

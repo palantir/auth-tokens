@@ -31,8 +31,7 @@ final class Utilities {
 
     /** Writes to both the MDC and ContainerRequestContext. */
     static void recordUnverifiedJwt(
-            ContainerRequestContext requestContext,
-            Optional<UnverifiedJsonWebToken> parsedJwt) {
+            ContainerRequestContext requestContext, Optional<UnverifiedJsonWebToken> parsedJwt) {
         if (parsedJwt.isPresent()) {
             UnverifiedJsonWebToken jwt = parsedJwt.get();
             setUnverifiedContext(requestContext, Key.USER_ID, jwt.getUnverifiedUserId());

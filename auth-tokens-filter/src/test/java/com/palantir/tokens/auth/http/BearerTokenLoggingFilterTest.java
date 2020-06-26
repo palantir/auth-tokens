@@ -42,6 +42,7 @@ public final class BearerTokenLoggingFilterTest {
 
     @Mock
     private ContainerRequestContext requestContext;
+
     private Map<String, Object> requestProperties;
 
     private BearerTokenLoggingFilter filter = new BearerTokenLoggingFilter();
@@ -52,15 +53,19 @@ public final class BearerTokenLoggingFilterTest {
         MDC.clear();
 
         doAnswer(invocation -> {
-            Object[] args = invocation.getArguments();
-            return requestProperties.get(args[0]);
-        }).when(requestContext).getProperty(anyString());
+                    Object[] args = invocation.getArguments();
+                    return requestProperties.get(args[0]);
+                })
+                .when(requestContext)
+                .getProperty(anyString());
 
         doAnswer(invocation -> {
-            Object[] args = invocation.getArguments();
-            requestProperties.put((String) args[0], args[1]);
-            return null;
-        }).when(requestContext).setProperty(anyString(), anyObject());
+                    Object[] args = invocation.getArguments();
+                    requestProperties.put((String) args[0], args[1]);
+                    return null;
+                })
+                .when(requestContext)
+                .setProperty(anyString(), anyObject());
     }
 
     @Test
