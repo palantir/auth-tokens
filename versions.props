@@ -1,4 +1,4 @@
-com.fasterxml.jackson.*:jackson-* = 2.11.1
+com.fasterxml.jackson.*:jackson-* = 2.11.2
 com.google.code.findbugs:annotations = 3.0.1
 com.google.guava:guava = 23.6.1-jre
 com.palantir.safe-logging:* = 1.13.0
