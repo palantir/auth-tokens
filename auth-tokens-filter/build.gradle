@@ -2,16 +2,18 @@ apply from: "${rootDir}/gradle/publish-jar.gradle"
 apply plugin: 'com.palantir.revapi'
 
 dependencies {
-    compile project(':auth-tokens')
-    compile "jakarta.servlet:jakarta.servlet-api"
-    compile "jakarta.annotation:jakarta.annotation-api"
-    compile "jakarta.ws.rs:jakarta.ws.rs-api"
-    compile "org.slf4j:slf4j-api"
-    implementation "com.palantir.safe-logging:preconditions"
+    api project(':auth-tokens')
+    api 'jakarta.annotation:jakarta.annotation-api'
+    api 'jakarta.servlet:jakarta.servlet-api'
+    api 'jakarta.ws.rs:jakarta.ws.rs-api'
 
-    testCompile "io.dropwizard:dropwizard-testing"
-    testCompile "junit:junit"
-    testCompile "org.assertj:assertj-core"
-    testCompile "org.mockito:mockito-core"
+    implementation 'com.palantir.safe-logging:preconditions'
+    implementation 'org.slf4j:slf4j-api'
+
+    testImplementation 'io.dropwizard:dropwizard-testing'
+    testImplementation 'org.assertj:assertj-core'
+    testImplementation 'org.mockito:mockito-core'
+    testImplementation 'org.mockito:mockito-junit-jupiter'
+    testImplementation 'org.junit.jupiter:junit-jupiter'
 }
 

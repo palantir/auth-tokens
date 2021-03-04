@@ -1,8 +1,6 @@
 dependencies {
-    compile project(":auth-tokens")
-    compile 'com.google.guava:guava'
-    compile 'org.openjdk.jmh:jmh-core'
-    compileOnly 'org.openjdk.jmh:jmh-generator-annprocess'
-    annotationProcessor 'org.openjdk.jmh:jmh-generator-annprocess'
+    implementation project(":auth-tokens")
+    implementation 'com.google.guava:guava'
+    implementation 'org.openjdk.jmh:jmh-core'
 }
 

@@ -107,7 +107,7 @@ public abstract class UnverifiedJsonWebToken {
      * An anticipated use of this class is making a best-effort user id extraction for logging.
      */
     public static UnverifiedJsonWebToken of(BearerToken token) {
-        String[] segments = token.getToken().split("\\.");
+        String[] segments = token.getToken().split("\\.", -1);
 
         // Avoid creating Arg on the hot path
         if (segments.length != 3) {

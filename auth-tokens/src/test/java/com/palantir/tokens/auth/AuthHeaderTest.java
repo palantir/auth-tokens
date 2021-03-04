@@ -18,12 +18,12 @@ package com.palantir.tokens.auth;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public final class AuthHeaderTest {
+final class AuthHeaderTest {
 
     @Test
-    public void testSimple() {
+    void testSimple() {
         BearerToken fromToken = BearerToken.valueOf("tokenTest");
         AuthHeader authHeader = AuthHeader.of(fromToken);
         assertThat(authHeader.getBearerToken()).isEqualTo(fromToken);
@@ -32,12 +32,12 @@ public final class AuthHeaderTest {
     }
 
     @Test
-    public void testToApiToken() {
+    void testToApiToken() {
         assertThat(AuthHeader.valueOf("Bearer apiToken")).isEqualTo(AuthHeader.of(BearerToken.valueOf("apiToken")));
     }
 
     @Test
-    public void testToApiToken_removeFirstBearer() {
+    void testToApiToken_removeFirstBearer() {
         assertThat(AuthHeader.valueOf("Bearer Bearer")).isEqualTo(AuthHeader.of(BearerToken.valueOf("Bearer")));
     }
 }

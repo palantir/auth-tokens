@@ -24,27 +24,26 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.palantir.logsafe.SafeArg;
 import com.palantir.logsafe.testing.Assertions;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests for {@link BearerToken}.
  */
-public final class BearerTokenTests {
+final class BearerTokenTests {
 
     private static final String TOKEN_STRING = "abc123";
 
     @Test
-    public void testConstructorUsage() {
+    void testConstructorUsage() {
         BearerToken bearerToken = BearerToken.valueOf(TOKEN_STRING);
         assertThat(bearerToken.getToken()).isEqualTo(TOKEN_STRING);
     }
 
     @Test
-    public void testFromString_specialCharacters() {
+    void testFromString_specialCharacters() {
         List<String> validTokens = Arrays.asList("-._~+/=", "a", "abc", "abc=", "a=", "a===");
         for (String validToken : validTokens) {
             BearerToken.valueOf(validToken);
@@ -52,7 +51,7 @@ public final class BearerTokenTests {
     }
 
     @Test
-    public void testFromString_invalidTokens() {
+    void testFromString_invalidTokens() {
         List<String> invalidTokens = Arrays.asList(" space", "space ", "with space", "#", " ", "(", "=", "=a");
         for (String invalidToken : invalidTokens) {
             Assertions.assertThatLoggableExceptionThrownBy(() -> BearerToken.valueOf(invalidToken))
@@ -63,18 +62,17 @@ public final class BearerTokenTests {
     }
 
     @Test
-    public void testTokenCannotBeBlank() {
+    void testTokenCannotBeBlank() {
         assertThatThrownBy(() -> BearerToken.valueOf("")).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
-    @SuppressFBWarnings("NP_NULL_PARAM_DEREF_NONVIRTUAL")
-    public void testTokenCannotBeNull() {
+    void testTokenCannotBeNull() {
         assertThatThrownBy(() -> BearerToken.valueOf(null)).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
-    public void testJackson() throws IOException {
+    void testJackson() throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
 
         BearerToken expectedBearerToken = BearerToken.valueOf(TOKEN_STRING);
@@ -86,7 +84,7 @@ public final class BearerTokenTests {
     }
 
     @Test
-    public void testJacksonInContainer() throws IOException {
+    void testJacksonInContainer() throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
 
         TokenContainer expectedContainer = new TokenContainer(BearerToken.valueOf(TOKEN_STRING));
@@ -97,7 +95,7 @@ public final class BearerTokenTests {
     }
 
     @Test
-    public void testToString() {
+    void testToString() {
         BearerToken bearerToken = BearerToken.valueOf(TOKEN_STRING);
         assertThat(bearerToken.toString()).isEqualTo(TOKEN_STRING);
     }

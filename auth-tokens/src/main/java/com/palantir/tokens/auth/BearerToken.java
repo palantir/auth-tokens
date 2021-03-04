@@ -107,8 +107,7 @@ public abstract class BearerToken {
 
     @Override
     public final boolean equals(Object other) {
-        return other != null
-                && other instanceof BearerToken
+        return other instanceof BearerToken
                 && MessageDigest.isEqual(((BearerToken) other).getTokenAsBytes(), getTokenAsBytes());
     }
 
