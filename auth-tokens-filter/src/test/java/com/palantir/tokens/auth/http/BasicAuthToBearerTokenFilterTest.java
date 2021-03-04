@@ -20,28 +20,26 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.google.common.io.BaseEncoding;
-import com.google.common.net.HttpHeaders;
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.Collections;
 import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletRequestWrapper;
-import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-public final class BasicAuthToBearerTokenFilterTest {
+@ExtendWith(MockitoExtension.class)
+final class BasicAuthToBearerTokenFilterTest {
 
-    private static final BaseEncoding BASE_64_ENCODING = BaseEncoding.base64Url();
+    private static final String AUTHORIZATION = "Authorization";
 
     @Mock
     private HttpServletRequest httpServletRequest;
@@ -54,14 +52,13 @@ public final class BasicAuthToBearerTokenFilterTest {
 
     private BasicAuthToBearerTokenFilter tokenFilter;
 
-    @Before
-    public void before() throws Exception {
-        MockitoAnnotations.initMocks(this);
+    @BeforeEach
+    void before() {
         tokenFilter = new BasicAuthToBearerTokenFilter();
     }
 
     @Test
-    public void testExpectedHeader() throws Exception {
+    void testExpectedHeader() throws Exception {
         String password = "password";
         setPassword(password);
         filter();
@@ -69,7 +66,7 @@ public final class BasicAuthToBearerTokenFilterTest {
     }
 
     @Test
-    public void testNotInstanceOfHttpServletRequest() throws Exception {
+    void testNotInstanceOfHttpServletRequest() throws Exception {
         // servletRequestWrapper is not instanceof HttpServletRequest
         ServletRequestWrapper servletRequestWrapper = new ServletRequestWrapper(httpServletRequest);
         filter(servletRequestWrapper);
@@ -77,21 +74,21 @@ public final class BasicAuthToBearerTokenFilterTest {
     }
 
     @Test
-    public void testNullAuthHeader() throws Exception {
+    void testNullAuthHeader() throws Exception {
         setAuthHeader(null);
         filter();
         assertRequestUnchanged();
     }
 
     @Test
-    public void testAuthHeaderNotBasicAuth() throws IOException, ServletException {
+    void testAuthHeaderNotBasicAuth() throws Exception {
         setAuthHeader("something unexpected");
         filter();
         assertRequestUnchanged();
     }
 
     @Test
-    public void testCannotDecode() throws IOException, ServletException {
+    void testCannotDecode() throws Exception {
         String encodedCreds = "not base-64 encoded";
         setBasicAuthHeader(encodedCreds);
         filter();
@@ -99,18 +96,18 @@ public final class BasicAuthToBearerTokenFilterTest {
     }
 
     @Test
-    public void testLacksColon() throws IOException, ServletException {
+    void testLacksColon() throws Exception {
         String credentials = "lacks-colon";
         setCredentials(credentials);
         filter();
         assertRequestUnchanged();
     }
 
-    private void filter() throws IOException, ServletException {
+    private void filter() throws Exception {
         filter(httpServletRequest);
     }
 
-    private void filter(ServletRequest request) throws IOException, ServletException {
+    private void filter(ServletRequest request) throws Exception {
         tokenFilter.doFilter(request, null, chain);
     }
 
@@ -120,7 +117,7 @@ public final class BasicAuthToBearerTokenFilterTest {
     }
 
     private void setCredentials(String credentials) {
-        String encodedCreds = BASE_64_ENCODING.encode(credentials.getBytes(StandardCharsets.UTF_8));
+        String encodedCreds = Base64.getUrlEncoder().encodeToString(credentials.getBytes(StandardCharsets.UTF_8));
         setBasicAuthHeader(encodedCreds);
     }
 
@@ -130,30 +127,29 @@ public final class BasicAuthToBearerTokenFilterTest {
     }
 
     private void setAuthHeader(String authHeader) {
-        when(httpServletRequest.getHeader(HttpHeaders.AUTHORIZATION)).thenReturn(authHeader);
+        when(httpServletRequest.getHeader(AUTHORIZATION)).thenReturn(authHeader);
     }
 
-    private void assertChainRequestHasAuthHeader(String expectedAuthHeader) throws IOException, ServletException {
+    private void assertChainRequestHasAuthHeader(String expectedAuthHeader) throws Exception {
         HttpServletRequest value = (HttpServletRequest) getChainRequest();
 
-        String actualAuthHeader = value.getHeader(HttpHeaders.AUTHORIZATION);
+        String actualAuthHeader = value.getHeader(AUTHORIZATION);
         assertThat(actualAuthHeader).isEqualTo(expectedAuthHeader);
 
-        assertThat(Collections.list(value.getHeaders(HttpHeaders.AUTHORIZATION)))
-                .containsExactly(expectedAuthHeader);
+        assertThat(Collections.list(value.getHeaders(AUTHORIZATION))).containsExactly(expectedAuthHeader);
     }
 
-    private void assertRequestUnchanged() throws IOException, ServletException {
+    private void assertRequestUnchanged() throws Exception {
         assertFilteredRequestIs(httpServletRequest);
     }
 
-    private void assertFilteredRequestIs(ServletRequest request) throws IOException, ServletException {
+    private void assertFilteredRequestIs(ServletRequest request) throws Exception {
         ServletRequest chainRequest = getChainRequest();
         assertThat(chainRequest).isEqualTo(request);
     }
 
-    private ServletRequest getChainRequest() throws IOException, ServletException {
-        verify(chain).doFilter(requestArgumentCaptor.capture(), Mockito.<ServletResponse>any());
+    private ServletRequest getChainRequest() throws Exception {
+        verify(chain).doFilter(requestArgumentCaptor.capture(), Mockito.any());
         return requestArgumentCaptor.getValue();
     }
 }

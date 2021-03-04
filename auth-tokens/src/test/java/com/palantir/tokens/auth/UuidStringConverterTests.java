@@ -20,13 +20,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.UUID;
 import java.util.stream.IntStream;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class UuidStringConverterTests {
+class UuidStringConverterTests {
 
     @Test
-    public void testToString() {
-        IntStream.range(0, 10_000).forEach(x -> {
+    void testToString() {
+        IntStream.range(0, 10_000).forEach(_x -> {
             UUID uuid = UUID.randomUUID();
             assertThat(UuidStringConverter.toString(uuid)).isEqualTo(uuid.toString());
         });

@@ -2,16 +2,18 @@ apply from: "${rootDir}/gradle/publish-jar.gradle"
 apply plugin: 'com.palantir.revapi'
 
 dependencies {
-    compile "com.fasterxml.jackson.core:jackson-databind"
-    compile "org.slf4j:slf4j-api"
+    annotationProcessor 'org.immutables:value'
+
+    compileOnly 'org.immutables:value::annotations'
+
+    api 'com.fasterxml.jackson.core:jackson-annotations'
+
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
     implementation 'com.palantir.safe-logging:preconditions'
+    implementation 'org.slf4j:slf4j-api'
 
-    annotationProcessor "org.immutables:value"
-    compileOnly "org.immutables:value::annotations"
-
-    testCompile "com.google.code.findbugs:annotations"
-    testCompile "junit:junit"
-    testCompile "org.assertj:assertj-core"
-    testCompile 'com.palantir.safe-logging:preconditions-assertj'
+    testImplementation 'com.palantir.safe-logging:preconditions-assertj'
+    testImplementation 'org.assertj:assertj-core'
+    testImplementation 'org.junit.jupiter:junit-jupiter'
 }
 

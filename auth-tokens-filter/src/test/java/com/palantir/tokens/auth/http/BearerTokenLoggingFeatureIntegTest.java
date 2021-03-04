@@ -23,9 +23,8 @@ import com.palantir.tokens.auth.BearerToken;
 import io.dropwizard.Application;
 import io.dropwizard.Configuration;
 import io.dropwizard.setup.Environment;
-import io.dropwizard.testing.junit.DropwizardAppRule;
-import java.util.Arrays;
-import java.util.Collection;
+import io.dropwizard.testing.junit5.DropwizardAppExtension;
+import io.dropwizard.testing.junit5.DropwizardExtensionsSupport;
 import javax.ws.rs.CookieParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
@@ -35,42 +34,30 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.HttpHeaders;
 import org.glassfish.jersey.client.JerseyClientBuilder;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.slf4j.MDC;
 
-@RunWith(Parameterized.class)
-public class BearerTokenLoggingFeatureIntegTest {
+@ExtendWith(DropwizardExtensionsSupport.class)
+final class BearerTokenLoggingFeatureIntegTest {
 
-    @Parameterized.Parameters
-    public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][] {{"/direct"}, {"/inherited"}});
-    }
-
-    private final String pathPrefix;
-
-    public BearerTokenLoggingFeatureIntegTest(String pathPrefix) {
-        this.pathPrefix = pathPrefix;
-    }
-
-    @ClassRule
-    public static final DropwizardAppRule<Configuration> app = new DropwizardAppRule<>(Server.class);
+    private static final DropwizardAppExtension<Configuration> EXTENSION = new DropwizardAppExtension<>(Server.class);
 
     private WebTarget target;
 
-    @Before
-    public void before() {
-        String endpointUri = "http://localhost:" + app.getLocalPort();
+    @BeforeEach
+    void before() {
+        String endpointUri = "http://localhost:" + EXTENSION.getLocalPort();
         JerseyClientBuilder builder = new JerseyClientBuilder();
         Client client = builder.build();
         target = client.target(endpointUri);
     }
 
-    @Test
-    public void mdc_values_should_be_populated_from_http_header() {
+    @ParameterizedTest
+    @ValueSource(strings = {"/direct", "/inherited"})
+    void mdc_values_should_be_populated_from_http_header(String pathPrefix) {
         assertThat(target.path(pathPrefix + "/success")
                         .request()
                         .header("Authorization", TestConstants.AUTH_HEADER)
@@ -79,8 +66,9 @@ public class BearerTokenLoggingFeatureIntegTest {
                 .isEqualTo(200);
     }
 
-    @Test
-    public void mdc_values_should_be_populated_when_cookie_is_a_bearertoken() {
+    @ParameterizedTest
+    @ValueSource(strings = {"/direct", "/inherited"})
+    void mdc_values_should_be_populated_when_cookie_is_a_bearertoken(String pathPrefix) {
         assertThat(target.path(pathPrefix + "/cookies")
                         .request()
                         .cookie(new Cookie(
@@ -93,8 +81,9 @@ public class BearerTokenLoggingFeatureIntegTest {
                 .isEqualTo(200);
     }
 
-    @Test
-    public void auth_header_passed_to_no_header_endpoint_is_not_picked_up() {
+    @ParameterizedTest
+    @ValueSource(strings = {"/direct", "/inherited"})
+    void auth_header_passed_to_no_header_endpoint_is_not_picked_up(String pathPrefix) {
         assertThat(target.path(pathPrefix + "/no-header")
                         .request()
                         .header("Authorization", TestConstants.AUTH_HEADER)
@@ -103,8 +92,9 @@ public class BearerTokenLoggingFeatureIntegTest {
                 .isEqualTo(200);
     }
 
-    @Test
-    public void non_auth_cookie_doesnt_get_logged() {
+    @ParameterizedTest
+    @ValueSource(strings = {"/direct", "/inherited"})
+    void non_auth_cookie_doesnt_get_logged(String pathPrefix) {
         assertThat(target.path(pathPrefix + "/non-auth-cookie")
                         .request()
                         .cookie(new Cookie(

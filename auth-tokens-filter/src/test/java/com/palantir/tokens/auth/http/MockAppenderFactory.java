@@ -21,9 +21,6 @@ package com.palantir.tokens.auth.http;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.core.Appender;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import io.dropwizard.logging.AbstractAppenderFactory;
 import io.dropwizard.logging.async.AsyncAppenderFactory;
@@ -39,24 +36,26 @@ import io.dropwizard.logging.layout.LayoutFactory;
  * but does not otherwise expose a way to get a handle on the logger itself.
  */
 @JsonTypeName("mock")
-public final class MockAppenderFactory extends AbstractAppenderFactory {
+public final class MockAppenderFactory extends AbstractAppenderFactory<ch.qos.logback.classic.spi.ILoggingEvent> {
 
-    private static final Appender<ILoggingEvent> MOCK_REQUEST_APPENDER = setup();
+    private static final ch.qos.logback.core.Appender<ch.qos.logback.classic.spi.ILoggingEvent> MOCK_REQUEST_APPENDER =
+            setup();
 
-    private static Appender<ILoggingEvent> setup() {
+    private static ch.qos.logback.core.Appender<ch.qos.logback.classic.spi.ILoggingEvent> setup() {
         @SuppressWarnings("unchecked")
-        Appender<ILoggingEvent> mockAppender = mock(Appender.class);
+        ch.qos.logback.core.Appender<ch.qos.logback.classic.spi.ILoggingEvent> mockAppender =
+                mock(ch.qos.logback.core.Appender.class);
         when(mockAppender.getName()).thenReturn("MOCK");
         return mockAppender;
     }
 
     @Override
-    public Appender build(
-            LoggerContext _context,
+    public ch.qos.logback.core.Appender<ch.qos.logback.classic.spi.ILoggingEvent> build(
+            ch.qos.logback.classic.LoggerContext _context,
             String _applicationName,
-            LayoutFactory _layoutFactory,
-            LevelFilterFactory _levelFilterFactory,
-            AsyncAppenderFactory _asyncAppenderFactory) {
+            LayoutFactory<ch.qos.logback.classic.spi.ILoggingEvent> _layoutFactory,
+            LevelFilterFactory<ch.qos.logback.classic.spi.ILoggingEvent> _levelFilterFactory,
+            AsyncAppenderFactory<ch.qos.logback.classic.spi.ILoggingEvent> _asyncAppenderFactory) {
         return MOCK_REQUEST_APPENDER;
     }
 }

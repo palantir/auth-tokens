@@ -17,24 +17,24 @@
 package com.palantir.tokens.auth.http;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.anyObject;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.doAnswer;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
 import java.util.HashMap;
 import java.util.Map;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.HttpHeaders;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.slf4j.MDC;
 
-@RunWith(MockitoJUnitRunner.class)
-public final class BearerTokenLoggingFilterTest {
+@ExtendWith(MockitoExtension.class)
+final class BearerTokenLoggingFilterTest {
 
     private static final String USER_ID_KEY = Utilities.Key.USER_ID.getMdcKey();
     private static final String SESSION_ID_KEY = Utilities.Key.SESSION_ID.getMdcKey();
@@ -44,43 +44,46 @@ public final class BearerTokenLoggingFilterTest {
     private ContainerRequestContext requestContext;
 
     private Map<String, Object> requestProperties;
+    private BearerTokenLoggingFilter filter;
 
-    private BearerTokenLoggingFilter filter = new BearerTokenLoggingFilter();
-
-    @Before
-    public void before() {
+    @BeforeEach
+    void before() {
         requestProperties = new HashMap<>();
+        filter = new BearerTokenLoggingFilter();
         MDC.clear();
 
-        doAnswer(invocation -> {
-                    Object[] args = invocation.getArguments();
-                    return requestProperties.get(args[0]);
+        lenient()
+                .doAnswer(invocation -> {
+                    String name = invocation.getArgument(0);
+                    return requestProperties.get(name);
                 })
                 .when(requestContext)
                 .getProperty(anyString());
 
-        doAnswer(invocation -> {
-                    Object[] args = invocation.getArguments();
-                    requestProperties.put((String) args[0], args[1]);
+        lenient()
+                .doAnswer(invocation -> {
+                    String name = invocation.getArgument(0);
+                    Object object = invocation.getArgument(1);
+                    requestProperties.put(name, object);
                     return null;
                 })
                 .when(requestContext)
-                .setProperty(anyString(), anyObject());
+                .setProperty(anyString(), any());
     }
 
     @Test
-    public void mdcClearedIfNoAuthHeaderProvided() {
+    void mdcClearedIfNoAuthHeaderProvided() {
         assertThatMdcIsCleared();
     }
 
     @Test
-    public void mdcClearedIfInvalidAuthHeaderProvided() {
+    void mdcClearedIfInvalidAuthHeaderProvided() {
         when(requestContext.getHeaderString(HttpHeaders.AUTHORIZATION)).thenReturn("BOGUS");
         assertThatMdcIsCleared();
     }
 
     @Test
-    public void assertContextPropKeyPrefixIsStable() {
+    void assertContextPropKeyPrefixIsStable() {
         when(requestContext.getHeaderString(HttpHeaders.AUTHORIZATION)).thenReturn(TestConstants.AUTH_HEADER);
         filter.filter(requestContext);
 
@@ -90,7 +93,7 @@ public final class BearerTokenLoggingFilterTest {
     }
 
     @Test
-    public void userIdInformationIsSet() {
+    void userIdInformationIsSet() {
         when(requestContext.getHeaderString(HttpHeaders.AUTHORIZATION)).thenReturn(TestConstants.AUTH_HEADER);
         filter.filter(requestContext);
 
@@ -100,7 +103,7 @@ public final class BearerTokenLoggingFilterTest {
     }
 
     @Test
-    public void sessionIdInformationIsSet() {
+    void sessionIdInformationIsSet() {
         when(requestContext.getHeaderString(HttpHeaders.AUTHORIZATION)).thenReturn(TestConstants.AUTH_HEADER);
         filter.filter(requestContext);
 
@@ -110,7 +113,7 @@ public final class BearerTokenLoggingFilterTest {
     }
 
     @Test
-    public void tokenIdInformationIsSet() {
+    void tokenIdInformationIsSet() {
         when(requestContext.getHeaderString(HttpHeaders.AUTHORIZATION)).thenReturn(TestConstants.AUTH_HEADER);
         filter.filter(requestContext);
 

@@ -21,9 +21,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.palantir.logsafe.SafeArg;
 import com.palantir.logsafe.testing.Assertions;
 import java.util.Optional;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public final class UnverifiedJsonWebTokenTests {
+final class UnverifiedJsonWebTokenTests {
 
     private static final BearerToken SESSION_TOKEN = BearerToken.valueOf("eyJhbGciOiJFUzI1NiJ9."
             + "eyJleHAiOjE0NTk1NTIzNDksInNpZCI6IlA4WmoxRDVJVGUyNlR0Z"
@@ -50,51 +50,51 @@ public final class UnverifiedJsonWebTokenTests {
     private static final String TOKEN_ID = "a459b4a1-5089-4fe0-8655-d5dfd9b2b7fd";
 
     @Test
-    public void testAsJwt_validJwtFromSessionToken() {
+    void testAsJwt_validJwtFromSessionToken() {
         UnverifiedJsonWebToken token = UnverifiedJsonWebToken.of(SESSION_TOKEN);
         assertThat(token.getUnverifiedUserId()).isEqualTo(USERID);
         assertThat(token.getUnverifiedSessionId()).isEqualTo(Optional.of(SESSION_ID));
     }
 
     @Test
-    public void testAsJwt_validJwtFromApiToken() {
+    void testAsJwt_validJwtFromApiToken() {
         UnverifiedJsonWebToken token = UnverifiedJsonWebToken.of(API_TOKEN);
         assertValidApiToken(token);
     }
 
     @Test
-    public void testAsJwt_validJwtFromProxyToken() {
+    void testAsJwt_validJwtFromProxyToken() {
         UnverifiedJsonWebToken token = UnverifiedJsonWebToken.of(PROXY_TOKEN);
         assertValidApiToken(token);
     }
 
     @Test
-    public void testAsJwt_validJwtFromParsedToken() {
+    void testAsJwt_validJwtFromParsedToken() {
         Optional<UnverifiedJsonWebToken> token = UnverifiedJsonWebToken.tryParse(PROXY_TOKEN.getToken());
         assertValidApiToken(token.get());
     }
 
     @Test
-    public void invalidJwt_parseReturnsEmpty() {
+    void invalidJwt_parseReturnsEmpty() {
         Optional<UnverifiedJsonWebToken> parsedJwt = UnverifiedJsonWebToken.tryParse(INVALID_BEARER_TOKEN.getToken());
         assertThat(parsedJwt).isNotPresent();
     }
 
     @Test
-    public void invalidJwt_parseReturnsEmpty_validStructure() {
+    void invalidJwt_parseReturnsEmpty_validStructure() {
         Optional<UnverifiedJsonWebToken> parsedJwt = UnverifiedJsonWebToken.tryParse(INVALID_PAYLOAD_TOKEN.getToken());
         assertThat(parsedJwt).isNotPresent();
     }
 
     @Test
-    public void invalidJwt_invalidNumberOfSegments() {
+    void invalidJwt_invalidNumberOfSegments() {
         Assertions.assertThatLoggableExceptionThrownBy(() -> UnverifiedJsonWebToken.of(INVALID_BEARER_TOKEN))
                 .hasLogMessage("Invalid JWT: expected 3 segments")
                 .hasExactlyArgs(SafeArg.of("segmentsCount", 1));
     }
 
     @Test
-    public void invalidJwt_invalidPayloadToken() {
+    void invalidJwt_invalidPayloadToken() {
         Assertions.assertThatLoggableExceptionThrownBy(() -> UnverifiedJsonWebToken.of(INVALID_PAYLOAD_TOKEN))
                 .hasLogMessage("Invalid JWT: cannot parse payload")
                 .hasExactlyArgs();

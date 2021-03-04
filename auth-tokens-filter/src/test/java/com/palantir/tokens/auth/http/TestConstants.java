@@ -16,9 +16,9 @@
 
 package com.palantir.tokens.auth.http;
 
-import com.google.common.io.BaseEncoding;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.UUID;
 
 final class TestConstants {
@@ -28,9 +28,9 @@ final class TestConstants {
     static final String TOKEN_ID = UUID.randomUUID().toString();
     static final String AUTH_HEADER = "Bearer "
             + "unused."
-            + BaseEncoding.base64Url()
-                    .omitPadding()
-                    .encode(("{"
+            + Base64.getUrlEncoder()
+                    .withoutPadding()
+                    .encodeToString(("{"
                                     + "\"sub\": \"" + encodeUuid(USER_ID) + "\","
                                     + "\"sid\": \"" + encodeUuid(SESSION_ID) + "\","
                                     + "\"jti\": \"" + encodeUuid(TOKEN_ID) + "\"}")
@@ -42,7 +42,7 @@ final class TestConstants {
         ByteBuffer bb = ByteBuffer.wrap(new byte[16]);
         bb.putLong(uuid.getMostSignificantBits());
         bb.putLong(uuid.getLeastSignificantBits());
-        return BaseEncoding.base64().encode(bb.array());
+        return Base64.getEncoder().encodeToString(bb.array());
     }
 
     private TestConstants() {}
