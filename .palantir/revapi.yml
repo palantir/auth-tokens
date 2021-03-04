@@ -1,0 +1,7 @@
+acceptedBreaks:
+  "3.6.2":
+    com.palantir.tokens:auth-tokens:
+    - code: "java.class.visibilityReduced"
+      old: "@interface com.palantir.tokens.auth.ImmutablesStyle"
+      new: "@interface com.palantir.tokens.auth.ImmutablesStyle"
+      justification: "Hide internal annotation"

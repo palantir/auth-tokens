@@ -23,6 +23,6 @@ import java.lang.annotation.Target;
 import org.immutables.value.Value;
 
 @Target({ElementType.PACKAGE, ElementType.TYPE})
-@Retention(RetentionPolicy.CLASS)
+@Retention(RetentionPolicy.SOURCE)
 @Value.Style(visibility = Value.Style.ImplementationVisibility.PACKAGE, jdkOnly = true)
-public @interface ImmutablesStyle {}
+@interface ImmutablesStyle {}
