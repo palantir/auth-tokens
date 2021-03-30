@@ -47,7 +47,6 @@ public class BasicAuthToBearerTokenFilter implements Filter {
     private static final Logger log = LoggerFactory.getLogger(BasicAuthToBearerTokenFilter.class);
 
     private static final String BASIC_AUTH_STR = "Basic";
-    private static final Base64.Decoder BASE_64_ENCODING = Base64.getUrlDecoder();
 
     @Override
     public void init(FilterConfig _filterConfig) {}
@@ -115,7 +114,7 @@ public class BasicAuthToBearerTokenFilter implements Filter {
                 rawAuthHeader.substring(BASIC_AUTH_STR.length()).trim();
         String credentials;
         try {
-            credentials = new String(BASE_64_ENCODING.decode(base64Credentials), StandardCharsets.UTF_8);
+            credentials = new String(Base64.getUrlDecoder().decode(base64Credentials), StandardCharsets.UTF_8);
         } catch (IllegalArgumentException e) {
             throw new SafeIllegalArgumentException("Could not decode credentials from auth header", e);
         }
