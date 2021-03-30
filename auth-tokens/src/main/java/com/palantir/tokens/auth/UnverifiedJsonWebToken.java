@@ -125,8 +125,8 @@ public abstract class UnverifiedJsonWebToken {
 
     private static JwtPayload extractPayload(String payload) {
         try {
-            return READER.readValue(Base64.getDecoder().decode(payload));
-        } catch (IOException e) {
+            return READER.readValue(Base64.getUrlDecoder().decode(payload));
+        } catch (IllegalArgumentException | IOException e) {
             throw new SafeIllegalArgumentException("Invalid JWT: cannot parse payload", e);
         }
     }
