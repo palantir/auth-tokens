@@ -1,0 +1,9 @@
+type: fix
+fix:
+  description: |-
+    Use Base64 URL decoder
+
+    ## Before this PR
+    `UnverifiedJsonWebToken` now decodes token payloads using the correct Base64 URL decoder.
+  links:
+  - https://github.com/palantir/auth-tokens/pull/487
