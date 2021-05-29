@@ -75,7 +75,7 @@ public final class BearerTokenLoggingFeature implements DynamicFeature {
 
         if (authorizationHeaderParams.isPresent()
                 && authorizationHeaderParams.get().size() == 1) {
-            log.info(
+            log.debug(
                     "Enabling BearerTokenLoggingFilter",
                     SafeArg.of("class", resourceInfo.getResourceClass()),
                     SafeArg.of("method", Objects.toString(resourceInfo.getResourceMethod())));
@@ -101,7 +101,7 @@ public final class BearerTokenLoggingFeature implements DynamicFeature {
         if (cookieParams.isPresent() && cookieParams.get().size() == 1) {
             String cookieName =
                     cookieParams.get().get(0).getAnnotation(CookieParam.class).value();
-            log.info(
+            log.debug(
                     "Enabling BearerTokenCookieLoggingFilter",
                     SafeArg.of("class", resourceInfo.getResourceClass()),
                     SafeArg.of("method", Objects.toString(resourceInfo.getResourceMethod())));
@@ -109,7 +109,7 @@ public final class BearerTokenLoggingFeature implements DynamicFeature {
             return;
         }
 
-        log.info(
+        log.debug(
                 "Setting filter to clear auth from logging information. "
                         + "Not adding BearerTokenLoggingFilter or BearerTokenCookieLoggingFilter as no "
                         + "@HeaderParam or @CookieParam annotated arguments were found.",
