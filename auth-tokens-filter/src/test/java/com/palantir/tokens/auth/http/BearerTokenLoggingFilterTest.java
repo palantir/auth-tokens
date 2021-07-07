@@ -22,6 +22,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
+import com.palantir.tokens.auth.UnverifiedJsonWebToken;
 import java.util.HashMap;
 import java.util.Map;
 import javax.ws.rs.container.ContainerRequestContext;
@@ -90,6 +91,8 @@ final class BearerTokenLoggingFilterTest {
         assertThat(MDC.get(USER_ID_KEY)).isEqualTo(TestConstants.USER_ID);
         assertThat(requestContext.getProperty("com.palantir.tokens.auth.userId"))
                 .isEqualTo(TestConstants.USER_ID);
+        assertThat(requestContext.getProperty("com.palantir.tokens.auth.jwt"))
+                .isInstanceOf(UnverifiedJsonWebToken.class);
     }
 
     @Test
@@ -100,6 +103,9 @@ final class BearerTokenLoggingFilterTest {
         assertThat(MDC.get(USER_ID_KEY)).isEqualTo(TestConstants.USER_ID);
         assertThat(requestContext.getProperty(Utilities.getRequestPropertyKey(USER_ID_KEY)))
                 .isEqualTo(TestConstants.USER_ID);
+        assertThat(requestContext.getProperty(Utilities.JSON_WEB_TOKEN_KEY))
+                .isInstanceOfSatisfying(UnverifiedJsonWebToken.class, jwt -> assertThat(jwt.getUnverifiedUserId())
+                        .isEqualTo(TestConstants.USER_ID));
     }
 
     @Test
@@ -110,6 +116,9 @@ final class BearerTokenLoggingFilterTest {
         assertThat(MDC.get(SESSION_ID_KEY)).isEqualTo(TestConstants.SESSION_ID);
         assertThat(requestContext.getProperty(Utilities.getRequestPropertyKey(SESSION_ID_KEY)))
                 .isEqualTo(TestConstants.SESSION_ID);
+        assertThat(requestContext.getProperty(Utilities.JSON_WEB_TOKEN_KEY))
+                .isInstanceOfSatisfying(UnverifiedJsonWebToken.class, jwt -> assertThat(jwt.getUnverifiedSessionId())
+                        .hasValue(TestConstants.SESSION_ID));
     }
 
     @Test
@@ -120,6 +129,9 @@ final class BearerTokenLoggingFilterTest {
         assertThat(MDC.get(TOKEN_ID_KEY)).isEqualTo(TestConstants.TOKEN_ID);
         assertThat(requestContext.getProperty(Utilities.getRequestPropertyKey(TOKEN_ID_KEY)))
                 .isEqualTo(TestConstants.TOKEN_ID);
+        assertThat(requestContext.getProperty(Utilities.JSON_WEB_TOKEN_KEY))
+                .isInstanceOfSatisfying(UnverifiedJsonWebToken.class, jwt -> assertThat(jwt.getUnverifiedTokenId())
+                        .hasValue(TestConstants.TOKEN_ID));
     }
 
     private void assertThatMdcIsCleared() {

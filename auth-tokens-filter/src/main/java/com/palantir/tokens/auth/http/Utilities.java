@@ -23,6 +23,8 @@ import org.slf4j.MDC;
 
 final class Utilities {
 
+    static final String JSON_WEB_TOKEN_KEY = getRequestPropertyKey("jwt");
+
     static void clearMdc() {
         MDC.remove(Key.USER_ID.getMdcKey());
         MDC.remove(Key.SESSION_ID.getMdcKey());
@@ -37,6 +39,7 @@ final class Utilities {
             setUnverifiedContext(requestContext, Key.USER_ID, jwt.getUnverifiedUserId());
             setUnverifiedContext(requestContext, Key.SESSION_ID, jwt.getUnverifiedSessionId());
             setUnverifiedContext(requestContext, Key.TOKEN_ID, jwt.getUnverifiedTokenId());
+            requestContext.setProperty(JSON_WEB_TOKEN_KEY, jwt);
         }
     }
 
