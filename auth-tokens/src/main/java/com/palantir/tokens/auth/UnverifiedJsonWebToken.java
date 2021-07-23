@@ -23,14 +23,14 @@ import com.fasterxml.jackson.databind.ObjectReader;
 import com.palantir.logsafe.Preconditions;
 import com.palantir.logsafe.SafeArg;
 import com.palantir.logsafe.exceptions.SafeIllegalArgumentException;
+import com.palantir.logsafe.logger.SafeLogger;
+import com.palantir.logsafe.logger.SafeLoggerFactory;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Base64;
 import java.util.Optional;
 import java.util.UUID;
 import org.immutables.value.Value;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Represents the parsed form of a JWT but does not verify the token signature.
@@ -50,7 +50,7 @@ public abstract class UnverifiedJsonWebToken {
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
             .readerFor(JwtPayload.class);
 
-    private static final Logger log = LoggerFactory.getLogger(UnverifiedJsonWebToken.class);
+    private static final SafeLogger log = SafeLoggerFactory.get(UnverifiedJsonWebToken.class);
 
     /**
      * Returns the unverified user id, i.e., the "sub" (subject) field of the JWT.

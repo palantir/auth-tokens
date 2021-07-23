@@ -16,6 +16,8 @@
 
 package com.palantir.tokens.auth.http;
 
+import com.palantir.logsafe.logger.SafeLogger;
+import com.palantir.logsafe.logger.SafeLoggerFactory;
 import com.palantir.tokens.auth.UnverifiedJsonWebToken;
 import java.util.Optional;
 import javax.annotation.Priority;
@@ -23,8 +25,6 @@ import javax.ws.rs.Priorities;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.core.HttpHeaders;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
 /**
@@ -35,7 +35,7 @@ import org.slf4j.MDC;
  */
 @Priority(Priorities.AUTHORIZATION)
 public class BearerTokenLoggingFilter implements ContainerRequestFilter {
-    private static final Logger log = LoggerFactory.getLogger(BearerTokenLoggingFilter.class);
+    private static final SafeLogger log = SafeLoggerFactory.get(BearerTokenLoggingFilter.class);
 
     public static final String USER_ID_KEY = Utilities.Key.USER_ID.getMdcKey();
     public static final String SESSION_ID_KEY = Utilities.Key.SESSION_ID.getMdcKey();
