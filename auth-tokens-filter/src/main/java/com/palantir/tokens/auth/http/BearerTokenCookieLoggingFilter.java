@@ -16,6 +16,8 @@
 
 package com.palantir.tokens.auth.http;
 
+import com.palantir.logsafe.logger.SafeLogger;
+import com.palantir.logsafe.logger.SafeLoggerFactory;
 import com.palantir.tokens.auth.UnverifiedJsonWebToken;
 import java.util.Optional;
 import javax.annotation.Priority;
@@ -23,12 +25,10 @@ import javax.ws.rs.Priorities;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.core.Cookie;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Priority(Priorities.AUTHORIZATION)
 class BearerTokenCookieLoggingFilter implements ContainerRequestFilter {
-    private static final Logger log = LoggerFactory.getLogger(BearerTokenCookieLoggingFilter.class);
+    private static final SafeLogger log = SafeLoggerFactory.get(BearerTokenCookieLoggingFilter.class);
     private final String cookie;
 
     BearerTokenCookieLoggingFilter(String cookie) {

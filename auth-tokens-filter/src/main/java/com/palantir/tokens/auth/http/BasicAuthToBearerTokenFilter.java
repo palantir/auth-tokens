@@ -18,6 +18,8 @@ package com.palantir.tokens.auth.http;
 
 import com.palantir.logsafe.Preconditions;
 import com.palantir.logsafe.exceptions.SafeIllegalArgumentException;
+import com.palantir.logsafe.logger.SafeLogger;
+import com.palantir.logsafe.logger.SafeLoggerFactory;
 import com.palantir.tokens.auth.AuthHeader;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -34,8 +36,6 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import javax.ws.rs.core.HttpHeaders;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * A {@link Filter} that replaces basic auth with a bearer token.
@@ -44,7 +44,7 @@ import org.slf4j.LoggerFactory;
  * bearer token is base-64 encoded.
  */
 public class BasicAuthToBearerTokenFilter implements Filter {
-    private static final Logger log = LoggerFactory.getLogger(BasicAuthToBearerTokenFilter.class);
+    private static final SafeLogger log = SafeLoggerFactory.get(BasicAuthToBearerTokenFilter.class);
 
     private static final String BASIC_AUTH_STR = "Basic";
 
