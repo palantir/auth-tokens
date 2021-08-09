@@ -9,5 +9,5 @@ org.assertj:* = 3.20.2
 org.immutables:* = 2.8.8
 org.mockito:* = 3.11.2
 org.junit.jupiter:* = 5.7.2
-org.openjdk.jmh:* = 1.32
+org.openjdk.jmh:* = 1.33
 org.slf4j:* = 1.7.32
