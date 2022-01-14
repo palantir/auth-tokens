@@ -96,7 +96,7 @@ final class UnverifiedJsonWebTokenTests {
     void invalidJwt_invalidEncodingToken() {
         Assertions.assertThatLoggableExceptionThrownBy(() -> UnverifiedJsonWebToken.of(INVALID_ENCODING_TOKEN))
                 .hasLogMessage("Invalid JWT: cannot parse payload")
-                .hasExactlyArgs()
+                .hasNoArgs()
                 .hasCauseInstanceOf(IllegalArgumentException.class);
     }
 
@@ -104,7 +104,7 @@ final class UnverifiedJsonWebTokenTests {
     void invalidJwt_invalidPayloadToken() {
         Assertions.assertThatLoggableExceptionThrownBy(() -> UnverifiedJsonWebToken.of(INVALID_PAYLOAD_TOKEN))
                 .hasLogMessage("Invalid JWT: cannot parse payload")
-                .hasExactlyArgs()
+                .hasNoArgs()
                 .hasCauseInstanceOf(IOException.class);
     }
 }
