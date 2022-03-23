@@ -16,11 +16,13 @@
 
 package com.palantir.tokens.auth;
 
+import com.palantir.logsafe.DoNotLog;
 import org.immutables.value.Value;
 
 /**
  * Represents a HTTP authentication header. This class wraps a string in the form of "Bearer [token]".
  */
+@DoNotLog
 @Value.Immutable
 @ImmutablesStyle
 // NOTE: no @JsonSerialize/@JsonDeserialize because auth headers are for use in @HeaderParam
@@ -46,6 +48,7 @@ public abstract class AuthHeader {
     /**
      * Gets the string form: "Bearer [token]".
      */
+    @DoNotLog
     @Override
     public final String toString() {
         return "Bearer " + getBearerToken().getToken();

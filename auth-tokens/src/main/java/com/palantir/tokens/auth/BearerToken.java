@@ -18,6 +18,7 @@ package com.palantir.tokens.auth;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+import com.palantir.logsafe.DoNotLog;
 import com.palantir.logsafe.Preconditions;
 import com.palantir.logsafe.SafeArg;
 import com.palantir.logsafe.exceptions.SafeIllegalArgumentException;
@@ -26,6 +27,7 @@ import java.util.BitSet;
 import org.immutables.value.Value;
 
 /** Value class representing an authentication bearer token. */
+@DoNotLog
 @Value.Immutable
 @ImmutablesStyle
 public abstract class BearerToken {
@@ -47,6 +49,7 @@ public abstract class BearerToken {
 
     @Value.Parameter
     @JsonValue
+    @DoNotLog
     public abstract String getToken();
 
     // We use a hand-written getBytes() implementation for performance reasons.
@@ -101,6 +104,7 @@ public abstract class BearerToken {
     }
 
     @Override
+    @DoNotLog
     public final String toString() {
         return getToken();
     }
@@ -112,6 +116,7 @@ public abstract class BearerToken {
     }
 
     @Override
+    @DoNotLog
     public final int hashCode() {
         return getToken().hashCode();
     }
