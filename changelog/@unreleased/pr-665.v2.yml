@@ -1,0 +1,5 @@
+type: improvement
+improvement:
+  description: Annotate tokens with 'DoNotLog'
+  links:
+  - https://github.com/palantir/auth-tokens/pull/665
