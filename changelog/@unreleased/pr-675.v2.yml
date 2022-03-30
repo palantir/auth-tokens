@@ -1,0 +1,5 @@
+type: feature
+feature:
+  description: All UnverifiedJsonWebToken methods are `@Safe`
+  links:
+  - https://github.com/palantir/auth-tokens/pull/675
