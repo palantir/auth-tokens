@@ -21,6 +21,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.palantir.logsafe.Preconditions;
+import com.palantir.logsafe.Safe;
 import com.palantir.logsafe.SafeArg;
 import com.palantir.logsafe.exceptions.SafeIllegalArgumentException;
 import com.palantir.logsafe.logger.SafeLogger;
@@ -42,6 +43,7 @@ import org.immutables.value.Value;
  * An anticipated use of this class is making a best-effort user id extraction for
  * logging.
  */
+@Safe
 @Value.Immutable
 @ImmutablesStyle
 public abstract class UnverifiedJsonWebToken {
@@ -55,6 +57,7 @@ public abstract class UnverifiedJsonWebToken {
     /**
      * Returns the unverified user id, i.e., the "sub" (subject) field of the JWT.
      */
+    @Safe
     @Value.Parameter
     public abstract String getUnverifiedUserId();
 
@@ -62,6 +65,7 @@ public abstract class UnverifiedJsonWebToken {
      * Returns the unverified session id for this token, i.e. the "sid" field of the JWT
      * or absent if this token does not contain session information.
      */
+    @Safe
     @Value.Parameter
     public abstract Optional<String> getUnverifiedSessionId();
 
@@ -69,6 +73,7 @@ public abstract class UnverifiedJsonWebToken {
      * Returns the unverified token id for this token, i.e. the "jti" field of the JWT
      * or absent if this token does not use the "jti" field as a unique identifier.
      */
+    @Safe
     @Value.Parameter
     public abstract Optional<String> getUnverifiedTokenId();
 
