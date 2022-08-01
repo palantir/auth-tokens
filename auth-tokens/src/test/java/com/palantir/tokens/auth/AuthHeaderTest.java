@@ -19,25 +19,29 @@ package com.palantir.tokens.auth;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 final class AuthHeaderTest {
 
     @Test
-    void testSimple() {
-        BearerToken fromToken = BearerToken.valueOf("tokenTest");
-        AuthHeader authHeader = AuthHeader.of(fromToken);
-        assertThat(authHeader.getBearerToken()).isEqualTo(fromToken);
-        assertThat(authHeader.toString()).isEqualTo("Bearer tokenTest");
-        assertThat(AuthHeader.valueOf(authHeader.toString())).isEqualTo(authHeader);
+    void testFromToken() {
+        BearerToken bearerToken = BearerToken.valueOf("bearerToken");
+
+        AuthHeader authHeader = AuthHeader.of(bearerToken);
+
+        assertThat(authHeader.getBearerToken()).isEqualTo(bearerToken);
+        assertThat(authHeader.toString()).isEqualTo("Bearer bearerToken");
     }
 
-    @Test
-    void testToApiToken() {
-        assertThat(AuthHeader.valueOf("Bearer apiToken")).isEqualTo(AuthHeader.of(BearerToken.valueOf("apiToken")));
-    }
+    @ParameterizedTest
+    @ValueSource(strings = {"Bearer bearerToken", "bearer bearerToken", "BeArEr bearerToken", "bearerToken"})
+    void testFromString(String authHeaderString) {
+        BearerToken bearerToken = BearerToken.valueOf("bearerToken");
 
-    @Test
-    void testToApiToken_removeFirstBearer() {
-        assertThat(AuthHeader.valueOf("Bearer Bearer")).isEqualTo(AuthHeader.of(BearerToken.valueOf("Bearer")));
+        AuthHeader authHeader = AuthHeader.valueOf(authHeaderString);
+
+        assertThat(authHeader.getBearerToken()).isEqualTo(bearerToken);
+        assertThat(authHeader.toString()).isEqualTo("Bearer bearerToken");
     }
 }
