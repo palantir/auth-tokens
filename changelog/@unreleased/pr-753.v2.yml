@@ -1,0 +1,5 @@
+type: fix
+fix:
+  description: The `Authoziation` header authentication scheme is matching is case-insensitive.
+  links:
+  - https://github.com/palantir/auth-tokens/pull/753
