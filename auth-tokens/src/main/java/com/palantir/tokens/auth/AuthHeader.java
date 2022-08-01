@@ -36,8 +36,11 @@ public abstract class AuthHeader {
      * Takes the string form: "Bearer [token]" and creates a new {@link AuthHeader}.
      */
     public static AuthHeader valueOf(String authHeader) {
+        // See https://datatracker.ietf.org/doc/html/rfc7235#section-2.1
         BearerToken bearerToken = BearerToken.valueOf(
-                authHeader.regionMatches(true, 0, "Bearer ", 0, 7) ? authHeader.substring(7) : authHeader);
+                authHeader.regionMatches(/* ignoreCase */ true, 0, "Bearer ", 0, 7)
+                        ? authHeader.substring(7)
+                        : authHeader);
         return ImmutableAuthHeader.of(bearerToken);
     }
 
