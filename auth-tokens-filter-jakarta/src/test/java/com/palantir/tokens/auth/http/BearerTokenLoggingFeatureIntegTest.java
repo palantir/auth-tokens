@@ -20,100 +20,81 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.palantir.tokens.auth.AuthHeader;
 import com.palantir.tokens.auth.BearerToken;
-import io.dropwizard.Application;
-import io.dropwizard.Configuration;
-import io.dropwizard.setup.Environment;
-import io.dropwizard.testing.junit5.DropwizardAppExtension;
-import io.dropwizard.testing.junit5.DropwizardExtensionsSupport;
-import javax.ws.rs.CookieParam;
-import javax.ws.rs.GET;
-import javax.ws.rs.HeaderParam;
-import javax.ws.rs.Path;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.Cookie;
-import javax.ws.rs.core.HttpHeaders;
-import org.glassfish.jersey.client.JerseyClientBuilder;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.extension.ExtendWith;
+import jakarta.ws.rs.CookieParam;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.HeaderParam;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.core.HttpHeaders;
+import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.slf4j.MDC;
 
-@ExtendWith(DropwizardExtensionsSupport.class)
 final class BearerTokenLoggingFeatureIntegTest {
 
-    private static final DropwizardAppExtension<Configuration> EXTENSION = new DropwizardAppExtension<>(Server.class);
-
-    private WebTarget target;
-
-    @BeforeEach
-    void before() {
-        String endpointUri = "http://localhost:" + EXTENSION.getLocalPort();
-        JerseyClientBuilder builder = new JerseyClientBuilder();
-        Client client = builder.build();
-        target = client.target(endpointUri);
-    }
+    @RegisterExtension
+    private static final UndertowServerExtension undertow = UndertowServerExtension.create()
+            .jersey(new ResourceImpl())
+            .jersey(new DirectResource())
+            .jersey(new BearerTokenLoggingFeature());
 
     @ParameterizedTest
     @ValueSource(strings = {"/direct", "/inherited"})
     void mdc_values_should_be_populated_from_http_header(String pathPrefix) {
-        assertThat(target.path(pathPrefix + "/success")
-                        .request()
-                        .header("Authorization", TestConstants.AUTH_HEADER)
-                        .get()
-                        .getStatus())
-                .isEqualTo(200);
+        undertow.runRequest(
+                ClassicRequestBuilder.get(pathPrefix + "/success")
+                        .addHeader("Authorization", TestConstants.AUTH_HEADER)
+                        .build(),
+                response -> {
+                    assertThat(response.getCode()).isEqualTo(200);
+                });
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"/direct", "/inherited"})
     void mdc_values_should_be_populated_when_cookie_is_a_bearertoken(String pathPrefix) {
-        assertThat(target.path(pathPrefix + "/cookies")
-                        .request()
-                        .cookie(new Cookie(
-                                "SOME_COOKIE",
-                                AuthHeader.valueOf(TestConstants.AUTH_HEADER)
-                                        .getBearerToken()
-                                        .toString()))
-                        .get()
-                        .getStatus())
-                .isEqualTo(200);
+        undertow.runRequest(
+                ClassicRequestBuilder.get(pathPrefix + "/cookies")
+                        .addHeader(
+                                "Cookie",
+                                "SOME_COOKIE="
+                                        + AuthHeader.valueOf(TestConstants.AUTH_HEADER)
+                                                .getBearerToken()
+                                                .toString())
+                        .build(),
+                response -> {
+                    assertThat(response.getCode()).isEqualTo(200);
+                });
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"/direct", "/inherited"})
     void auth_header_passed_to_no_header_endpoint_is_not_picked_up(String pathPrefix) {
-        assertThat(target.path(pathPrefix + "/no-header")
-                        .request()
-                        .header("Authorization", TestConstants.AUTH_HEADER)
-                        .get()
-                        .getStatus())
-                .isEqualTo(200);
+        undertow.runRequest(
+                ClassicRequestBuilder.get(pathPrefix + "/no-header")
+                        .addHeader("Authorization", TestConstants.AUTH_HEADER)
+                        .build(),
+                response -> {
+                    assertThat(response.getCode()).isEqualTo(200);
+                });
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"/direct", "/inherited"})
     void non_auth_cookie_doesnt_get_logged(String pathPrefix) {
-        assertThat(target.path(pathPrefix + "/non-auth-cookie")
-                        .request()
-                        .cookie(new Cookie(
-                                "SOME_COOKIE",
-                                AuthHeader.valueOf(TestConstants.AUTH_HEADER)
-                                        .getBearerToken()
-                                        .toString()))
-                        .get()
-                        .getStatus())
-                .isEqualTo(200);
-    }
-
-    public static final class Server extends Application<Configuration> {
-        @Override
-        public void run(Configuration _configuration, Environment environment) {
-            environment.jersey().register(new ResourceImpl());
-            environment.jersey().register(new DirectResource());
-            environment.jersey().register(BearerTokenLoggingFeature.class);
-        }
+        undertow.runRequest(
+                ClassicRequestBuilder.get(pathPrefix + "/non-auth-cookie")
+                        .addHeader(
+                                "Cookie",
+                                "SOME_COOKIE="
+                                        + AuthHeader.valueOf(TestConstants.AUTH_HEADER)
+                                                .getBearerToken()
+                                                .toString())
+                        .build(),
+                response -> {
+                    assertThat(response.getCode()).isEqualTo(200);
+                });
     }
 
     @Path("/inherited")
