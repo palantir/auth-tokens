@@ -1,0 +1,27 @@
+apply plugin: 'com.palantir.external-publish-jar'
+apply plugin: 'com.palantir.revapi'
+
+dependencies {
+    api project(':auth-tokens')
+    api 'jakarta.annotation:jakarta.annotation-api'
+    api 'jakarta.servlet:jakarta.servlet-api'
+    api 'jakarta.ws.rs:jakarta.ws.rs-api'
+
+    implementation 'com.palantir.safe-logging:preconditions'
+    implementation 'org.slf4j:slf4j-api'
+
+    testImplementation 'io.undertow:undertow-core'
+    testImplementation 'io.undertow:undertow-servlet-jakarta'
+    testImplementation 'org.glassfish.jersey.core:jersey-server'
+    testImplementation 'org.glassfish.jersey.containers:jersey-container-servlet-core'
+    testImplementation 'org.glassfish.jersey.media:jersey-media-json-jackson'
+    testImplementation 'org.glassfish.jersey.inject:jersey-hk2'
+    testImplementation 'org.apache.httpcomponents.client5:httpclient5'
+    testImplementation 'org.apache.logging.log4j:log4j-slf4j-impl'
+    testImplementation 'org.assertj:assertj-core'
+    testImplementation 'org.mockito:mockito-core'
+    testImplementation 'org.mockito:mockito-junit-jupiter'
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    implementation 'com.palantir.safe-logging:logger'
+}
+

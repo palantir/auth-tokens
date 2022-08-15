@@ -3,14 +3,13 @@ apply plugin: 'com.palantir.revapi'
 
 dependencies {
     api project(':auth-tokens')
-    api 'jakarta.annotation:jakarta.annotation-api'
-    api 'jakarta.servlet:jakarta.servlet-api'
-    api 'jakarta.ws.rs:jakarta.ws.rs-api'
+    api 'javax.annotation:javax.annotation-api'
+    api 'javax.servlet:javax.servlet-api'
+    api 'javax.ws.rs:javax.ws.rs-api'
 
     implementation 'com.palantir.safe-logging:preconditions'
     implementation 'org.slf4j:slf4j-api'
 
-    testImplementation 'io.dropwizard:dropwizard-testing'
     testImplementation 'org.assertj:assertj-core'
     testImplementation 'org.mockito:mockito-core'
     testImplementation 'org.mockito:mockito-junit-jupiter'
