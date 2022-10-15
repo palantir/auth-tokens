@@ -1,7 +1,7 @@
 # Run ./gradlew --write-locks to regenerate this file
-com.fasterxml.jackson.core:jackson-annotations:2.13.3 (4 constraints: 664ba6d9)
-com.fasterxml.jackson.core:jackson-core:2.13.3 (2 constraints: 3e303905)
-com.fasterxml.jackson.core:jackson-databind:2.13.3 (3 constraints: de38cf48)
+com.fasterxml.jackson.core:jackson-annotations:2.13.4 (4 constraints: 694b3adb)
+com.fasterxml.jackson.core:jackson-core:2.13.4 (2 constraints: 40308c05)
+com.fasterxml.jackson.core:jackson-databind:2.13.4.1 (3 constraints: 3f39b489)
 com.google.code.findbugs:jsr305:3.0.2 (1 constraints: 170aecb4)
 com.google.errorprone:error_prone_annotations:2.11.0 (5 constraints: 8849c88a)
 com.google.guava:failureaccess:1.0.1 (1 constraints: 140ae1b4)
@@ -28,9 +28,9 @@ org.openjdk.jmh:jmh-core:1.35 (1 constraints: dd04fa30)
 org.slf4j:slf4j-api:1.7.36 (4 constraints: d539a9e7)
 
 [Test dependencies]
-com.fasterxml.jackson.module:jackson-module-jakarta-xmlbind-annotations:2.13.3 (1 constraints: ef1514e9)
+com.fasterxml.jackson.module:jackson-module-jakarta-xmlbind-annotations:2.13.4 (1 constraints: ef1514e9)
 com.palantir.safe-logging:preconditions-assertj:3.1.0 (1 constraints: 0605fd35)
-com.sun.activation:jakarta.activation:2.0.1 (2 constraints: 0b2d41c7)
+com.sun.activation:jakarta.activation:2.0.1 (1 constraints: 8c0f4591)
 commons-codec:commons-codec:1.15 (1 constraints: 0d13c328)
 io.undertow:undertow-core:2.2.20.Final (2 constraints: a219fde9)
 io.undertow:undertow-servlet-jakarta:2.2.20.Final (1 constraints: 50071361)
