@@ -48,7 +48,7 @@ final class BasicAuthToBearerTokenFilterTest {
     private FilterChain chain;
 
     @Captor
-    private ArgumentCaptor<HttpServletRequest> requestArgumentCaptor;
+    private ArgumentCaptor<ServletRequest> requestArgumentCaptor;
 
     private BasicAuthToBearerTokenFilter tokenFilter;
 
