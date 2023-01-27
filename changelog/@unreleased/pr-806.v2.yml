@@ -1,0 +1,5 @@
+type: feature
+feature:
+  description: '`UnverifiedJsonWebToken` now supports the `org` claim.'
+  links:
+  - https://github.com/palantir/auth-tokens/pull/806
