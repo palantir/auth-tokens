@@ -56,6 +56,7 @@ public abstract class BearerToken {
     // Note that we don't need to worry about the character set (e.g., UTF-8) because
     // the set of allowable characters are single bytes.
     @Value.Derived
+    @DoNotLog
     @SuppressWarnings("DesignForExtension")
     byte[] getTokenAsBytes() {
         String token = getToken();

@@ -55,27 +55,35 @@ public abstract class UnverifiedJsonWebToken {
     private static final SafeLogger log = SafeLoggerFactory.get(UnverifiedJsonWebToken.class);
 
     /**
-     * Returns the unverified user id, i.e., the "sub" (subject) field of the JWT.
+     * Returns the unverified user id, i.e., the "sub" claim, of the JWT.
      */
     @Safe
     @Value.Parameter
     public abstract String getUnverifiedUserId();
 
     /**
-     * Returns the unverified session id for this token, i.e. the "sid" field of the JWT
-     * or absent if this token does not contain session information.
+     * Returns the unverified session id, i.e. the "sid" claim, of the JWT
+     * or absent if the JWT does not contain the "sid" claim.
      */
     @Safe
     @Value.Parameter
     public abstract Optional<String> getUnverifiedSessionId();
 
     /**
-     * Returns the unverified token id for this token, i.e. the "jti" field of the JWT
-     * or absent if this token does not use the "jti" field as a unique identifier.
+     * Returns the unverified token id, i.e. the "jti" claim, of the JWT
+     * or absent if the JWT does not contain the "jti" claim.
      */
     @Safe
     @Value.Parameter
     public abstract Optional<String> getUnverifiedTokenId();
+
+    /**
+     * Returns the unverified organization id, i.e. the "org" claim, of the JWT
+     * or absent if the JWT does not contain the "org" claim.
+     */
+    @Safe
+    @Value.Parameter
+    public abstract Optional<String> getUnverifiedOrganizationId();
 
     /**
      * Does a lower cost check on the structure of string provided
@@ -125,7 +133,8 @@ public abstract class UnverifiedJsonWebToken {
         return ImmutableUnverifiedJsonWebToken.of(
                 decodeUuidBytes(payload.sub),
                 Optional.ofNullable(payload.sid).map(UnverifiedJsonWebToken::decodeUuidBytes),
-                Optional.ofNullable(payload.jti).map(UnverifiedJsonWebToken::decodeUuidBytes));
+                Optional.ofNullable(payload.jti).map(UnverifiedJsonWebToken::decodeUuidBytes),
+                Optional.ofNullable(payload.org).map(UnverifiedJsonWebToken::decodeUuidBytes));
     }
 
     private static JwtPayload extractPayload(String payload) {
@@ -157,16 +166,13 @@ public abstract class UnverifiedJsonWebToken {
         @JsonProperty("sub")
         private byte[] sub;
 
-        /**
-         * Indicates this token's session identifier (only for session tokens, otherwise null).
-         */
         @JsonProperty("sid")
         private byte[] sid;
 
-        /**
-         * Indicates this token's identifier (only for API tokens, otherwise null).
-         */
         @JsonProperty("jti")
         private byte[] jti;
+
+        @JsonProperty("org")
+        private byte[] org;
     }
 }
