@@ -1,6 +1,20 @@
-dependencies {
-    implementation project(":auth-tokens")
-    implementation 'com.google.guava:guava'
-    implementation 'org.openjdk.jmh:jmh-core'
+apply plugin: 'me.champeau.jmh'
+
+jmh {
+    // Use profilers to collect additional data. Supported profilers:
+    // [cl, comp, gc, stack, perf, perfnorm, perfasm, xperf, xperfasm, hs_cl, hs_comp, hs_gc, hs_rt, hs_thr]
+    // profilers = ['gc']
 }
 
+tasks.jmhCompileGeneratedClasses {
+    options.annotationProcessorPath = configurations.jmhAnnotationProcessor
+    // options.errorprone.enabled = false
+}
+
+dependencies {
+    jmhAnnotationProcessor 'org.openjdk.jmh:jmh-generator-annprocess'
+
+    jmh project(":auth-tokens")
+    jmh 'com.google.guava:guava'
+    jmh 'org.openjdk.jmh:jmh-core'
+}

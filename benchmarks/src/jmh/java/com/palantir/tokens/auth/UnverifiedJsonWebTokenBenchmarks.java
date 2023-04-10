@@ -16,6 +16,8 @@
 
 package com.palantir.tokens.auth;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.Optional;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
@@ -27,23 +29,25 @@ import org.openjdk.jmh.annotations.Warmup;
 
 @Fork(1)
 @Threads(1)
-@Warmup(iterations = 10, time = 5)
-@Measurement(iterations = 3, time = 3)
+@Warmup(iterations = 5, time = 1)
+@Measurement(iterations = 2, time = 1)
+@BenchmarkMode(Mode.Throughput)
 public class UnverifiedJsonWebTokenBenchmarks {
-    private static final String NOT_JWT = "NotJwt".repeat(40);
+    private static final String NOT_JWT = "Bearer eyJhbGciOiJFUzI1NiJ9."
+            + Base64.getEncoder().encodeToString("NotJwt".repeat(20).getBytes(StandardCharsets.UTF_8)) + "."
+            + Base64.getEncoder().encodeToString("NotJwt".repeat(20).getBytes(StandardCharsets.UTF_8));
+
     private static final String SESSION_TOKEN = "Bearer eyJhbGciOiJFUzI1NiJ9."
             + "eyJleHAiOjE0NTk1NTIzNDksInNpZCI6IlA4WmoxRDVJVGUyNlR0Z"
             + "UsrWXVEWXc9PSIsInN1YiI6Inc1UDJXUU1CUTA2cHlYSXdTbEIvL0E9PSJ9"
             + ".XwPO_EEDVj6BBLScuf70_CH4jyI1ECmgVSoXLHpGlK-yIqm8MyUyFyNQTu8jh9kYheW-zBl64gmTnatkjjDH1A";
 
     @Benchmark
-    @BenchmarkMode(Mode.Throughput)
     public final Optional<UnverifiedJsonWebToken> parseNonJwt() {
         return UnverifiedJsonWebToken.tryParse(NOT_JWT);
     }
 
     @Benchmark
-    @BenchmarkMode(Mode.Throughput)
     public final Optional<UnverifiedJsonWebToken> parseSessionToken() {
         return UnverifiedJsonWebToken.tryParse(SESSION_TOKEN);
     }
