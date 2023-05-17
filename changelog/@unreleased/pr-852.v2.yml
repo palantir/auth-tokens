@@ -1,0 +1,6 @@
+type: feature
+feature:
+  description: The bearer token logging filter now stores the unverified organization
+    ID in the MDC.
+  links:
+  - https://github.com/palantir/auth-tokens/pull/852
