@@ -6,7 +6,7 @@ org.assertj:* = 3.24.2
 org.immutables:* = 2.9.3
 org.mockito:* = 5.4.0
 org.junit.jupiter:* = 5.10.0
-org.openjdk.jmh:* = 1.36
+org.openjdk.jmh:* = 1.37
 org.slf4j:* = 1.7.36
 
 io.undertow:* = 2.2.20.Final
