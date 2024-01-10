@@ -9,7 +9,7 @@ org.junit.jupiter:* = 5.10.1
 org.openjdk.jmh:* = 1.37
 org.slf4j:* = 1.7.36
 
-io.undertow:* = 2.2.20.Final
+io.undertow:* = 2.2.24.Final
 org.glassfish.jersey.*:* = 3.0.6
 org.apache.httpcomponents.client5:* = 5.3
 org.apache.logging.log4j:* = 2.22.1
