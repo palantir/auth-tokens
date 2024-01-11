@@ -11,7 +11,7 @@ dependencies {
     implementation 'org.slf4j:slf4j-api'
 
     testImplementation 'io.undertow:undertow-core'
-    testImplementation 'io.undertow:undertow-servlet-jakarta'
+    testImplementation 'io.undertow:undertow-servlet'
     testImplementation 'org.glassfish.jersey.core:jersey-server'
     testImplementation 'org.glassfish.jersey.containers:jersey-container-servlet-core'
     testImplementation 'org.glassfish.jersey.media:jersey-media-json-jackson'
