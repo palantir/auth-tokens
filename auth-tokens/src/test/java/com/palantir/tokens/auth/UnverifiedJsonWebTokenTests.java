@@ -21,6 +21,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.palantir.logsafe.SafeArg;
 import com.palantir.logsafe.testing.Assertions;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 
@@ -43,6 +45,10 @@ final class UnverifiedJsonWebTokenTests {
     private static final BearerToken INVALID_PAYLOAD_TOKEN = BearerToken.valueOf("header."
             + "eyJzdWIiOiJrazlVMHB0ZVJ3K1FYYk55ZkZkcklBPT0iLCJqdGkiOiJ2MEtCNWdVTFJkT3dFWWh4Z1o3bERnPT0iCg"
             + ".signature");
+
+    private static final String INVALID_LONG_TOKEN = "Bearer eyJhbGciOiJFUzI1NiJ9."
+            + Base64.getEncoder().encodeToString("NotJwt".repeat(20).getBytes(StandardCharsets.UTF_8)) + "."
+            + Base64.getEncoder().encodeToString("NotJwt".repeat(20).getBytes(StandardCharsets.UTF_8));
 
     private static final String USERID = "c393f659-0301-434e-a9c9-72304a507ffc";
     private static final String SESSION_ID = "3fc663d4-3e48-4ded-ba4e-d78af98b8363";
@@ -107,5 +113,11 @@ final class UnverifiedJsonWebTokenTests {
                 .hasLogMessage("Invalid JWT: cannot parse payload")
                 .hasNoArgs()
                 .hasCauseInstanceOf(IOException.class);
+    }
+
+    @Test
+    void invalidLongJwt_parseReturnsEmpty_validStructure() {
+        Optional<UnverifiedJsonWebToken> parsedJwt = UnverifiedJsonWebToken.tryParse(INVALID_LONG_TOKEN);
+        assertThat(parsedJwt).isNotPresent();
     }
 }

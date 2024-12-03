@@ -120,15 +120,24 @@ public abstract class UnverifiedJsonWebToken {
      * An anticipated use of this class is making a best-effort user id extraction for logging.
      */
     public static UnverifiedJsonWebToken of(BearerToken token) {
-        String[] segments = token.getToken().split("\\.", -1);
-
-        // Avoid creating Arg on the hot path
-        if (segments.length != 3) {
-            throw new SafeIllegalArgumentException(
-                    "Invalid JWT: expected 3 segments", SafeArg.of("segmentsCount", segments.length));
+        String authToken = token.getToken();
+        int index1 = authToken.indexOf('.');
+        if (index1 < 0) {
+            throw new SafeIllegalArgumentException("Invalid JWT: expected 3 segments", SafeArg.of("segmentsCount", 1));
+        }
+        int index2 = authToken.indexOf('.', index1 + 1);
+        if (index2 < 0) {
+            throw new SafeIllegalArgumentException("Invalid JWT: expected 3 segments", SafeArg.of("segmentsCount", 2));
         }
 
-        JwtPayload payload = extractPayload(segments[1]);
+        int index3 = authToken.indexOf('.', index2 + 1);
+        if (index3 >= 0) {
+            throw new SafeIllegalArgumentException("Invalid JWT: expected 3 segments", SafeArg.of("segmentsCount", 4));
+        }
+
+        String segment = authToken.substring(index1 + 1, index2);
+
+        JwtPayload payload = extractPayload(segment);
 
         return ImmutableUnverifiedJsonWebToken.of(
                 decodeUuidBytes(payload.sub),
