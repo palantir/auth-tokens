@@ -1,7 +1,7 @@
 # Run ./gradlew writeVersionsLocks to regenerate this file
-com.fasterxml.jackson.core:jackson-annotations:2.18.2 (4 constraints: 714b15e0)
-com.fasterxml.jackson.core:jackson-core:2.18.2 (2 constraints: 46309906)
-com.fasterxml.jackson.core:jackson-databind:2.18.2 (3 constraints: e538204c)
+com.fasterxml.jackson.core:jackson-annotations:2.18.3 (4 constraints: 744ba9e1)
+com.fasterxml.jackson.core:jackson-core:2.18.3 (2 constraints: 4830ec06)
+com.fasterxml.jackson.core:jackson-databind:2.18.3 (3 constraints: e738ef4c)
 com.google.code.findbugs:jsr305:3.0.2 (1 constraints: 170aecb4)
 com.google.errorprone:error_prone_annotations:2.36.0 (5 constraints: ab492398)
 com.google.guava:failureaccess:1.0.2 (1 constraints: 150ae2b4)
@@ -28,7 +28,7 @@ org.openjdk.jmh:jmh-core:1.37 (1 constraints: df04fc30)
 org.slf4j:slf4j-api:1.7.36 (4 constraints: d93915e8)
 
 [Test dependencies]
-com.fasterxml.jackson.module:jackson-module-jakarta-xmlbind-annotations:2.18.2 (1 constraints: ee1515e9)
+com.fasterxml.jackson.module:jackson-module-jakarta-xmlbind-annotations:2.18.3 (1 constraints: ee1515e9)
 com.palantir.safe-logging:preconditions-assertj:3.8.0 (1 constraints: 0d051236)
 io.undertow:undertow-core:2.3.18.Final (2 constraints: a716c318)
 io.undertow:undertow-servlet:2.3.18.Final (1 constraints: 58074d61)
