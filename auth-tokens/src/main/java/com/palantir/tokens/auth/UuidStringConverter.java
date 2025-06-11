@@ -33,7 +33,9 @@ final class UuidStringConverter {
     private UuidStringConverter() {}
 
     static String toString(UUID value) {
+        @SuppressWarnings("for-rollout:UnnecessaryFinal")
         final char[] ch = new char[36];
+        @SuppressWarnings("for-rollout:UnnecessaryFinal")
         final long msb = value.getMostSignificantBits();
         writeInt((int) (msb >> 32), ch, 0);
         ch[8] = '-';
@@ -43,6 +45,7 @@ final class UuidStringConverter {
         writeShort(intBytes, ch, 14);
         ch[18] = '-';
 
+        @SuppressWarnings("for-rollout:UnnecessaryFinal")
         final long lsb = value.getLeastSignificantBits();
         writeShort((int) (lsb >>> 48), ch, 19);
         ch[23] = '-';
