@@ -62,8 +62,8 @@ public class BasicAuthToBearerTokenFilter implements Filter {
     public void destroy() {}
 
     private ServletRequest addBearerTokenIfBasicAuth(ServletRequest request) {
-        if (request instanceof HttpServletRequest) {
-            HttpServletRequest httpRequest = (HttpServletRequest) request;
+        if (request instanceof HttpServletRequest httpRequest) {
+
             String rawAuthHeader = httpRequest.getHeader(HttpHeaders.AUTHORIZATION);
             return addBearerTokenIfBasicAuth(httpRequest, rawAuthHeader);
         } else {
@@ -88,7 +88,8 @@ public class BasicAuthToBearerTokenFilter implements Filter {
         }
     }
 
-    private ServletRequest addBearerToken(HttpServletRequest request, final AuthHeader authHeader) {
+    private ServletRequest addBearerToken(
+            HttpServletRequest request, @SuppressWarnings("for-rollout:UnnecessaryFinal") final AuthHeader authHeader) {
         return new HttpServletRequestWrapper(request) {
             @Override
             public Enumeration<String> getHeaders(String name) {
