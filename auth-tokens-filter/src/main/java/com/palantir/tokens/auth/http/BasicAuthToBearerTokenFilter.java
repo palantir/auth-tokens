@@ -88,8 +88,7 @@ public class BasicAuthToBearerTokenFilter implements Filter {
         }
     }
 
-    private ServletRequest addBearerToken(
-            HttpServletRequest request, @SuppressWarnings("for-rollout:UnnecessaryFinal") final AuthHeader authHeader) {
+    private ServletRequest addBearerToken(HttpServletRequest request, final AuthHeader authHeader) {
         return new HttpServletRequestWrapper(request) {
             @Override
             public Enumeration<String> getHeaders(String name) {
