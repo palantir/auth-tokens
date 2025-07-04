@@ -24,7 +24,7 @@ org.immutables:value:2.11.0 (1 constraints: 3605323b)
 org.jetbrains:annotations:26.0.2 (1 constraints: 36116fd1)
 org.jspecify:jspecify:1.0.0 (1 constraints: 130ae0b4)
 org.openjdk.jmh:jmh-core:1.37 (1 constraints: df04fc30)
-org.slf4j:slf4j-api:1.7.36 (4 constraints: d93915e8)
+org.slf4j:slf4j-api:2.0.17 (4 constraints: d239c6e3)
 
 [Test dependencies]
 com.fasterxml.jackson.module:jackson-module-jakarta-xmlbind-annotations:2.18.3 (1 constraints: ee1515e9)
