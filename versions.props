@@ -8,7 +8,7 @@ org.junit.platform:* = 1.13.3
 org.mockito:* = 5.18.0
 org.junit.jupiter:* = 5.13.3
 org.openjdk.jmh:* = 1.37
-org.slf4j:* = 1.7.36
+org.slf4j:* = 2.0.17
 
 io.undertow:* = 2.3.18.Final
 org.glassfish.jersey.*:* = 3.1.3
