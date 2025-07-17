@@ -18,7 +18,7 @@ package com.palantir.tokens.auth.http;
 
 import com.palantir.logsafe.Preconditions;
 import com.palantir.logsafe.SafeArg;
-import com.palantir.logsafe.exceptions.SafeRuntimeException;
+import com.palantir.logsafe.exceptions.SafeUncheckedIoException;
 import io.undertow.Handlers;
 import io.undertow.Undertow;
 import io.undertow.servlet.Servlets;
@@ -141,7 +141,6 @@ public final class UndertowServerExtension implements BeforeAllCallback, AfterAl
         }
     }
 
-    @SuppressWarnings("for-rollout:PreferUncheckedIoException")
     public void runRequest(ClassicHttpRequest request, Consumer<ClassicHttpResponse> handler) {
         try {
             httpClient.execute(HttpHost.create(URI.create("http://localhost:" + getLocalPort())), request, response -> {
@@ -149,7 +148,7 @@ public final class UndertowServerExtension implements BeforeAllCallback, AfterAl
                 return null;
             });
         } catch (IOException e) {
-            throw new SafeRuntimeException("Failed to make http request", e);
+            throw new SafeUncheckedIoException("Failed to make http request", e);
         }
     }
 
