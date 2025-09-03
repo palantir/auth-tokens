@@ -26,12 +26,16 @@ import com.palantir.logsafe.SafeArg;
 import com.palantir.logsafe.exceptions.SafeIllegalArgumentException;
 import com.palantir.logsafe.logger.SafeLogger;
 import com.palantir.logsafe.logger.SafeLoggerFactory;
+import org.immutables.value.Value;
+
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.time.Instant;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.Base64;
 import java.util.Optional;
 import java.util.UUID;
-import org.immutables.value.Value;
 
 /**
  * Represents the parsed form of a JWT but does not verify the token signature.
@@ -86,6 +90,14 @@ public abstract class UnverifiedJsonWebToken {
     public abstract Optional<String> getUnverifiedOrganizationId();
 
     /**
+     * Returns the unverified expiration time, i.e. the "exp" claim, of the JWT
+     * or absent if the JWT does not contain the "exp" claim.
+     */
+    @Safe
+    @Value.Parameter
+    public abstract Optional<OffsetDateTime> getUnverifiedExpirationTime();
+
+    /**
      * Does a lower cost check on the structure of string provided
      * before attempting to create an {@link UnverifiedJsonWebToken}.
      */
@@ -134,7 +146,8 @@ public abstract class UnverifiedJsonWebToken {
                 decodeUuidBytes(payload.sub),
                 Optional.ofNullable(payload.sid).map(UnverifiedJsonWebToken::decodeUuidBytes),
                 Optional.ofNullable(payload.jti).map(UnverifiedJsonWebToken::decodeUuidBytes),
-                Optional.ofNullable(payload.org).map(UnverifiedJsonWebToken::decodeUuidBytes));
+                Optional.ofNullable(payload.org).map(UnverifiedJsonWebToken::decodeUuidBytes),
+                Optional.ofNullable(payload.exp).map(UnverifiedJsonWebToken::decodeEpochSeconds));
     }
 
     private static JwtPayload extractPayload(String payload) {
@@ -161,6 +174,16 @@ public abstract class UnverifiedJsonWebToken {
         return UuidStringConverter.toString(new UUID(high, low));
     }
 
+    /**
+     * Returns an OffsetDateTime representing the UTC date/time the given number of seconds after 1970-01-01T00:00:00Z.
+     * <p>
+     * This method ignores leap seconds, as does the "exp" claim
+     * (see <a href="https://www.rfc-editor.org/rfc/rfc7519#page-6">RFC 7519, page 6</a>).
+     */
+    private static OffsetDateTime decodeEpochSeconds(long epochSeconds) {
+        return OffsetDateTime.ofInstant(Instant.ofEpochSecond(epochSeconds), ZoneOffset.UTC);
+    }
+
     private static final class JwtPayload {
 
         @JsonProperty("sub")
@@ -174,5 +197,8 @@ public abstract class UnverifiedJsonWebToken {
 
         @JsonProperty("org")
         private byte[] org;
+
+        @JsonProperty("exp")
+        private Long exp;
     }
 }
