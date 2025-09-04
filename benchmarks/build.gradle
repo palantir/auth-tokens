@@ -1,6 +1,8 @@
+apply plugin: 'me.champeau.jmh'
+
 dependencies {
     implementation project(":auth-tokens")
     implementation 'com.google.guava:guava'
-    implementation 'org.openjdk.jmh:jmh-core'
+    jmh 'org.openjdk.jmh:jmh-core'
 }
 
