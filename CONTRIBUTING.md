@@ -26,6 +26,11 @@ improvement, adding a unit test will help to ensure no regressions or the issue 
 with writing a test for your feature, please don't be shy and ask!
 
 
+Benchmarks
+----------
+Changes that may affect the speed of parsing JWTs should be benchmarked. Benchmarks must be run manually, and can be run by calling `./gradlew jmh`.
+
+
 Documentation
 -------------
 Up-to-date documentation makes all our lives easier. If you are adding a new feature, enhancing an existing feature, or
