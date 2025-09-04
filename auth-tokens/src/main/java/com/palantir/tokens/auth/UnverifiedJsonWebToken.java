@@ -26,8 +26,6 @@ import com.palantir.logsafe.SafeArg;
 import com.palantir.logsafe.exceptions.SafeIllegalArgumentException;
 import com.palantir.logsafe.logger.SafeLogger;
 import com.palantir.logsafe.logger.SafeLoggerFactory;
-import org.immutables.value.Value;
-
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.time.Instant;
@@ -36,6 +34,7 @@ import java.time.ZoneOffset;
 import java.util.Base64;
 import java.util.Optional;
 import java.util.UUID;
+import org.immutables.value.Value;
 
 /**
  * Represents the parsed form of a JWT but does not verify the token signature.
