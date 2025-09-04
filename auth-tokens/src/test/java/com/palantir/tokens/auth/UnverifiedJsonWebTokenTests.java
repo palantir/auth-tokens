@@ -21,7 +21,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.palantir.logsafe.SafeArg;
 import com.palantir.logsafe.testing.Assertions;
 import java.io.IOException;
-import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.Optional;
@@ -51,8 +50,7 @@ final class UnverifiedJsonWebTokenTests {
     private static final String SESSION_ID = "3fc663d4-3e48-4ded-ba4e-d78af98b8363";
     private static final String TOKEN_ID = "a459b4a1-5089-4fe0-8655-d5dfd9b2b7fd";
     private static final String ORGANIZATION_ID = "1414b6ab-cfe5-4ffd-ac00-52aa80e8909b";
-    private static final OffsetDateTime EXPIRATION_TIME =
-            OffsetDateTime.ofInstant(Instant.ofEpochSecond(1577865600), ZoneOffset.UTC);
+    private static final OffsetDateTime EXPIRATION_TIME = OffsetDateTime.of(2020, 1, 1, 8, 0, 0, 0, ZoneOffset.UTC);
 
     @Test
     void testAsJwt_allClaims() {
