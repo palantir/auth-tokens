@@ -40,15 +40,15 @@ public class UnverifiedJsonWebTokenBenchmark {
             + ".XwPO_EEDVj6BBLScuf70_CH4jyI1ECmgVSoXLHpGlK-yIqm8MyUyFyNQTu8jh9kYheW-zBl64gmTnatkjjDH1A";
 
     @Benchmark
-    @BenchmarkMode(Mode.Throughput)
-    @OutputTimeUnit(TimeUnit.SECONDS)
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public final Optional<UnverifiedJsonWebToken> parseNonJwt() {
         return UnverifiedJsonWebToken.tryParse(NOT_JWT);
     }
 
     @Benchmark
-    @BenchmarkMode(Mode.Throughput)
-    @OutputTimeUnit(TimeUnit.SECONDS)
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public final Optional<UnverifiedJsonWebToken> parseSessionToken() {
         return UnverifiedJsonWebToken.tryParse(SESSION_TOKEN);
     }
