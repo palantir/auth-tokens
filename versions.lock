@@ -60,9 +60,25 @@ com.fasterxml.jackson.module:jackson-module-jakarta-xmlbind-annotations:2.19.2 (
 
 com.palantir.safe-logging:preconditions-assertj:3.9.0 (1 constraints: 0e051536)
 
-io.undertow:undertow-core:2.3.18.Final (2 constraints: a716c318)
+io.smallrye.common:smallrye-common-annotation:2.6.0 (1 constraints: c30d1c36)
 
-io.undertow:undertow-servlet:2.3.18.Final (1 constraints: 58074d61)
+io.smallrye.common:smallrye-common-constraint:2.6.0 (4 constraints: 8a413caf)
+
+io.smallrye.common:smallrye-common-cpu:2.6.0 (2 constraints: 731c91d2)
+
+io.smallrye.common:smallrye-common-expression:2.4.0 (1 constraints: b10e835a)
+
+io.smallrye.common:smallrye-common-function:2.6.0 (2 constraints: 5c215988)
+
+io.smallrye.common:smallrye-common-net:2.4.0 (1 constraints: b10e835a)
+
+io.smallrye.common:smallrye-common-os:2.4.0 (1 constraints: b10e835a)
+
+io.smallrye.common:smallrye-common-ref:2.4.0 (1 constraints: b10e835a)
+
+io.undertow:undertow-core:2.3.19.Final (2 constraints: a916fd18)
+
+io.undertow:undertow-servlet:2.3.19.Final (1 constraints: 59075461)
 
 jakarta.activation:jakarta.activation-api:2.1.0 (1 constraints: 8c0f4791)
 
@@ -118,9 +134,9 @@ org.glassfish.jersey.media:jersey-media-json-jackson:3.1.3 (1 constraints: 09050
 
 org.javassist:javassist:3.29.2-GA (1 constraints: 30112ef1)
 
-org.jboss.logging:jboss-logging:3.4.3.Final (3 constraints: f2300ed8)
+org.jboss.logging:jboss-logging:3.6.1.Final (7 constraints: c4838fcc)
 
-org.jboss.threads:jboss-threads:3.5.0.Final (2 constraints: 5a1a5743)
+org.jboss.threads:jboss-threads:3.7.0.Final (2 constraints: 5c1ab543)
 
 org.jboss.xnio:xnio-api:3.8.16.Final (2 constraints: d71a2474)
 
@@ -150,4 +166,4 @@ org.opentest4j:opentest4j:1.3.0 (2 constraints: cf209249)
 
 org.wildfly.client:wildfly-client-config:1.0.1.Final (1 constraints: 940c6308)
 
-org.wildfly.common:wildfly-common:1.5.4.Final (2 constraints: 741cfbf1)
+org.wildfly.common:wildfly-common:2.0.0 (2 constraints: 581ab548)
