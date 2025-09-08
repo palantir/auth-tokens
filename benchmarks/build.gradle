@@ -1,6 +1,16 @@
 dependencies {
+    annotationProcessor 'org.openjdk.jmh:jmh-generator-annprocess'
+
     implementation project(":auth-tokens")
     implementation 'com.google.guava:guava'
     implementation 'org.openjdk.jmh:jmh-core'
 }
 
+tasks.register('benchmark', JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'org.openjdk.jmh.Main'
+
+    if (project.hasProperty('jmh')) {
+        args(project.property('jmh').split(' '))
+    }
+}

@@ -17,19 +17,22 @@
 package com.palantir.tokens.auth;
 
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Fork;
-import org.openjdk.jmh.annotations.Measurement;
 import org.openjdk.jmh.annotations.Mode;
+import org.openjdk.jmh.annotations.OutputTimeUnit;
 import org.openjdk.jmh.annotations.Threads;
-import org.openjdk.jmh.annotations.Warmup;
+import org.openjdk.jmh.profile.GCProfiler;
+import org.openjdk.jmh.runner.Runner;
+import org.openjdk.jmh.runner.options.Options;
+import org.openjdk.jmh.runner.options.OptionsBuilder;
 
 @Fork(1)
 @Threads(1)
-@Warmup(iterations = 10, time = 5)
-@Measurement(iterations = 3, time = 3)
-public class UnverifiedJsonWebTokenBenchmarks {
+public class UnverifiedJsonWebTokenBenchmark {
+
     private static final String NOT_JWT = "NotJwt".repeat(40);
     private static final String SESSION_TOKEN = "Bearer eyJhbGciOiJFUzI1NiJ9."
             + "eyJleHAiOjE0NTk1NTIzNDksInNpZCI6IlA4WmoxRDVJVGUyNlR0Z"
@@ -37,14 +40,24 @@ public class UnverifiedJsonWebTokenBenchmarks {
             + ".XwPO_EEDVj6BBLScuf70_CH4jyI1ECmgVSoXLHpGlK-yIqm8MyUyFyNQTu8jh9kYheW-zBl64gmTnatkjjDH1A";
 
     @Benchmark
-    @BenchmarkMode(Mode.Throughput)
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public final Optional<UnverifiedJsonWebToken> parseNonJwt() {
         return UnverifiedJsonWebToken.tryParse(NOT_JWT);
     }
 
     @Benchmark
-    @BenchmarkMode(Mode.Throughput)
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public final Optional<UnverifiedJsonWebToken> parseSessionToken() {
         return UnverifiedJsonWebToken.tryParse(SESSION_TOKEN);
+    }
+
+    public static void main(String[] _args) throws Exception {
+        Options options = new OptionsBuilder()
+                .include(UnverifiedJsonWebTokenBenchmark.class.getSimpleName())
+                .addProfiler(GCProfiler.class)
+                .build();
+        new Runner(options).run();
     }
 }
