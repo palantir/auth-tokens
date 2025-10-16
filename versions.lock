@@ -1,10 +1,10 @@
 # Run ./gradlew writeVersionsLocks to regenerate this file. Blank lines are to minimize merge conflicts.
 
-com.fasterxml.jackson.core:jackson-annotations:2.19.2 (4 constraints: 744bafe1)
+com.fasterxml.jackson.core:jackson-annotations:2.20 (4 constraints: 3c4a819c)
 
-com.fasterxml.jackson.core:jackson-core:2.19.2 (2 constraints: 4830f006)
+com.fasterxml.jackson.core:jackson-core:2.20.0 (2 constraints: 34309403)
 
-com.fasterxml.jackson.core:jackson-databind:2.19.2 (3 constraints: e738f34c)
+com.fasterxml.jackson.core:jackson-databind:2.20.0 (3 constraints: d338bf44)
 
 com.google.errorprone:error_prone_annotations:2.41.0 (5 constraints: a7493495)
 
@@ -56,7 +56,7 @@ org.slf4j:slf4j-api:2.0.17 (4 constraints: fc39f61c)
 
 [Test dependencies]
 
-com.fasterxml.jackson.module:jackson-module-jakarta-xmlbind-annotations:2.19.2 (1 constraints: ee1515e9)
+com.fasterxml.jackson.module:jackson-module-jakarta-xmlbind-annotations:2.20.0 (1 constraints: ee1515e9)
 
 com.palantir.safe-logging:preconditions-assertj:3.9.0 (1 constraints: 0e051536)
 
