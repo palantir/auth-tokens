@@ -1,4 +1,5 @@
-com.fasterxml.jackson.*:* = 2.19.2
+com.fasterxml.jackson.*:* = 2.20.0
+com.fasterxml.jackson.core:jackson-annotations = 2.20
 com.google.guava:guava = 33.5.0-jre
 com.palantir.safe-logging:* = 3.9.0
 org.assertj:* = 3.27.6
