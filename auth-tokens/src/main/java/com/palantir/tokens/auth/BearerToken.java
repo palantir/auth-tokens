@@ -28,7 +28,7 @@ import org.immutables.value.Value;
 
 /** Value class representing an authentication bearer token. */
 @DoNotLog
-@Value.Immutable
+@Value.Immutable(builder = false, copy = false)
 @ImmutablesStyle
 public abstract class BearerToken {
 

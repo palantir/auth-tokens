@@ -23,7 +23,7 @@ import org.immutables.value.Value;
  * Represents a HTTP authentication header. This class wraps a string in the form of "Bearer [token]".
  */
 @DoNotLog
-@Value.Immutable
+@Value.Immutable(builder = false, copy = false)
 @ImmutablesStyle
 // NOTE: no @JsonSerialize/@JsonDeserialize because auth headers are for use in @HeaderParam
 // see: https://jersey.java.net/apidocs/latest/jersey/javax/ws/rs/HeaderParam.html
