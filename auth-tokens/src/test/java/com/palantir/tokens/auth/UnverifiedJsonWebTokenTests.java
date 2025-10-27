@@ -16,114 +16,99 @@
 
 package com.palantir.tokens.auth;
 
+import static com.palantir.logsafe.testing.Assertions.assertThatLoggableExceptionThrownBy;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.palantir.logsafe.SafeArg;
-import com.palantir.logsafe.testing.Assertions;
 import java.io.IOException;
-import java.util.Optional;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import org.junit.jupiter.api.Test;
 
 final class UnverifiedJsonWebTokenTests {
 
-    private static final BearerToken ALL_CLAIMS_TOKEN = BearerToken.valueOf("""
-        header.\
-        eyJzdWIiOiJ3NVAyV1FNQlEwNnB5WEl3U2xCLy9BPT0iLCJzaWQiOiJQOFpqMUQ1SVRlMjZUdGVLK1l1RFl3PT0iLCJqdGkiOiJwRm0wb1ZDSlQ\
-        rQ0dWZFhmMmJLMy9RPT0iLCJvcmciOiJGQlMycTgvbFQvMnNBRktxZ09pUW13PT0iLCJzdmMiOiJzZXJ2aWNlIn0\
-        .signature\
-        """);
-
-    private static final BearerToken REQUIRED_CLAIMS_TOKEN = BearerToken.valueOf("""
-        header.\
-        eyJzdWIiOiJ3NVAyV1FNQlEwNnB5WEl3U2xCLy9BPT0ifQ\
-        .signature\
-        """);
-
-    private static final BearerToken INVALID_BEARER_TOKEN = BearerToken.valueOf("invalid");
-
-    private static final BearerToken INVALID_ENCODING_TOKEN = BearerToken.valueOf("""
-        header.\
-        eyJzdWIiOiJ3NVAyV1FNQlEwNnB5WEl3U2xCLy9BPT0ifQ+\
-        .signature\
-        """);
-
-    private static final BearerToken INVALID_PAYLOAD_TOKEN = BearerToken.valueOf("""
-        header.\
-        eyJzdWIiOiJrazlVMHB0ZVJ3K1FYYk55ZkZkcklBPT0iLCJqdGkiOiJ2MEtCNWdVTFJkT3dFWWh4Z1o3bERnPT0iCg\
-        .signature\
-        """);
-
-    private static final String USERID = "c393f659-0301-434e-a9c9-72304a507ffc";
-    private static final String SESSION_ID = "3fc663d4-3e48-4ded-ba4e-d78af98b8363";
-    private static final String TOKEN_ID = "a459b4a1-5089-4fe0-8655-d5dfd9b2b7fd";
-    private static final String ORGANIZATION_ID = "1414b6ab-cfe5-4ffd-ac00-52aa80e8909b";
-    private static final String SERVICE = "service";
-
     @Test
     void allClaims() {
-        UnverifiedJsonWebToken token = UnverifiedJsonWebToken.of(ALL_CLAIMS_TOKEN);
-        assertThat(token.getUnverifiedUserId()).isEqualTo(USERID);
-        assertThat(token.getUnverifiedSessionId()).contains(SESSION_ID);
-        assertThat(token.getUnverifiedTokenId()).contains(TOKEN_ID);
-        assertThat(token.getUnverifiedOrganizationId()).contains(ORGANIZATION_ID);
-        assertThat(token.getUnverifiedService()).contains(SERVICE);
+        BearerToken bearerToken = jwt("""
+            {\
+            "sub":"w5P2WQMBQ06pyXIwSlB//A==",\
+            "sid":"P8Zj1D5ITe26TteK+YuDYw==",\
+            "jti":"pFm0oVCJT+CGVdXf2bK3/Q==",\
+            "org":"FBS2q8/lT/2sAFKqgOiQmw==",\
+            "svc":"service"\
+            }\
+            """);
 
-        Optional<UnverifiedJsonWebToken> tryToken = UnverifiedJsonWebToken.tryParse(ALL_CLAIMS_TOKEN.getToken());
-        assertThat(tryToken).contains(token);
+        UnverifiedJsonWebToken token = UnverifiedJsonWebToken.of(bearerToken);
+        assertThat(token.getUnverifiedUserId()).isEqualTo("c393f659-0301-434e-a9c9-72304a507ffc");
+        assertThat(token.getUnverifiedSessionId()).contains("3fc663d4-3e48-4ded-ba4e-d78af98b8363");
+        assertThat(token.getUnverifiedTokenId()).contains("a459b4a1-5089-4fe0-8655-d5dfd9b2b7fd");
+        assertThat(token.getUnverifiedOrganizationId()).contains("1414b6ab-cfe5-4ffd-ac00-52aa80e8909b");
+        assertThat(token.getUnverifiedService()).contains("service");
+
+        assertThat(UnverifiedJsonWebToken.tryParse(bearerToken.getToken())).contains(token);
     }
 
     @Test
     void requiredClaims() {
-        UnverifiedJsonWebToken token = UnverifiedJsonWebToken.of(REQUIRED_CLAIMS_TOKEN);
-        assertThat(token.getUnverifiedUserId()).isEqualTo(USERID);
+        BearerToken bearerToken = jwt("""
+            {\
+            "sub":"w5P2WQMBQ06pyXIwSlB//A=="\
+            }\
+            """);
+
+        UnverifiedJsonWebToken token = UnverifiedJsonWebToken.of(bearerToken);
+        assertThat(token.getUnverifiedUserId()).isEqualTo("c393f659-0301-434e-a9c9-72304a507ffc");
         assertThat(token.getUnverifiedSessionId()).isEmpty();
         assertThat(token.getUnverifiedTokenId()).isEmpty();
         assertThat(token.getUnverifiedOrganizationId()).isEmpty();
         assertThat(token.getUnverifiedService()).isEmpty();
 
-        Optional<UnverifiedJsonWebToken> tryToken = UnverifiedJsonWebToken.tryParse(REQUIRED_CLAIMS_TOKEN.getToken());
-        assertThat(tryToken).contains(token);
+        assertThat(UnverifiedJsonWebToken.tryParse(bearerToken.getToken())).contains(token);
     }
 
     @Test
     void tryParse_invalidJwt() {
-        Optional<UnverifiedJsonWebToken> parsedJwt = UnverifiedJsonWebToken.tryParse(INVALID_BEARER_TOKEN.getToken());
-        assertThat(parsedJwt).isNotPresent();
+        BearerToken bearerToken = BearerToken.valueOf("invalid");
+
+        assertThatLoggableExceptionThrownBy(() -> UnverifiedJsonWebToken.of(bearerToken))
+                .hasLogMessage("Invalid JWT: expected 3 segments")
+                .hasExactlyArgs(SafeArg.of("segmentsCount", 1))
+                .hasNoCause();
+
+        assertThat(UnverifiedJsonWebToken.tryParse(bearerToken.getToken())).isEmpty();
     }
 
     @Test
     void tryParse_invalidEncoding() {
-        Optional<UnverifiedJsonWebToken> parsedJwt = UnverifiedJsonWebToken.tryParse(INVALID_ENCODING_TOKEN.getToken());
-        assertThat(parsedJwt).isNotPresent();
+        BearerToken bearerToken = BearerToken.valueOf("header.invalid+.signature");
+
+        assertThatLoggableExceptionThrownBy(() -> UnverifiedJsonWebToken.of(bearerToken))
+                .hasLogMessage("Invalid JWT: cannot parse payload")
+                .hasNoArgs()
+                .hasCauseInstanceOf(IllegalArgumentException.class);
+
+        assertThat(UnverifiedJsonWebToken.tryParse(bearerToken.getToken())).isEmpty();
     }
 
     @Test
     void tryParse_invalidPayload() {
-        Optional<UnverifiedJsonWebToken> parsedJwt = UnverifiedJsonWebToken.tryParse(INVALID_PAYLOAD_TOKEN.getToken());
-        assertThat(parsedJwt).isNotPresent();
-    }
+        BearerToken bearerToken = jwt("""
+            invalid\
+            """);
 
-    @Test
-    void of_invalidJwt() {
-        Assertions.assertThatLoggableExceptionThrownBy(() -> UnverifiedJsonWebToken.of(INVALID_BEARER_TOKEN))
-                .hasLogMessage("Invalid JWT: expected 3 segments")
-                .hasExactlyArgs(SafeArg.of("segmentsCount", 1))
-                .hasNoCause();
-    }
-
-    @Test
-    void of_invalidEncoding() {
-        Assertions.assertThatLoggableExceptionThrownBy(() -> UnverifiedJsonWebToken.of(INVALID_ENCODING_TOKEN))
-                .hasLogMessage("Invalid JWT: cannot parse payload")
-                .hasNoArgs()
-                .hasCauseInstanceOf(IllegalArgumentException.class);
-    }
-
-    @Test
-    void of_invalidPayload() {
-        Assertions.assertThatLoggableExceptionThrownBy(() -> UnverifiedJsonWebToken.of(INVALID_PAYLOAD_TOKEN))
+        assertThatLoggableExceptionThrownBy(() -> UnverifiedJsonWebToken.of(bearerToken))
                 .hasLogMessage("Invalid JWT: cannot parse payload")
                 .hasNoArgs()
                 .hasCauseInstanceOf(IOException.class);
+
+        assertThat(UnverifiedJsonWebToken.tryParse(bearerToken.getToken())).isEmpty();
+    }
+
+    private static BearerToken jwt(String payload) {
+        String jwt = "header."
+                + Base64.getUrlEncoder().withoutPadding().encodeToString(payload.getBytes(StandardCharsets.UTF_8))
+                + ".signature";
+        return BearerToken.valueOf(jwt);
     }
 }
