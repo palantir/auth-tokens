@@ -1,4 +1,9 @@
 acceptedBreaks:
+  "3.19.0":
+    com.palantir.tokens:auth-tokens:
+    - code: "java.method.abstractMethodAdded"
+      new: "method java.util.Optional<java.lang.String> com.palantir.tokens.auth.UnverifiedJsonWebToken::getUnverifiedService()"
+      justification: "UnverifiedJsonWebToken should not have external implementations"
   "3.6.2":
     com.palantir.tokens:auth-tokens:
     - code: "java.class.visibilityReduced"

@@ -20,14 +20,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
-import com.palantir.logsafe.Preconditions;
 import com.palantir.logsafe.Safe;
 import com.palantir.logsafe.SafeArg;
 import com.palantir.logsafe.exceptions.SafeIllegalArgumentException;
 import com.palantir.logsafe.logger.SafeLogger;
 import com.palantir.logsafe.logger.SafeLoggerFactory;
 import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.util.Base64;
 import java.util.Optional;
 import java.util.UUID;
@@ -44,7 +42,7 @@ import org.immutables.value.Value;
  * logging.
  */
 @Safe
-@Value.Immutable
+@Value.Immutable(builder = false, copy = false)
 @ImmutablesStyle
 public abstract class UnverifiedJsonWebToken {
 
@@ -84,6 +82,14 @@ public abstract class UnverifiedJsonWebToken {
     @Safe
     @Value.Parameter
     public abstract Optional<String> getUnverifiedOrganizationId();
+
+    /**
+     * Returns the unverified first-party service name, i.e. the "svc" claim, of the JWT
+     * or absent if the JWT does not contain the "svc" claim.
+     */
+    @Safe
+    @Value.Parameter
+    public abstract Optional<String> getUnverifiedService();
 
     /**
      * Does a lower cost check on the structure of string provided
@@ -131,10 +137,11 @@ public abstract class UnverifiedJsonWebToken {
         JwtPayload payload = extractPayload(segments[1]);
 
         return ImmutableUnverifiedJsonWebToken.of(
-                decodeUuidBytes(payload.sub),
-                Optional.ofNullable(payload.sid).map(UnverifiedJsonWebToken::decodeUuidBytes),
-                Optional.ofNullable(payload.jti).map(UnverifiedJsonWebToken::decodeUuidBytes),
-                Optional.ofNullable(payload.org).map(UnverifiedJsonWebToken::decodeUuidBytes));
+                UuidStringConverter.toString(payload.sub),
+                Optional.ofNullable(payload.sid).map(UuidStringConverter::toString),
+                Optional.ofNullable(payload.jti).map(UuidStringConverter::toString),
+                Optional.ofNullable(payload.org).map(UuidStringConverter::toString),
+                Optional.ofNullable(payload.svc));
     }
 
     private static JwtPayload extractPayload(String payload) {
@@ -145,34 +152,21 @@ public abstract class UnverifiedJsonWebToken {
         }
     }
 
-    /**
-     * Returns an encoded UUID from a length 16 byte array.
-     * <p>
-     * Palantir stores UUIDs in this format to optimize on shorter JWTs.
-     */
-    private static String decodeUuidBytes(byte[] bytes) {
-        Preconditions.checkArgument(
-                bytes.length == 16,
-                "Invalid JWT: cannot decode UUID, require 16 bytes",
-                SafeArg.of("bytesLength", bytes.length));
-        ByteBuffer byteBuffer = ByteBuffer.wrap(bytes);
-        long high = byteBuffer.getLong();
-        long low = byteBuffer.getLong();
-        return UuidStringConverter.toString(new UUID(high, low));
-    }
-
     private static final class JwtPayload {
 
         @JsonProperty("sub")
-        private byte[] sub;
+        private UUID sub;
 
         @JsonProperty("sid")
-        private byte[] sid;
+        private UUID sid;
 
         @JsonProperty("jti")
-        private byte[] jti;
+        private UUID jti;
 
         @JsonProperty("org")
-        private byte[] org;
+        private UUID org;
+
+        @JsonProperty("svc")
+        private String svc;
     }
 }
