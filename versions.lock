@@ -92,11 +92,11 @@ net.bytebuddy:byte-buddy:1.17.7 (2 constraints: 9f161b3f)
 
 net.bytebuddy:byte-buddy-agent:1.17.7 (1 constraints: 4a0b4ede)
 
-org.apache.httpcomponents.client5:httpclient5:5.5.2 (1 constraints: 0e051536)
+org.apache.httpcomponents.client5:httpclient5:5.6 (1 constraints: af042c2c)
 
-org.apache.httpcomponents.core5:httpcore5:5.3.6 (2 constraints: 9e25f658)
+org.apache.httpcomponents.core5:httpcore5:5.4 (2 constraints: d824dcd3)
 
-org.apache.httpcomponents.core5:httpcore5-h2:5.3.6 (1 constraints: 4213123c)
+org.apache.httpcomponents.core5:httpcore5-h2:5.4 (1 constraints: df12c515)
 
 org.apache.logging.log4j:log4j-api:2.24.0 (2 constraints: c01f6e63)
 
