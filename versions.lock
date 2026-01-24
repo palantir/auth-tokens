@@ -88,7 +88,7 @@ jakarta.validation:jakarta.validation-api:3.0.2 (1 constraints: fe10bbc3)
 
 jakarta.xml.bind:jakarta.xml.bind-api:4.0.0 (1 constraints: ba1524d3)
 
-net.bytebuddy:byte-buddy:1.17.7 (2 constraints: 9f161b3f)
+net.bytebuddy:byte-buddy:1.18.3 (2 constraints: 9c16b43e)
 
 net.bytebuddy:byte-buddy-agent:1.17.7 (1 constraints: 4a0b4ede)
 
@@ -106,7 +106,7 @@ org.apache.logging.log4j:log4j-slf4j2-impl:2.24.0 (1 constraints: 3a053f3b)
 
 org.apiguardian:apiguardian-api:1.1.2 (6 constraints: 5366ce6e)
 
-org.assertj:assertj-core:3.27.6 (2 constraints: aa19d1e0)
+org.assertj:assertj-core:3.27.7 (2 constraints: ab190be1)
 
 org.glassfish.hk2:hk2-api:3.0.4 (1 constraints: 6c0c580c)
 
