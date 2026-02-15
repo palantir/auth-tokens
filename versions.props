@@ -4,9 +4,9 @@ com.google.guava:guava = 33.5.0-jre
 com.palantir.safe-logging:* = 3.11.0
 org.assertj:* = 3.27.7
 org.immutables:* = 2.12.1
-org.junit.platform:* = 6.0.2
+org.junit.platform:* = 6.0.3
 org.mockito:* = 5.21.0
-org.junit.jupiter:* = 6.0.2
+org.junit.jupiter:* = 6.0.3
 org.openjdk.jmh:* = 1.37
 org.slf4j:* = 2.0.17
 
