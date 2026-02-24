@@ -94,8 +94,9 @@ final class BearerTokenLoggingFilterTest {
         assertThat(requestProperties)
                 .containsEntry(Utilities.getRequestPropertyKey(USER_ID_KEY), TestConstants.USER_ID);
         assertThat(requestProperties.get(Utilities.JSON_WEB_TOKEN_KEY))
-                .isInstanceOfSatisfying(UnverifiedJsonWebToken.class, jwt -> assertThat(jwt.getUnverifiedUserId())
-                        .isEqualTo(TestConstants.USER_ID));
+                .isInstanceOfSatisfying(
+                        UnverifiedJsonWebToken.class,
+                        jwt -> assertThat(jwt.getUnverifiedUserId()).isEqualTo(TestConstants.USER_ID));
     }
 
     @Test
@@ -107,8 +108,9 @@ final class BearerTokenLoggingFilterTest {
         assertThat(requestProperties)
                 .containsEntry(Utilities.getRequestPropertyKey(SESSION_ID_KEY), TestConstants.SESSION_ID);
         assertThat(requestProperties.get(Utilities.JSON_WEB_TOKEN_KEY))
-                .isInstanceOfSatisfying(UnverifiedJsonWebToken.class, jwt -> assertThat(jwt.getUnverifiedSessionId())
-                        .hasValue(TestConstants.SESSION_ID));
+                .isInstanceOfSatisfying(
+                        UnverifiedJsonWebToken.class,
+                        jwt -> assertThat(jwt.getUnverifiedSessionId()).hasValue(TestConstants.SESSION_ID));
     }
 
     @Test
@@ -120,8 +122,9 @@ final class BearerTokenLoggingFilterTest {
         assertThat(requestProperties)
                 .containsEntry(Utilities.getRequestPropertyKey(TOKEN_ID_KEY), TestConstants.TOKEN_ID);
         assertThat(requestProperties.get(Utilities.JSON_WEB_TOKEN_KEY))
-                .isInstanceOfSatisfying(UnverifiedJsonWebToken.class, jwt -> assertThat(jwt.getUnverifiedTokenId())
-                        .hasValue(TestConstants.TOKEN_ID));
+                .isInstanceOfSatisfying(
+                        UnverifiedJsonWebToken.class,
+                        jwt -> assertThat(jwt.getUnverifiedTokenId()).hasValue(TestConstants.TOKEN_ID));
     }
 
     private void assertThatMdcIsCleared() {
