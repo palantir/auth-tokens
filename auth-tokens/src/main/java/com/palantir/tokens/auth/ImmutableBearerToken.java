@@ -24,7 +24,7 @@ import java.security.MessageDigest;
 import java.util.BitSet;
 
 @DoNotLog
-final class ImmutableBearerToken implements BearerToken {
+final class ImmutableBearerToken extends BearerToken {
 
     private static final String VALIDATION_PATTERN_STRING = "^[A-Za-z0-9\\-\\._~\\+/]+=*$";
     private static final BitSet allowedCharacters = new BitSet();
@@ -66,7 +66,7 @@ final class ImmutableBearerToken implements BearerToken {
         return result;
     }
 
-    static ImmutableBearerToken valueOf(String token) {
+    public static ImmutableBearerToken valueOf(String token) {
         Preconditions.checkArgument(token != null, "BearerToken cannot be null");
         Preconditions.checkArgument(!token.isEmpty(), "BearerToken cannot be empty");
         if (!isValidBearerToken(token)) {

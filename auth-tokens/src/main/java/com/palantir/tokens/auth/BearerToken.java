@@ -22,13 +22,13 @@ import com.palantir.logsafe.DoNotLog;
 
 /** Value class representing an authentication bearer token. */
 @DoNotLog
-public interface BearerToken {
+public abstract class BearerToken {
     @JsonValue
     @DoNotLog
-    String getToken();
+    public abstract String getToken();
 
     @JsonCreator
-    static BearerToken valueOf(String token) {
+    public static BearerToken valueOf(String token) {
         return ImmutableBearerToken.valueOf(token);
     }
 }
