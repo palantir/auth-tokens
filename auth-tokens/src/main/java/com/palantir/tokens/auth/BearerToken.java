@@ -22,7 +22,7 @@ import com.palantir.logsafe.DoNotLog;
 
 /** Value class representing an authentication bearer token. */
 @DoNotLog
-public sealed interface BearerToken permits ImmutableBearerToken {
+public interface BearerToken {
     @JsonValue
     @DoNotLog
     String getToken();
