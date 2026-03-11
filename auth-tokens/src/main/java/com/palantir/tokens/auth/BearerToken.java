@@ -19,106 +19,16 @@ package com.palantir.tokens.auth;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import com.palantir.logsafe.DoNotLog;
-import com.palantir.logsafe.Preconditions;
-import com.palantir.logsafe.SafeArg;
-import com.palantir.logsafe.exceptions.SafeIllegalArgumentException;
-import java.security.MessageDigest;
-import java.util.BitSet;
-import org.immutables.value.Value;
 
 /** Value class representing an authentication bearer token. */
 @DoNotLog
-@Value.Immutable(builder = false, copy = false)
-@ImmutablesStyle
-public abstract class BearerToken {
-
-    private static final String VALIDATION_PATTERN_STRING = "^[A-Za-z0-9\\-\\._~\\+/]+=*$";
-    private static final BitSet allowedCharacters = new BitSet();
-
-    static {
-        allowedCharacters.set('A', 'Z' + 1);
-        allowedCharacters.set('a', 'z' + 1);
-        allowedCharacters.set('0', '9' + 1);
-        allowedCharacters.set('-');
-        allowedCharacters.set('.');
-        allowedCharacters.set('_');
-        allowedCharacters.set('~');
-        allowedCharacters.set('+');
-        allowedCharacters.set('/');
-    }
-
-    @Value.Parameter
+public sealed interface BearerToken permits ImmutableBearerToken {
     @JsonValue
     @DoNotLog
-    public abstract String getToken();
-
-    // We use a hand-written getBytes() implementation for performance reasons.
-    // Note that we don't need to worry about the character set (e.g., UTF-8) because
-    // the set of allowable characters are single bytes.
-    @Value.Derived
-    @DoNotLog
-    @SuppressWarnings("DesignForExtension")
-    byte[] getTokenAsBytes() {
-        String token = getToken();
-        byte[] result = new byte[token.length()];
-        for (int i = 0; i < result.length; i++) {
-            result[i] = (byte) token.charAt(i);
-        }
-        return result;
-    }
+    String getToken();
 
     @JsonCreator
-    public static BearerToken valueOf(String token) {
-        Preconditions.checkArgument(token != null, "BearerToken cannot be null");
-        Preconditions.checkArgument(!token.isEmpty(), "BearerToken cannot be empty");
-        if (!isValidBearerToken(token)) {
-            throw new SafeIllegalArgumentException(
-                    "BearerToken must match pattern", SafeArg.of("validationPattern", VALIDATION_PATTERN_STRING));
-        }
-        return ImmutableBearerToken.of(token);
-    }
-
-    // Optimized implementation of the regular expression VALIDATION_PATTERN_STRING
-    private static boolean isValidBearerToken(String token) {
-        int length = token.length();
-        int cursor = 0;
-
-        for (; cursor < length; cursor++) {
-            if (!allowedCharacters.get(token.charAt(cursor))) {
-                break;
-            }
-        }
-
-        // Need at least one valid character
-        if (cursor == 0) {
-            return false;
-        }
-
-        // Only trailing '=' is allowed after valid characters
-        for (; cursor < length; cursor++) {
-            if (token.charAt(cursor) != '=') {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    @Override
-    @DoNotLog
-    public final String toString() {
-        return getToken();
-    }
-
-    @Override
-    public final boolean equals(Object other) {
-        return other instanceof BearerToken bearerToken
-                && MessageDigest.isEqual(bearerToken.getTokenAsBytes(), getTokenAsBytes());
-    }
-
-    @Override
-    @DoNotLog
-    public final int hashCode() {
-        return getToken().hashCode();
+    static BearerToken valueOf(String token) {
+        return ImmutableBearerToken.valueOf(token);
     }
 }
