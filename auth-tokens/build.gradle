@@ -10,6 +10,7 @@ dependencies {
 
     implementation 'com.fasterxml.jackson.core:jackson-databind'
     implementation 'com.palantir.safe-logging:preconditions'
+    implementation 'org.jspecify:jspecify'
     implementation 'org.slf4j:slf4j-api'
 
     testImplementation 'com.palantir.safe-logging:preconditions-assertj'
