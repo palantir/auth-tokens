@@ -55,7 +55,8 @@ final class BearerTokenTests {
         for (String invalidToken : invalidTokens) {
             Assertions.assertThatLoggableExceptionThrownBy(() -> BearerToken.valueOf(invalidToken))
                     .isInstanceOf(IllegalArgumentException.class)
-                    .hasLogMessage("Invalid BearerToken");
+                    .hasLogMessage("Invalid BearerToken")
+                    .hasNoArgs();
         }
     }
 

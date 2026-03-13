@@ -24,6 +24,7 @@ import com.palantir.logsafe.exceptions.SafeIllegalArgumentException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.util.BitSet;
+import org.jspecify.annotations.Nullable;
 
 /** Value class representing an authentication bearer token. */
 @DoNotLog
@@ -46,12 +47,12 @@ public final class BearerToken {
     }
 
     private final String token;
-    private final byte[] tokenBytes;
+
+    private byte @Nullable [] tokenBytes;
 
     private BearerToken(String token) {
         checkValidBearerToken(token);
         this.token = token;
-        this.tokenBytes = getTokenAsBytes(token);
     }
 
     @JsonCreator
@@ -65,14 +66,18 @@ public final class BearerToken {
         return token;
     }
 
-    static byte[] getTokenAsBytes(String token) {
-        return token.getBytes(StandardCharsets.US_ASCII);
+    private byte[] getTokenBytes() {
+        if (tokenBytes == null) {
+            tokenBytes = token.getBytes(StandardCharsets.US_ASCII);
+        }
+        return tokenBytes;
     }
 
     // Optimized validity check instead of using regular expressions
     private static void checkValidBearerToken(String token) {
         Preconditions.checkArgument(token != null, "BearerToken cannot be null");
         Preconditions.checkArgument(!token.isEmpty(), "BearerToken cannot be empty");
+
         int length = token.length();
         int cursor = 0;
 
@@ -104,7 +109,7 @@ public final class BearerToken {
     @Override
     public boolean equals(Object other) {
         if (other instanceof BearerToken bearerToken) {
-            return MessageDigest.isEqual(bearerToken.tokenBytes, tokenBytes);
+            return MessageDigest.isEqual(getTokenBytes(), bearerToken.getTokenBytes());
         }
         return false;
     }
