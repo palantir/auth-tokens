@@ -48,7 +48,7 @@ public final class BearerToken {
 
     private final String token;
 
-    private byte @Nullable [] tokenBytes;
+    private volatile byte @Nullable [] tokenBytes;
 
     private BearerToken(String token) {
         checkValidBearerToken(token);
