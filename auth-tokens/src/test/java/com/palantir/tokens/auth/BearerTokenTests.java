@@ -22,7 +22,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.palantir.logsafe.SafeArg;
 import com.palantir.logsafe.testing.Assertions;
 import java.io.IOException;
 import java.util.Arrays;
@@ -56,8 +55,8 @@ final class BearerTokenTests {
         for (String invalidToken : invalidTokens) {
             Assertions.assertThatLoggableExceptionThrownBy(() -> BearerToken.valueOf(invalidToken))
                     .isInstanceOf(IllegalArgumentException.class)
-                    .hasLogMessage("BearerToken must match pattern")
-                    .hasExactlyArgs(SafeArg.of("validationPattern", "^[A-Za-z0-9\\-\\._~\\+/]+=*$"));
+                    .hasLogMessage("Invalid BearerToken")
+                    .hasNoArgs();
         }
     }
 

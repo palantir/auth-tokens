@@ -4,6 +4,28 @@ acceptedBreaks:
     - code: "java.method.abstractMethodAdded"
       new: "method java.util.Optional<java.lang.String> com.palantir.tokens.auth.UnverifiedJsonWebToken::getUnverifiedService()"
       justification: "UnverifiedJsonWebToken should not have external implementations"
+  "3.23.0":
+    com.palantir.tokens:auth-tokens:
+    - code: "java.annotation.removed"
+      old: "class com.palantir.tokens.auth.BearerToken"
+      new: "class com.palantir.tokens.auth.BearerToken"
+      justification: "Stop supporting other implementation of BearerToken since it\
+        \ is a simple value type that should not require other extensions"
+    - code: "java.class.noLongerAbstract"
+      old: "class com.palantir.tokens.auth.BearerToken"
+      new: "class com.palantir.tokens.auth.BearerToken"
+      justification: "Stop supporting other implementation of BearerToken since it\
+        \ is a simple value type that should not require other extensions"
+    - code: "java.class.nowFinal"
+      old: "class com.palantir.tokens.auth.BearerToken"
+      new: "class com.palantir.tokens.auth.BearerToken"
+      justification: "Stop supporting other implementation of BearerToken since it\
+        \ is a simple value type that should not require other extensions"
+    - code: "java.method.visibilityReduced"
+      old: "method void com.palantir.tokens.auth.BearerToken::<init>()"
+      new: "method void com.palantir.tokens.auth.BearerToken::<init>(java.lang.String)"
+      justification: "Stop supporting other implementation of BearerToken since it\
+        \ is a simple value type that should not require other extensions"
   "3.6.2":
     com.palantir.tokens:auth-tokens:
     - code: "java.class.visibilityReduced"
