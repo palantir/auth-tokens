@@ -21,10 +21,8 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import com.palantir.logsafe.DoNotLog;
 import com.palantir.logsafe.Preconditions;
 import com.palantir.logsafe.exceptions.SafeIllegalArgumentException;
-import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.util.BitSet;
-import org.jspecify.annotations.Nullable;
 
 /** Value class representing an authentication bearer token. */
 @DoNotLog
@@ -48,8 +46,6 @@ public final class BearerToken {
 
     private final String token;
 
-    private volatile byte @Nullable [] tokenBytes;
-
     private BearerToken(String token) {
         checkValidBearerToken(token);
         this.token = token;
@@ -64,13 +60,6 @@ public final class BearerToken {
     @DoNotLog
     public String getToken() {
         return token;
-    }
-
-    private byte[] getTokenBytes() {
-        if (tokenBytes == null) {
-            tokenBytes = token.getBytes(StandardCharsets.US_ASCII);
-        }
-        return tokenBytes;
     }
 
     // Optimized validity check instead of using regular expressions
@@ -108,10 +97,40 @@ public final class BearerToken {
 
     @Override
     public boolean equals(Object other) {
-        if (other instanceof BearerToken bearerToken) {
-            return MessageDigest.isEqual(getTokenBytes(), bearerToken.getTokenBytes());
+        if (!(other instanceof BearerToken bearerToken)) {
+            return false;
         }
-        return false;
+
+        return isEqual(token, bearerToken.token);
+    }
+
+    /**
+     * Copied from {@link MessageDigest#isEqual(byte[], byte[])} and modified to compare {@link String} values using
+     * {@link String#charAt(int)}.
+     */
+    @SuppressWarnings("ReferenceEquality")
+    private static boolean isEqual(String tokenA, String tokenB) {
+        if (tokenA == tokenB) {
+            return true;
+        }
+
+        int lenA = tokenA.length();
+        int lenB = tokenB.length();
+
+        if (lenB == 0) {
+            return lenA == 0;
+        }
+
+        int result = 0;
+        result |= lenA - lenB;
+
+        for (int i = 0; i < lenA; i++) {
+            // If i >= lenB, indexB is 0; otherwise, i.
+            int indexB = ((i - lenB) >>> 31) * i;
+            result |= tokenA.charAt(i) ^ tokenB.charAt(indexB);
+        }
+
+        return result == 0;
     }
 
     @Override
