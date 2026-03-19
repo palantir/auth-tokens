@@ -21,7 +21,6 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import com.palantir.logsafe.DoNotLog;
 import com.palantir.logsafe.Preconditions;
 import com.palantir.logsafe.exceptions.SafeIllegalArgumentException;
-import java.security.MessageDigest;
 import java.util.BitSet;
 
 /** Value class representing an authentication bearer token. */
@@ -96,38 +95,32 @@ public final class BearerToken {
     }
 
     @Override
+    @SuppressWarnings("ReferenceEquality")
     public boolean equals(Object other) {
         if (!(other instanceof BearerToken bearerToken)) {
             return false;
         }
 
-        return isEqual(token, bearerToken.token);
-    }
+        String tokenA = token;
+        String tokenB = bearerToken.token;
 
-    /**
-     * Copied from {@link MessageDigest#isEqual(byte[], byte[])} and modified to compare {@link String} values using
-     * {@link String#charAt(int)}.
-     */
-    @SuppressWarnings("ReferenceEquality")
-    private static boolean isEqual(String tokenA, String tokenB) {
         if (tokenA == tokenB) {
             return true;
         }
 
+        // This may allow the token length to be determined using timing attacks, but that is not something we are
+        // concerned about. Tokens have a relatively standard format and the vast majority of our bearer tokens
+        // are one of a few lengths.
         int lenA = tokenA.length();
         int lenB = tokenB.length();
-
-        if (lenB == 0) {
-            return lenA == 0;
+        if (lenA != lenB) {
+            return false;
         }
 
+        // Use a constant-time comparison to compare the token values.
         int result = 0;
-        result |= lenA - lenB;
-
         for (int i = 0; i < lenA; i++) {
-            // If i >= lenB, indexB is 0; otherwise, i.
-            int indexB = ((i - lenB) >>> 31) * i;
-            result |= tokenA.charAt(i) ^ tokenB.charAt(indexB);
+            result |= tokenA.charAt(i) ^ tokenB.charAt(i);
         }
 
         return result == 0;
