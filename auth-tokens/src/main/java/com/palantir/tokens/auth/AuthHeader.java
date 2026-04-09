@@ -51,6 +51,7 @@ public abstract class AuthHeader {
     /**
      * Gets the string form: "Bearer [token]".
      */
+    @SuppressWarnings("for-rollout:DangerousToStringDoNotLog")
     @DoNotLog
     @Override
     public final String toString() {

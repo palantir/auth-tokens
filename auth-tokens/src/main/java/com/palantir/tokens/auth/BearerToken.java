@@ -88,6 +88,7 @@ public final class BearerToken {
         }
     }
 
+    @SuppressWarnings("for-rollout:DangerousToStringDoNotLog")
     @Override
     @DoNotLog
     public String toString() {
