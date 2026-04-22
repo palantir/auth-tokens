@@ -14,3 +14,5 @@ include 'auth-tokens'
 include 'auth-tokens-filter'
 include 'auth-tokens-filter-jakarta'
 include 'benchmarks'
+
+throw new RuntimeException('''The excavator failed to run properly:\n\n''' + file('gradle/exception').text)
