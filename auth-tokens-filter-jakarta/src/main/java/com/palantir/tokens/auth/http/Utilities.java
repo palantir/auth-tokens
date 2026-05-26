@@ -29,6 +29,7 @@ final class Utilities {
         MDC.remove(Key.USER_ID.getMdcKey());
         MDC.remove(Key.SESSION_ID.getMdcKey());
         MDC.remove(Key.TOKEN_ID.getMdcKey());
+        MDC.remove(Key.ORGANIZATION_ID.getMdcKey());
     }
 
     /** Writes to both the MDC and ContainerRequestContext. */
@@ -39,6 +40,7 @@ final class Utilities {
             setUnverifiedContext(requestContext, Key.USER_ID, jwt.getUnverifiedUserId());
             setUnverifiedContext(requestContext, Key.SESSION_ID, jwt.getUnverifiedSessionId());
             setUnverifiedContext(requestContext, Key.TOKEN_ID, jwt.getUnverifiedTokenId());
+            setUnverifiedContext(requestContext, Key.ORGANIZATION_ID, jwt.getUnverifiedOrganizationId());
             requestContext.setProperty(JSON_WEB_TOKEN_KEY, jwt);
         }
     }
@@ -61,7 +63,8 @@ final class Utilities {
     enum Key {
         USER_ID("userId"),
         SESSION_ID("sessionId"),
-        TOKEN_ID("tokenId");
+        TOKEN_ID("tokenId"),
+        ORGANIZATION_ID("organizationId");
 
         private final String mdc;
         private final String context;

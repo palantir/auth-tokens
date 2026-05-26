@@ -29,6 +29,7 @@ final class Utilities {
         MDC.remove(Key.USER_ID.getMdcKey());
         MDC.remove(Key.SESSION_ID.getMdcKey());
         MDC.remove(Key.TOKEN_ID.getMdcKey());
+        MDC.remove(Key.ORGANIZATION_ID.getMdcKey());
     }
 
     /** Writes to both the MDC and ContainerRequestContext. */

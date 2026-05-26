@@ -40,6 +40,7 @@ public class BearerTokenLoggingFilter implements ContainerRequestFilter {
     public static final String USER_ID_KEY = Utilities.Key.USER_ID.getMdcKey();
     public static final String SESSION_ID_KEY = Utilities.Key.SESSION_ID.getMdcKey();
     public static final String TOKEN_ID_KEY = Utilities.Key.TOKEN_ID.getMdcKey();
+    public static final String ORGANIZATION_ID_KEY = Utilities.Key.ORGANIZATION_ID.getMdcKey();
 
     @Override
     public final void filter(ContainerRequestContext requestContext) {
