@@ -16,15 +16,15 @@ com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava (1 c
 
 com.google.j2objc:j2objc-annotations:3.1 (1 constraints: b809f1a0)
 
-com.palantir.safe-logging:logger:3.17.0 (1 constraints: 3d054a3b)
+com.palantir.safe-logging:logger:3.18.0 (1 constraints: 3e054d3b)
 
-com.palantir.safe-logging:logger-slf4j:3.17.0 (1 constraints: 360e9c50)
+com.palantir.safe-logging:logger-slf4j:3.18.0 (1 constraints: 370e9f50)
 
-com.palantir.safe-logging:logger-spi:3.17.0 (2 constraints: 7b1e4eb1)
+com.palantir.safe-logging:logger-spi:3.18.0 (2 constraints: 7d1e84b1)
 
-com.palantir.safe-logging:preconditions:3.17.0 (2 constraints: 9c192edf)
+com.palantir.safe-logging:preconditions:3.18.0 (2 constraints: 9e196ddf)
 
-com.palantir.safe-logging:safe-logging:3.17.0 (4 constraints: 794373f3)
+com.palantir.safe-logging:safe-logging:3.18.0 (4 constraints: 7d43baf4)
 
 jakarta.annotation:jakarta.annotation-api:2.1.1 (4 constraints: ed33b375)
 
@@ -58,7 +58,7 @@ org.slf4j:slf4j-api:2.0.17 (4 constraints: fc39f61c)
 
 com.fasterxml.jackson.module:jackson-module-jakarta-xmlbind-annotations:2.22.1 (1 constraints: ee1515e9)
 
-com.palantir.safe-logging:preconditions-assertj:3.17.0 (1 constraints: 3d054a3b)
+com.palantir.safe-logging:preconditions-assertj:3.18.0 (1 constraints: 3e054d3b)
 
 io.smallrye.common:smallrye-common-annotation:2.6.0 (1 constraints: c30d1c36)
 
