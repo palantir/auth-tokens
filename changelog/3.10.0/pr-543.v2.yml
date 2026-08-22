@@ -1,5 +1,0 @@
-type: improvement
-improvement:
-  description: Logging filters associate the JWT with the current request
-  links:
-  - https://github.com/palantir/auth-tokens/pull/543
