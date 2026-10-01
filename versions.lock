@@ -2,9 +2,9 @@
 
 com.fasterxml.jackson.core:jackson-annotations:2.22 (4 constraints: 424a9d9f)
 
-com.fasterxml.jackson.core:jackson-core:2.22.1 (2 constraints: 3a309504)
+com.fasterxml.jackson.core:jackson-core:2.22.3 (2 constraints: 3e303b05)
 
-com.fasterxml.jackson.core:jackson-databind:2.22.1 (3 constraints: d9383447)
+com.fasterxml.jackson.core:jackson-databind:2.22.3 (3 constraints: dd38d248)
 
 com.google.errorprone:error_prone_annotations:2.50.0 (5 constraints: db48a699)
 
@@ -56,7 +56,7 @@ org.slf4j:slf4j-api:2.0.17 (4 constraints: fc39f61c)
 
 [Test dependencies]
 
-com.fasterxml.jackson.module:jackson-module-jakarta-xmlbind-annotations:2.22.1 (1 constraints: ee1515e9)
+com.fasterxml.jackson.module:jackson-module-jakarta-xmlbind-annotations:2.22.3 (1 constraints: ee1515e9)
 
 com.palantir.safe-logging:preconditions-assertj:3.20.0 (1 constraints: 3705393b)
 
