@@ -76,9 +76,9 @@ io.smallrye.common:smallrye-common-os:2.4.0 (1 constraints: b10e835a)
 
 io.smallrye.common:smallrye-common-ref:2.4.0 (1 constraints: b10e835a)
 
-io.undertow:undertow-core:2.3.25.Final (2 constraints: a3165118)
+io.undertow:undertow-core:2.3.26.Final (2 constraints: a5168b18)
 
-io.undertow:undertow-servlet:2.3.25.Final (1 constraints: 56074061)
+io.undertow:undertow-servlet:2.3.26.Final (1 constraints: 57074761)
 
 jakarta.activation:jakarta.activation-api:2.1.0 (1 constraints: 8c0f4791)
 
