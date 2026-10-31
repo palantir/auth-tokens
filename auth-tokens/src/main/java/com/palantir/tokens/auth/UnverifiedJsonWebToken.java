@@ -135,7 +135,7 @@ public abstract class UnverifiedJsonWebToken {
         }
 
         JwtPayload payload = extractPayload(segments[1]);
-        if (payload.sub == null) {
+        if (payload == null || payload.sub == null) {
             throw new SafeIllegalArgumentException("Invalid JWT: missing sub");
         }
 

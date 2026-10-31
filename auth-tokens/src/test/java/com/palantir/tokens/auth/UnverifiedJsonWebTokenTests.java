@@ -122,6 +122,20 @@ final class UnverifiedJsonWebTokenTests {
     }
 
     @Test
+    void tryParse_nullPayload() {
+        BearerToken bearerToken = jwt("""
+            null\
+            """);
+
+        assertThatLoggableExceptionThrownBy(() -> UnverifiedJsonWebToken.of(bearerToken))
+                .hasLogMessage("Invalid JWT: missing sub")
+                .hasNoArgs()
+                .hasNoCause();
+
+        assertThat(UnverifiedJsonWebToken.tryParse(bearerToken.getToken())).isEmpty();
+    }
+
+    @Test
     void tryParse_nullSub() {
         BearerToken bearerToken = jwt("""
             {\
