@@ -105,6 +105,52 @@ final class UnverifiedJsonWebTokenTests {
         assertThat(UnverifiedJsonWebToken.tryParse(bearerToken.getToken())).isEmpty();
     }
 
+    @Test
+    void tryParse_missingSub() {
+        BearerToken bearerToken = jwt("""
+            {\
+            "sid":"P8Zj1D5ITe26TteK+YuDYw=="\
+            }\
+            """);
+
+        assertThatLoggableExceptionThrownBy(() -> UnverifiedJsonWebToken.of(bearerToken))
+                .hasLogMessage("Invalid JWT: missing sub")
+                .hasNoArgs()
+                .hasNoCause();
+
+        assertThat(UnverifiedJsonWebToken.tryParse(bearerToken.getToken())).isEmpty();
+    }
+
+    @Test
+    void tryParse_nullPayload() {
+        BearerToken bearerToken = jwt("""
+            null\
+            """);
+
+        assertThatLoggableExceptionThrownBy(() -> UnverifiedJsonWebToken.of(bearerToken))
+                .hasLogMessage("Invalid JWT: missing sub")
+                .hasNoArgs()
+                .hasNoCause();
+
+        assertThat(UnverifiedJsonWebToken.tryParse(bearerToken.getToken())).isEmpty();
+    }
+
+    @Test
+    void tryParse_nullSub() {
+        BearerToken bearerToken = jwt("""
+            {\
+            "sub":null\
+            }\
+            """);
+
+        assertThatLoggableExceptionThrownBy(() -> UnverifiedJsonWebToken.of(bearerToken))
+                .hasLogMessage("Invalid JWT: missing sub")
+                .hasNoArgs()
+                .hasNoCause();
+
+        assertThat(UnverifiedJsonWebToken.tryParse(bearerToken.getToken())).isEmpty();
+    }
+
     private static BearerToken jwt(String payload) {
         String jwt = "header."
                 + Base64.getUrlEncoder().withoutPadding().encodeToString(payload.getBytes(StandardCharsets.UTF_8))
