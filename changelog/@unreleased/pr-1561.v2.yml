@@ -1,0 +1,7 @@
+type: fix
+fix:
+  description: '`UnverifiedJsonWebToken.of` throws `SafeIllegalArgumentException` ("Invalid
+    JWT: missing sub") for a payload with no `sub`, a null `sub`, or a JSON `null`
+    payload, instead of `NullPointerException`.'
+  links:
+  - https://github.com/palantir/auth-tokens/pull/1561
